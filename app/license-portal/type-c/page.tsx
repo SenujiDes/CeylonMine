@@ -62,7 +62,7 @@ export default function TypeCLicense() {
       <Navbar />
       <div className="min-h-screen bg-gray-100">
         <div className="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Type C License Application</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">IML Type C License Application</h1>
           <div className="bg-white shadow-sm rounded-lg p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>

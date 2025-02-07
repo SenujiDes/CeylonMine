@@ -6,26 +6,26 @@ export default function LicensePortal() {
   const licenses = [
     {
       id: 1,
-      name: 'Type A License',
-      description: 'For small businesses and startups',
+      name: 'IML Type A License',
+      description: '',
       path: '/license-portal/type-a'
     },
     {
       id: 2, 
-      name: 'Type B License',
-      description: 'For medium-sized enterprises',
+      name: 'IML Type B License',
+      description: '',
       path: '/license-portal/type-b'
     },
     {
       id: 3,
-      name: 'Type C License',
-      description: 'For large corporations',
+      name: 'IML Type C License',
+      description: '',
       path: '/license-portal/type-c'
     },
     {
       id: 4,
-      name: 'Type D License', 
-      description: 'For international organizations',
+      name: 'IML Type D License', 
+      description: '',
       path: '/license-portal/type-d'
     }
   ]
