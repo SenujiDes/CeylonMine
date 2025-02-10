@@ -5,11 +5,12 @@ from flask_cors import CORS
 from sqlalchemy import text
 from email_validator import validate_email, EmailNotValidError
 
+
 app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
         "origins": ["http://localhost:3000"],  # Add your frontend domains
-        "methods": ["GET", "POST"],
+        "methods": ["GET", "POST","PUT","DELETE"],
         "allow_headers": ["Content-Type"]
     }
 })
@@ -26,7 +27,7 @@ class Complaint(db.Model):
     email = db.Column(db.String(120), nullable=False)
     project = db.Column(db.String(100), nullable=False)
     complaint_text = db.Column(db.Text, nullable=False)
-    status = db.Column(db.String(1), default='I')
+    status = db.Column(db.String(20), default='Pending')
 
 # Test database connection
 def test_db_connection():
@@ -41,15 +42,17 @@ def test_db_connection():
 # Create the database tables
 with app.app_context():
     try:
+        db.drop_all()  # This will delete all existing data
         db.create_all()
+        print("Database tables recreated successfully!")
     except Exception as e:
-        app.logger.error(f"Error creating database tables: {str(e)}")
+        print(f"Error recreating database tables: {str(e)}")
         raise
 
 if not test_db_connection():
     raise Exception("Could not connect to database")
 
-# API Endpoint to Submit a Complaint
+# API Endpoint to Submit a Complaint from a form
 @app.route('/submit_complaint', methods=['POST'])
 def submit_complaint():
     try:
@@ -96,7 +99,7 @@ def submit_complaint():
         app.logger.error(f"Error submitting complaint: {str(e)}")
         return jsonify({"error": "An error occurred while processing your request"}), 500
 
-# API Endpoint to Fetch All Complaints
+# API Endpoint to Fetch All Complaints to the admin page
 @app.route('/get_complaints', methods=['GET'])
 def get_complaints():
     try:
@@ -114,6 +117,46 @@ def get_complaints():
     except Exception as e:
         app.logger.error(f"Error fetching complaints: {str(e)}")
         return jsonify({"error": "An error occurred while fetching complaints"}), 500
+
+# Update a complaint in admin page
+@app.route('/update_complaint/<int:id>', methods=['PUT'])
+def update_complaint(id):
+    try:
+        data = request.json
+        complaint = db.session.get(Complaint, id)  # Using the newer SQLAlchemy syntax
+        if not complaint:
+            return jsonify({'error': 'Complaint not found'}), 404
+
+        if 'status' in data:
+            # Validate status value
+            valid_statuses = ["Pending", "Resolved", "Rejected"]
+            if data['status'] not in valid_statuses:
+                return jsonify({'error': 'Invalid status value'}), 400
+            complaint.status = data['status']
+        
+        db.session.commit()
+        return jsonify({
+            'message': 'Complaint updated successfully',
+            'complaint': {
+                'id': complaint.id,
+                'status': complaint.status
+            }
+        })
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error updating complaint: {str(e)}")
+        return jsonify({'error': 'An error occurred while updating the complaint'}), 500
+
+# Delete a complaint in admin page
+@app.route('/delete_complaint/<int:id>', methods=['DELETE'])
+def delete_complaint(id):
+    complaint = Complaint.query.get(id)
+    if not complaint:
+        return jsonify({'error': 'Complaint not found'}), 404
+    
+    db.session.delete(complaint)
+    db.session.commit()
+    return jsonify({'message': 'Complaint deleted successfully'})
 
 if __name__ == '__main__':
     app.run()
