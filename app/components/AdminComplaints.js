@@ -13,10 +13,14 @@ export default function AdminComplaints() {
   const fetchComplaints = async () => {
     try {
       const response = await fetch("http://127.0.0.1:5000/get_complaints");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       const data = await response.json();
       setComplaints(data);
     } catch (error) {
       console.error("Error fetching complaints:", error);
+      Swal.fire("Error", "Failed to fetch complaints.", "error");
     }
   };
 
@@ -42,16 +46,6 @@ export default function AdminComplaints() {
 
   // Handle edit complaint
   const handleEditComplaint = async (complaint) => {
-    const { value: updatedComplaint } = await Swal.fire({
-      title: "Edit Complaint",
-      input: "textarea",
-      inputLabel: "Update the complaint details",
-      inputValue: complaint.complaint,
-      showCancelButton: true,
-      confirmButtonText: "Update",
-      cancelButtonText: "Cancel",
-    });
-
     if (updatedComplaint) {
       try {
         const response = await fetch(`http://127.0.0.1:5000/update_complaint/${complaint.id}`, {
@@ -73,7 +67,12 @@ export default function AdminComplaints() {
   };
 
   // Handle delete complaint
-  const handleDeleteComplaint = async (id) => {
+  const handleDeleteComplaint = async (id, status) => {
+    if (status !== "Resolved") {
+      Swal.fire("Error", "Only resolved complaints can be deleted.", "error");
+      return;
+    }
+  
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "This complaint will be permanently deleted!",
@@ -83,16 +82,16 @@ export default function AdminComplaints() {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     });
-
+  
     if (result.isConfirmed) {
       try {
         const response = await fetch(`http://127.0.0.1:5000/delete_complaint/${id}`, {
           method: "DELETE",
         });
-
+  
         if (response.ok) {
           Swal.fire("Deleted!", "Complaint has been deleted.", "success");
-          fetchComplaints();
+          fetchComplaints(); // Refresh the complaint list
         } else {
           Swal.fire("Error", "Failed to delete complaint.", "error");
         }
@@ -124,7 +123,7 @@ export default function AdminComplaints() {
                 <td className="p-3">{complaint.id}</td>
                 <td className="p-3">{complaint.anonymous ? "Anonymous" : complaint.email}</td>
                 <td className="p-3">{complaint.project}</td>
-                <td className="p-3">{complaint.complaint}</td>
+                <td className="p-3">{complaint.complaint_text}</td>
                 <td className="p-3">
                   <span
                     className={`px-3 py-1 rounded-full text-white ${
@@ -135,7 +134,7 @@ export default function AdminComplaints() {
                         : "bg-red-500"
                     }`}
                   >
-                    {complaint.status}
+                    {/* {complaint.status} */}
                   </span>
                 </td>
                 <td className="p-3 flex space-x-2">
@@ -151,18 +150,18 @@ export default function AdminComplaints() {
                   </select>
 
                   {/* Edit Button */}
-                  <button
+                  {/* <button
                     className="bg-blue-500 text-white px-3 py-1 rounded-md shadow-md hover:bg-blue-600"
                     onClick={() => handleEditComplaint(complaint)}
                   >
                     Edit
-                  </button>
+                  </button> */}
 
                   {/* Delete Button */}
                   <button
-                    className="bg-red-500 text-white px-3 py-1 rounded-md shadow-md hover:bg-red-600"
-                    onClick={() => handleDeleteComplaint(complaint.id)}
-                  >
+                   className="bg-red-500 text-white px-3 py-1 rounded-md shadow-md hover:bg-red-600"
+                   onClick={() => handleDeleteComplaint(complaint.id, complaint.status)}
+                 >
                     Delete
                   </button>
                 </td>
