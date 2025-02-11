@@ -89,7 +89,9 @@ def get_locations():
             'name': location[1],
             'latitude': float(location[2]),
             'longitude': float(location[3]),
-            'description': location[4]
+            'description': location[4],
+            'image': location[5],
+            'longDes': location[6],
         })
 
     print("Returning locations:", locations_list)  # Debugging output
