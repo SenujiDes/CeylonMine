@@ -1,7 +1,24 @@
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 
 const MapMore = () => {
   const router = useRouter();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const images = [
+    '/images/clay.jpg',
+    '/images/Quartz.jpg',
+    '/images/rock.jpg',
+    '/images/sand.jpg',
+    '/images/Silica.jpg',
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 2000); // Change image every 2 seconds
+    return () => clearInterval(interval);
+  }, [images.length]);
 
   return (
     <div style={{ 
@@ -78,17 +95,18 @@ const MapMore = () => {
         </button>
       </div>
 
-      {/* Sri Lankan Image */}
+      {/* Auto Display Image */}
       <div style={{ 
-        marginTop: '100px', 
+        marginTop: '20px', // Reduce the gap
         display: 'flex', 
-        justifyContent: 'flex-start', // Align more to the left side
+        justifyContent: 'center', 
         alignItems: 'center',
         width: '100%' // Ensure the container takes full width
       }}>
-        <img src="/images/Srilanka.png" alt="Sri Lanka" style={{ 
-          maxWidth: '30%', // Make the image smaller
-          height: 'auto', 
+        <img src={images[currentImageIndex]} alt="Auto Display" style={{ 
+          maxWidth: '100%', // Increase the width
+          width: '70vw', // Decrease the width
+          height: '40vh', // Decrease the height
           borderRadius: '10px', 
           boxShadow: '0 10px 30px rgba(0,0,0,0.5)' 
         }} />
