@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import RoyaltyCalculator from "@/components/RoyaltyCalculator";
+import UserGreeting from "@/components/UserGreeting";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8">
+          <UserGreeting />
           <h1 className="text-2xl font-bold mb-8">Mining Royalty Calculator</h1>
           <RoyaltyCalculator />
         </div>
