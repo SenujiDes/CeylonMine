@@ -15,12 +15,13 @@ export default function MiningStats({
 }: MiningStatsProps) {
   // Function to format amount in LKR
   const formatLKR = (amount: number) => {
-    return new Intl.NumberFormat('si-LK', {
-      style: 'currency',
-      currency: 'LKR',
+    const formattedAmount = new Intl.NumberFormat('si-LK', {
+      style: 'decimal',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(amount).replace('LKR', 'රු.');
+    }).format(amount);
+    
+    return `LKR ${formattedAmount}`;
   };
 
   return (
@@ -65,9 +66,15 @@ export default function MiningStats({
           </div>
         </div>
         <p className="text-gray-400 text-sm font-medium mb-2">Amount to Pay</p>
-        <p className="text-3xl font-bold text-white tracking-wide">
-          {formatLKR(paymentAmount)}
-        </p>
+        <div className="flex flex-col">
+          <span className="text-lg font-semibold text-green-400 mb-1">LKR</span>
+          <p className="text-3xl font-bold text-white tracking-wide break-all">
+            {paymentAmount.toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}
+          </p>
+        </div>
       </div>
 
       {/* Due Date Card */}
