@@ -1,4 +1,4 @@
-<link
+<!-- <link
   href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
   rel="stylesheet"
   id="bootstrap-css"
@@ -125,4 +125,199 @@
       });
     </script>
   </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced ChatBot</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    
+    <style>
+        body {
+            background-color: #121212;
+            color: #fff;
+        }
+
+        .chat {
+            margin-top: 50px;
+        }
+
+        .card {
+            border-radius: 10px;
+        }
+
+        .msg_card_body {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #232323;
+            border-radius: 10px;
+        }
+
+        .msg_cotainer, .msg_cotainer_send {
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+
+        .msg_cotainer {
+            background: #444;
+            color: white;
+        }
+
+        .msg_cotainer_send {
+            background: #007bff;
+            color: white;
+            text-align: right;
+        }
+
+        .input-group-text {
+            background: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .send_btn {
+            cursor: pointer;
+        }
+
+        .typing {
+            font-size: 14px;
+            color: #ccc;
+            margin-left: 10px;
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+        .toggle-dark {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            cursor: pointer;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-md-8 col-xl-6 chat">
+                <div class="card">
+                    <div class="card-header msg_head d-flex justify-content-between align-items-center">
+                        <div class="d-flex bd-highlight">
+                            <div class="img_cont">
+                                <img src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png" class="rounded-circle user_img" />
+                            </div>
+                            <div class="user_info">
+                                <span>ChatBot</span>
+                                <p id="typingIndicator" class="typing" style="display: none;">Chatbot is typing...</p>
+                            </div>
+                        </div>
+                        <i id="toggleDarkMode" class="fas fa-moon toggle-dark"></i>
+                    </div>
+                    <div id="messageFormeight" class="card-body msg_card_body"></div>
+                    <div class="card-footer">
+                        <form id="messageArea" class="input-group">
+                            <input type="text" id="text" name="msg" placeholder="Type your message..." autocomplete="off" class="form-control type_msg" required />
+                            <div class="input-group-append">
+                                <button type="button" id="voiceInput" class="input-group-text"><i class="fas fa-microphone"></i></button>
+                                <button type="submit" id="send" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function scrollToBottom() {
+            var messageBody = document.getElementById("messageFormeight");
+            messageBody.scrollTop = messageBody.scrollHeight;
+        }
+
+        function addMessage(content, sender) {
+            const date = new Date();
+            const str_time = date.getHours() + ":" + date.getMinutes();
+            
+            let messageHtml = sender === "user" 
+                ? `<div class="d-flex justify-content-end mb-4">
+                    <div class="msg_cotainer_send">${content} <span class="msg_time_send">${str_time}</span></div>
+                    <div class="img_cont_msg"><img src="https://i.ibb.co/d5b84Xw/Untitled-design.png" class="rounded-circle user_img_msg"></div>
+                   </div>`
+                : `<div class="d-flex justify-content-start mb-4">
+                    <div class="img_cont_msg"><img src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png" class="rounded-circle user_img_msg"></div>
+                    <div class="msg_cotainer">${content} <span class="msg_time">${str_time}</span></div>
+                   </div>`;
+
+            $("#messageFormeight").append(messageHtml);
+            scrollToBottom();
+            saveChatHistory();
+        }
+
+        function saveChatHistory() {
+            localStorage.setItem("chatHistory", $("#messageFormeight").html());
+        }
+
+        function loadChatHistory() {
+            if (localStorage.getItem("chatHistory")) {
+                $("#messageFormeight").html(localStorage.getItem("chatHistory"));
+                scrollToBottom();
+            }
+        }
+
+        $(document).ready(function () {
+            loadChatHistory();
+
+            $("#messageArea").on("submit", function (event) {
+                event.preventDefault();
+
+                let rawText = $("#text").val();
+                $("#text").val("");
+                addMessage(rawText, "user");
+
+                $("#typingIndicator").show();
+
+                setTimeout(() => {
+                    $.ajax({
+                        data: { msg: rawText },
+                        type: "POST",
+                        url: "/get",
+                    }).done(function (data) {
+                        $("#typingIndicator").hide();
+                        addMessage(data, "bot");
+                    });
+                }, 1000);
+            });
+
+            $("#toggleDarkMode").on("click", function () {
+                $("body, .card, .msg_card_body").toggleClass("dark-mode");
+            });
+
+            $("#voiceInput").on("click", function () {
+                let recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+                recognition.lang = "en-US";
+                recognition.start();
+
+                recognition.onresult = function (event) {
+                    $("#text").val(event.results[0][0].transcript);
+                };
+            });
+        });
+    </script>
+
+</body>
 </html>
