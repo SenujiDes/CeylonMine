@@ -9,18 +9,28 @@ export default function Home() {
   const miningData = {
     explosiveAmount: 5000,
     extractedRockAmount: 25000,
-    paymentAmount: 150000,
+    paymentAmount: 150000 * 320, // Converting to LKR (assuming 1 USD = 320 LKR)
     paymentDueDate: "2024-03-15"
   };
 
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+        {/* User Greeting Section */}
         <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8">
           <UserGreeting />
+        </div>
+
+        {/* Mining Stats Section */}
+        <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8">
+          <h2 className="text-2xl font-bold mb-6">Mining Statistics</h2>
           <MiningStats {...miningData} />
-          <h1 className="text-2xl font-bold mb-8">Mining Royalty Calculator</h1>
+        </div>
+
+        {/* Calculator Section */}
+        <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8">
+          <h2 className="text-2xl font-bold mb-8">Mining Royalty Calculator</h2>
           <RoyaltyCalculator />
         </div>
       </main>
