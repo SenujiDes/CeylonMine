@@ -2,14 +2,24 @@ import Image from "next/image";
 import Link from "next/link";
 import RoyaltyCalculator from "@/components/RoyaltyCalculator";
 import UserGreeting from "@/components/UserGreeting";
+import MiningStats from "@/components/MiningStats";
 
 export default function Home() {
+  // This data would come from your backend
+  const miningData = {
+    explosiveAmount: 5000,
+    extractedRockAmount: 25000,
+    paymentAmount: 150000,
+    paymentDueDate: "2024-03-15"
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8">
           <UserGreeting />
+          <MiningStats {...miningData} />
           <h1 className="text-2xl font-bold mb-8">Mining Royalty Calculator</h1>
           <RoyaltyCalculator />
         </div>
