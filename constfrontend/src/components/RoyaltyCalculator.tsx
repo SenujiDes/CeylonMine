@@ -22,7 +22,7 @@ export default function RoyaltyCalculator() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/calculate-royalty', {
+      const response = await fetch('http://localhost:5000/api/calculate-royalty', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ minerId, licenseId, quantity })
