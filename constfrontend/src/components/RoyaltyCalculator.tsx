@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { toast } from 'react-hot-toast';
 
 interface RoyaltyData {
@@ -14,11 +14,10 @@ export default function RoyaltyCalculator() {
   const [minerId, setMinerId] = useState('');
   const [licenseId, setLicenseId] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [materialType, setMaterialType] = useState('');
   const [loading, setLoading] = useState(false);
   const [royaltyData, setRoyaltyData] = useState<RoyaltyData | null>(null);
 
-  const handleCalculateRoyalty = async (e: React.FormEvent) => {
+  const handleCalculateRoyalty = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -26,7 +25,7 @@ export default function RoyaltyCalculator() {
       const response = await fetch('/api/calculate-royalty', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ minerId, licenseId, quantity, materialType })
+        body: JSON.stringify({ minerId, licenseId, quantity })
       });
 
       if (!response.ok) {
@@ -89,25 +88,6 @@ export default function RoyaltyCalculator() {
               required
             />
           </div>
-
-          <div>
-            <label htmlFor="materialType" className="block text-sm font-medium mb-2">
-              Material Type
-            </label>
-            <select
-              id="materialType"
-              value={materialType}
-              onChange={(e) => setMaterialType(e.target.value)}
-              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select material type</option>
-              <option value="granite">Granite</option>
-              <option value="sand">Sand</option>
-              <option value="limestone">Limestone</option>
-              <option value="marble">Marble</option>
-            </select>
-          </div>
         </div>
 
         <button
@@ -125,16 +105,16 @@ export default function RoyaltyCalculator() {
           <div className="space-y-3">
             <p className="flex justify-between">
               <span>Base Amount:</span>
-              <span>${royaltyData.amount.toFixed(2)}</span>
+              <span>LKR {royaltyData.amount.toFixed(2)}</span>
             </p>
             <p className="flex justify-between">
               <span>Tax:</span>
-              <span>${royaltyData.tax.toFixed(2)}</span>
+              <span>LKR {royaltyData.tax.toFixed(2)}</span>
             </p>
             <div className="border-t border-gray-700 my-2" />
             <p className="flex justify-between text-lg font-semibold">
               <span>Total Amount:</span>
-              <span>${royaltyData.total.toFixed(2)}</span>
+              <span>LKR {royaltyData.total.toFixed(2)}</span>
             </p>
             <p className="text-sm text-gray-400">
               Due Date: {new Date(royaltyData.dueDate).toLocaleDateString()}
