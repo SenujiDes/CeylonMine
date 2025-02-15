@@ -10,7 +10,16 @@ from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
-CORS(app)
+
+# Update CORS configuration
+CORS(app, resources={
+    r"/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
+
 api = Api(app)
 db = SQLAlchemy(app)
 
@@ -178,10 +187,20 @@ def home():
 with app.app_context():
     db.create_all()
 
+@app.before_request
+def log_request_info():
+    logger.info('Headers: %s', request.headers)
+    logger.info('Body: %s', request.get_data())
+
+@app.after_request
+def after_request(response):
+    logger.info('Response: %s', response.get_data())
+    return response
+
 if __name__ == '__main__':
     try:
         port = int(os.environ.get('PORT', 5000))
-        app.run(host='0.0.0.0', debug=True, port=port)
+        app.run(host='0.0.0.0', debug=True, port=port, threaded=True)
     except Exception as e:
         logger.error(f"Failed to start server: {str(e)}")
         sys.exit(1)
