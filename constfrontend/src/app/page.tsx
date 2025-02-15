@@ -3,6 +3,7 @@ import Link from "next/link";
 import RoyaltyCalculator from "@/components/RoyaltyCalculator";
 import UserGreeting from "@/components/UserGreeting";
 import MiningStats from "@/components/MiningStats";
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function Home() {
   return (
@@ -19,7 +20,9 @@ export default function Home() {
         {/* Royalty Calculator Box */}
         <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8">
           <h2 className="text-2xl font-bold mb-8">Mining Royalty Calculator</h2>
-          <RoyaltyCalculator />
+          <ErrorBoundary>
+            <RoyaltyCalculator />
+          </ErrorBoundary>
         </div>
       </main>
 

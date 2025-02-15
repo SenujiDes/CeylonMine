@@ -2,18 +2,34 @@
 
 import { useState, FormEvent } from 'react';
 import { toast } from 'react-hot-toast';
+import { calculateRoyalty } from '@/services/royalty_calculator';
 
 interface RoyaltyData {
-  amount: number;
-  tax: number;
-  total: number;
-  dueDate: string;
+  calculation_date: string;
+  inputs: {
+    water_gel_kg: number;
+    nh4no3_kg: number;
+    powder_factor: number;
+  };
+  calculations: {
+    total_explosive_quantity: number;
+    basic_volume: number;
+    blasted_rock_volume: number;
+    base_royalty: number;
+    royalty_with_sscl: number;
+    total_amount_with_vat: number;
+  };
+  rates_applied: {
+    royalty_rate_per_cubic_meter: number;
+    sscl_rate: string;
+    vat_rate: string;
+  };
 }
 
 export default function RoyaltyCalculator() {
-  const [minerId, setMinerId] = useState('');
-  const [licenseId, setLicenseId] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [waterGel, setWaterGel] = useState('');
+  const [nh4no3, setNh4no3] = useState('');
+  const [powderFactor, setPowderFactor] = useState('');
   const [loading, setLoading] = useState(false);
   const [royaltyData, setRoyaltyData] = useState<RoyaltyData | null>(null);
 
@@ -22,17 +38,12 @@ export default function RoyaltyCalculator() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/calculate-royalty', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ minerId, licenseId, quantity })
+      const data = await calculateRoyalty({
+        water_gel: parseFloat(waterGel),
+        nh4no3: parseFloat(nh4no3),
+        powder_factor: parseFloat(powderFactor)
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to calculate royalty');
-      }
-
-      const data = await response.json();
+      
       setRoyaltyData(data);
       toast.success('Royalty calculated successfully!');
     } catch (error) {
@@ -46,44 +57,47 @@ export default function RoyaltyCalculator() {
   return (
     <div className="space-y-8">
       <form onSubmit={handleCalculateRoyalty} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label htmlFor="minerId" className="block text-sm font-medium mb-2">
-              Miner ID
+            <label htmlFor="waterGel" className="block text-sm font-medium mb-2">
+              Water Gel (kg)
             </label>
             <input
-              id="minerId"
-              type="text"
-              value={minerId}
-              onChange={(e) => setMinerId(e.target.value)}
-              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="licenseId" className="block text-sm font-medium mb-2">
-              License ID
-            </label>
-            <input
-              id="licenseId"
-              type="text"
-              value={licenseId}
-              onChange={(e) => setLicenseId(e.target.value)}
-              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="quantity" className="block text-sm font-medium mb-2">
-              Extracted Quantity (tons)
-            </label>
-            <input
-              id="quantity"
+              id="waterGel"
               type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              step="0.01"
+              value={waterGel}
+              onChange={(e) => setWaterGel(e.target.value)}
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="nh4no3" className="block text-sm font-medium mb-2">
+              NH4NO3 (kg)
+            </label>
+            <input
+              id="nh4no3"
+              type="number"
+              step="0.01"
+              value={nh4no3}
+              onChange={(e) => setNh4no3(e.target.value)}
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="powderFactor" className="block text-sm font-medium mb-2">
+              Powder Factor
+            </label>
+            <input
+              id="powderFactor"
+              type="number"
+              step="0.001"
+              value={powderFactor}
+              onChange={(e) => setPowderFactor(e.target.value)}
               className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               required
             />
@@ -102,22 +116,50 @@ export default function RoyaltyCalculator() {
       {royaltyData && (
         <div className="mt-8 p-6 bg-gray-800 rounded-lg">
           <h2 className="text-xl font-semibold mb-4">Royalty Calculation Results</h2>
-          <div className="space-y-3">
-            <p className="flex justify-between">
-              <span>Base Amount:</span>
-              <span>LKR {royaltyData.amount.toFixed(2)}</span>
-            </p>
-            <p className="flex justify-between">
-              <span>Tax:</span>
-              <span>LKR {royaltyData.tax.toFixed(2)}</span>
-            </p>
-            <div className="border-t border-gray-700 my-2" />
-            <p className="flex justify-between text-lg font-semibold">
-              <span>Total Amount:</span>
-              <span>LKR {royaltyData.total.toFixed(2)}</span>
-            </p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-gray-700 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-400 mb-2">Explosive Quantities</h3>
+                <p className="flex justify-between">
+                  <span>Total Explosive Quantity:</span>
+                  <span>{royaltyData.calculations.total_explosive_quantity.toFixed(2)} kg</span>
+                </p>
+              </div>
+              
+              <div className="p-4 bg-gray-700 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-400 mb-2">Rock Volumes</h3>
+                <p className="flex justify-between">
+                  <span>Basic Volume:</span>
+                  <span>{royaltyData.calculations.basic_volume.toFixed(2)} m³</span>
+                </p>
+                <p className="flex justify-between">
+                  <span>Blasted Rock Volume:</span>
+                  <span>{royaltyData.calculations.blasted_rock_volume.toFixed(2)} m³</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-gray-700 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-400 mb-2">Payment Details</h3>
+              <div className="space-y-2">
+                <p className="flex justify-between">
+                  <span>Base Royalty:</span>
+                  <span>LKR {royaltyData.calculations.base_royalty.toFixed(2)}</span>
+                </p>
+                <p className="flex justify-between">
+                  <span>With SSCL ({royaltyData.rates_applied.sscl_rate}):</span>
+                  <span>LKR {royaltyData.calculations.royalty_with_sscl.toFixed(2)}</span>
+                </p>
+                <div className="border-t border-gray-600 my-2" />
+                <p className="flex justify-between text-lg font-semibold">
+                  <span>Total Amount (with {royaltyData.rates_applied.vat_rate} VAT):</span>
+                  <span>LKR {royaltyData.calculations.total_amount_with_vat.toFixed(2)}</span>
+                </p>
+              </div>
+            </div>
+
             <p className="text-sm text-gray-400">
-              Due Date: {new Date(royaltyData.dueDate).toLocaleDateString()}
+              Calculation Date: {new Date(royaltyData.calculation_date).toLocaleString()}
             </p>
           </div>
         </div>
