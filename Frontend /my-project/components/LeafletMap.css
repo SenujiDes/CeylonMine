@@ -1,0 +1,213 @@
+/* LeafletMap.css - Improved Popup & Marker Styling */
+
+#map {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Bigger and Better Location Marker */
+.custom-marker {
+    font-size: 32px; /* Increased icon size */
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.4));
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Bigger hover effect */
+.custom-marker:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.6));
+}
+
+/* Improved Popup Styling */
+.custom-popup-wrapper {
+    width: auto;
+    max-width: 420px;
+    max-height: 75vh;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+    transform: scale(0.85);
+}
+
+.custom-popup-wrapper.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Popup Header */
+.custom-popup h3 {
+    margin: 0 0 14px 0;
+    color: #2c3e50;
+    font-size: 1.4em;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Popup Image */
+.popup-image {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.popup-image img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.popup-image img:hover {
+    transform: scale(1.06);
+}
+
+/* Popup Description */
+.popup-description {
+    margin-top: 12px;
+    color: #34495e;
+    font-size: 15px;
+    line-height: 1.6;
+    max-height: 160px;
+    overflow-y: auto;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: #3498db #f1f1f1;
+}
+
+/* Custom Scrollbar for Popup */
+.popup-description::-webkit-scrollbar {
+    width: 7px;
+}
+
+.popup-description::-webkit-scrollbar-thumb {
+    background: #3498db;
+    border-radius: 4px;
+}
+
+.popup-description::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Expandable Popup with Scrollbar */
+.custom-popup-wrapper.expanded {
+    width: 300px;
+    max-height: 60vh;
+    transition: all 0.3s ease-in-out;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #3498db #f1f1f1;
+}
+
+.custom-popup-wrapper.expanded::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-popup-wrapper.expanded::-webkit-scrollbar-thumb {
+    background: #3498db;
+    border-radius: 4px;
+}
+
+.custom-popup-wrapper.expanded .popup-description {
+    max-height: 220px;
+}
+
+/* Scroll to Bottom Effect */
+.see-more-btn:focus ~ .custom-popup-wrapper.expanded {
+    scroll-behavior: smooth;
+    scroll-to: bottom;
+}
+
+/* Smaller & Sleeker See More & See Less Buttons */
+.see-more-btn, .see-less-btn {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: block;
+    width: auto;
+    text-align: center;
+    margin: 10px auto;
+    font-weight: bold;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.see-more-btn:hover, .see-less-btn:hover {
+    background: linear-gradient(145deg, #2980b9, #1f669e);
+    transform: scale(1.08);
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.see-more-btn:active, .see-less-btn:active {
+    transform: scale(0.96);
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Popup Animation */
+@keyframes fadeInPopup {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.custom-popup-wrapper {
+    animation: fadeInPopup 0.3s ease-out;
+}
+
+/* kpdgdpopxgj */
+/* Add to LeafletMap.css */
+/* Google Maps Button Styling */
+.google-maps-btn {
+    background: linear-gradient(145deg, #db3434, #b92929);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: block;
+    width: auto;
+    text-align: center;
+    margin: 10px auto;
+    font-weight: bold;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  .google-maps-btn:hover {
+    background: linear-gradient(145deg, #b92929, #9e1f1f);
+    transform: scale(1.08);
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .google-maps-btn:active {
+    transform: scale(0.96);
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Button container */
+  .popup-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+  }
