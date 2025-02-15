@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_restful import Api, Resource
 from datetime import datetime
-from dateutil import parser
-from typing import Dict, Union
 import logging
 import sys
 import os
@@ -16,45 +14,43 @@ api = Api(app)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Constants for royalty rates
-ROYALTY_RATES = {
-    'precious_metals': 0.07,
-    'industrial_minerals': 0.06,
-    'industrial_minerals_exported': 0.07,
-    'building_materials': 0.04,
-    'dimension_stone_exported': 0.07,
-    'base_and_other_metals': 0.06
-}
+# Constants
+WATER_GEL_MULTIPLIER = 1.2
+BLASTED_ROCK_MULTIPLIER = 2.83
+DENSITY_FACTOR = 1.6
+ROYALTY_RATE_PER_CUBIC_METER = 240
+SSCL_RATE = 0.0256  # 2.56%
+VAT_RATE = 0.18     # 18%
 
-PENALTY_RATE = 0.20  # 20% penalty for late payments
-
-class RoyaltyCalculator:
+class ExplosivesCalculator:
     @staticmethod
-    def calculate_royalty(market_value: float, mineral_type: str) -> float:
-        """Calculate the basic royalty amount."""
-        if mineral_type not in ROYALTY_RATES:
-            raise ValueError(f"Invalid mineral type: {mineral_type}")
-        return market_value * ROYALTY_RATES[mineral_type]
+    def calculate_total_explosive_quantity(water_gel: float, nh4no3: float) -> float:
+        """Calculate Total Explosive Quantity (TEQ)"""
+        return (water_gel * WATER_GEL_MULTIPLIER) + nh4no3
 
     @staticmethod
-    def calculate_penalty(royalty_amount: float, due_date: str = None) -> float:
-        """Calculate penalty if payment is overdue."""
-        if not due_date:
-            return 0
-        
-        try:
-            due_date = parser.parse(due_date)
-            if due_date.date() < datetime.now().date():
-                return royalty_amount * PENALTY_RATE
-        except (ValueError, TypeError) as e:
-            logger.error(f"Error parsing due date: {e}")
-            raise ValueError("Invalid due date format")
-        
-        return 0
+    def calculate_blasted_rock_volume(teq: float, powder_factor: float) -> float:
+        """Calculate Blasted Rock Volume"""
+        return (teq * BLASTED_ROCK_MULTIPLIER * DENSITY_FACTOR) / powder_factor
+
+    @staticmethod
+    def calculate_royalty(volume: float) -> float:
+        """Calculate base royalty fee"""
+        return volume * ROYALTY_RATE_PER_CUBIC_METER
+
+    @staticmethod
+    def apply_sscl(royalty: float) -> float:
+        """Apply SSCL tax"""
+        return royalty * (1 + SSCL_RATE)
+
+    @staticmethod
+    def apply_vat(royalty_with_sscl: float) -> float:
+        """Apply VAT"""
+        return royalty_with_sscl * (1 + VAT_RATE)
 
 class RoyaltyCalculationResource(Resource):
     def post(self):
-        """Handle POST requests for royalty calculations."""
+        """Handle POST requests for explosives royalty calculations"""
         try:
             data = request.get_json()
             
@@ -62,43 +58,65 @@ class RoyaltyCalculationResource(Resource):
             if not data:
                 return {"error": "No data provided"}, 400
             
-            required_fields = ['mineral_type', 'market_value']
+            required_fields = ['water_gel', 'nh4no3', 'powder_factor']
             for field in required_fields:
                 if field not in data:
                     return {"error": f"Missing required field: {field}"}, 400
             
             # Extract and validate input
-            mineral_type = data['mineral_type']
             try:
-                market_value = float(data['market_value'])
-                if market_value <= 0:
-                    return {"error": "Market value must be positive"}, 400
+                water_gel = float(data['water_gel'])
+                nh4no3 = float(data['nh4no3'])
+                powder_factor = float(data['powder_factor'])
+                
+                if any(val <= 0 for val in [water_gel, nh4no3, powder_factor]):
+                    return {"error": "All values must be positive"}, 400
+                
             except ValueError:
-                return {"error": "Invalid market value"}, 400
+                return {"error": "Invalid numeric values provided"}, 400
             
-            due_date = data.get('due_date')
+            # Perform calculations
+            calculator = ExplosivesCalculator()
             
-            # Calculate royalty
-            calculator = RoyaltyCalculator()
-            royalty_amount = calculator.calculate_royalty(market_value, mineral_type)
-            penalty_amount = calculator.calculate_penalty(royalty_amount, due_date)
-            total_amount = royalty_amount + penalty_amount
+            # Step 1: Calculate TEQ
+            teq = calculator.calculate_total_explosive_quantity(water_gel, nh4no3)
+            
+            # Step 2: Calculate Blasted Rock Volume
+            volume = calculator.calculate_blasted_rock_volume(teq, powder_factor)
+            
+            # Step 3: Calculate base royalty
+            base_royalty = calculator.calculate_royalty(volume)
+            
+            # Step 4: Apply SSCL
+            royalty_with_sscl = calculator.apply_sscl(base_royalty)
+            
+            # Step 5: Apply VAT for final total
+            total_amount = calculator.apply_vat(royalty_with_sscl)
             
             response = {
-                "royalty_amount": round(royalty_amount, 2),
-                "penalty_amount": round(penalty_amount, 2),
-                "total_amount_due": round(total_amount, 2),
                 "calculation_date": datetime.now().isoformat(),
-                "mineral_type": mineral_type,
-                "applied_rate": ROYALTY_RATES[mineral_type]
+                "inputs": {
+                    "water_gel_kg": water_gel,
+                    "nh4no3_kg": nh4no3,
+                    "powder_factor": powder_factor
+                },
+                "calculations": {
+                    "total_explosive_quantity": round(teq, 2),
+                    "blasted_rock_volume": round(volume, 2),
+                    "base_royalty": round(base_royalty, 2),
+                    "royalty_with_sscl": round(royalty_with_sscl, 2),
+                    "total_amount_with_vat": round(total_amount, 2)
+                },
+                "rates_applied": {
+                    "royalty_rate_per_cubic_meter": ROYALTY_RATE_PER_CUBIC_METER,
+                    "sscl_rate": f"{SSCL_RATE * 100}%",
+                    "vat_rate": f"{VAT_RATE * 100}%"
+                }
             }
             
-            logger.info(f"Successful calculation for mineral type: {mineral_type}")
+            logger.info(f"Successful calculation for TEQ: {teq}")
             return response, 200
             
-        except ValueError as e:
-            logger.error(f"Validation error: {str(e)}")
-            return {"error": str(e)}, 400
         except Exception as e:
             logger.error(f"Unexpected error: {str(e)}")
             return {"error": "Internal server error"}, 500
@@ -111,7 +129,7 @@ api.add_resource(RoyaltyCalculationResource, '/api/calculate-royalty')
 def home():
     return jsonify({
         "status": "healthy",
-        "message": "Mineral Royalty Calculator API",
+        "message": "Explosives Royalty Calculator API",
         "version": "1.0.0"
     })
 
@@ -121,4 +139,4 @@ if __name__ == '__main__':
         app.run(host='0.0.0.0', debug=True, port=port)
     except Exception as e:
         logger.error(f"Failed to start server: {str(e)}")
-        sys.exit(1) 
+        sys.exit(1)
