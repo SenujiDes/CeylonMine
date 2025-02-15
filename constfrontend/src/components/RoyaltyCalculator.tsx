@@ -83,6 +83,11 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
   const handleSaveCalculation = () => {
     if (!royaltyData) return;
 
+    // Check if this calculation has already been saved
+    const existingSaved = localStorage.getItem('royaltyCalculations');
+    const savedCalculations = existingSaved ? JSON.parse(existingSaved) : [];
+    
+    // Create new calculation object
     const newCalculation: SavedCalculation = {
       id: Date.now().toString(),
       date: new Date().toISOString(),
@@ -95,17 +100,33 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
       dueDate: royaltyData.calculation_date
     };
 
+    // Check if this exact calculation already exists
+    const isDuplicate = savedCalculations.some(calc => 
+      calc.waterGel === newCalculation.waterGel &&
+      calc.nh4no3 === newCalculation.nh4no3 &&
+      calc.powderFactor === newCalculation.powderFactor &&
+      calc.totalAmount === newCalculation.totalAmount
+    );
+
+    if (isDuplicate) {
+      toast.error('This calculation has already been saved');
+      return;
+    }
+
+    // Add only the new calculation
     const updatedCalculations = [...savedCalculations, newCalculation];
-    setSavedCalculations(updatedCalculations);
     localStorage.setItem('royaltyCalculations', JSON.stringify(updatedCalculations));
     
     // Update the mining stats
     onCalculated({
       ...royaltyData,
-      calculation_date: new Date().toISOString() // Update the calculation date
+      calculation_date: new Date().toISOString()
     });
     
     toast.success('Calculation saved successfully!');
+
+    // Reset form after successful save
+    handleReset();
   };
 
   const handleReset = () => {
