@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import { toast } from 'react-hot-toast';
 
 interface MiningData {
   explosiveQuantity: number;
@@ -44,6 +45,28 @@ export default function MiningStats({
   const [selectedDate, setSelectedDate] = useState<Date | null>(dueDate ? new Date(dueDate) : null);
   const [savedCalculations, setSavedCalculations] = useState<SavedCalculation[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [totals, setTotals] = useState({
+    totalAmount: 0,
+    totalExplosive: 0,
+    totalVolume: 0
+  });
+
+  // Calculate totals whenever saved calculations change
+  useEffect(() => {
+    const calculatedTotals = savedCalculations.reduce((acc, calc) => {
+      return {
+        totalAmount: acc.totalAmount + calc.totalAmount,
+        totalExplosive: acc.totalExplosive + calc.explosiveQuantity,
+        totalVolume: acc.totalVolume + calc.blastedVolume
+      };
+    }, {
+      totalAmount: 0,
+      totalExplosive: 0,
+      totalVolume: 0
+    });
+
+    setTotals(calculatedTotals);
+  }, [savedCalculations]);
 
   useEffect(() => {
     const saved = localStorage.getItem('royaltyCalculations');
@@ -58,6 +81,19 @@ export default function MiningStats({
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
     onDueDateChange(date);
+  };
+
+  const handleDeleteCalculation = (id: string) => {
+    const calculationToDelete = savedCalculations.find(calc => calc.id === id);
+    if (!calculationToDelete) return;
+
+    const updatedCalculations = savedCalculations.filter(calc => calc.id !== id);
+    setSavedCalculations(updatedCalculations);
+    
+    // Update localStorage
+    localStorage.setItem('royaltyCalculations', JSON.stringify(updatedCalculations));
+
+    toast.success('Calculation deleted successfully');
   };
 
   return (
@@ -75,7 +111,10 @@ export default function MiningStats({
           </div>
           <div className="flex items-baseline">
             <span className="text-2xl font-bold text-white">
-              LKR {totalRoyalty.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              LKR {totals.totalAmount.toLocaleString(undefined, { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+              })}
             </span>
           </div>
         </div>
@@ -91,7 +130,7 @@ export default function MiningStats({
             </span>
           </div>
           <div className="flex items-baseline">
-            <span className="text-2xl font-bold text-white">{explosiveQuantity.toFixed(2)}</span>
+            <span className="text-2xl font-bold text-white">{totals.totalExplosive.toFixed(2)}</span>
             <span className="ml-2 text-gray-400">kg</span>
           </div>
         </div>
@@ -107,7 +146,7 @@ export default function MiningStats({
             </span>
           </div>
           <div className="flex items-baseline">
-            <span className="text-2xl font-bold text-white">{blastedVolume.toFixed(2)}</span>
+            <span className="text-2xl font-bold text-white">{totals.totalVolume.toFixed(2)}</span>
             <span className="ml-2 text-gray-400">m³</span>
           </div>
         </div>
@@ -158,15 +197,36 @@ export default function MiningStats({
             ) : (
               savedCalculations.map((calc) => (
                 <div key={calc.id} className="p-4 bg-gray-700 rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                    <div>
-                      <p className="text-sm text-gray-400">Calculation Date & Time</p>
-                      <p className="font-medium">{new Date(calc.date).toLocaleString()}</p>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow">
+                      <div>
+                        <p className="text-sm text-gray-400">Calculation Date & Time</p>
+                        <p className="font-medium">{new Date(calc.date).toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">Due Date</p>
+                        <p className="font-medium">{new Date(calc.dueDate).toLocaleDateString()}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-gray-400">Due Date</p>
-                      <p className="font-medium">{new Date(calc.dueDate).toLocaleDateString()}</p>
-                    </div>
+                    <button
+                      onClick={() => handleDeleteCalculation(calc.id)}
+                      className="p-1 hover:bg-gray-600 rounded-full transition-colors ml-4"
+                      title="Delete calculation"
+                    >
+                      <svg 
+                        className="w-5 h-5 text-red-400 hover:text-red-300" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
