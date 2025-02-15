@@ -1,14 +1,18 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_restful import Api, Resource
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import logging
 import sys
 import os
+from config import Config
 
 app = Flask(__name__)
+app.config.from_object(Config)
 CORS(app)
 api = Api(app)
+db = SQLAlchemy(app)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -22,6 +26,19 @@ ROYALTY_RATE_PER_CUBIC_METER = 240
 SSCL_RATE = 0.0256  # 2.56%
 VAT_RATE = 0.18     # 18%
 
+# Database Models
+class RoyaltyCalculation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    calculation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    water_gel = db.Column(db.Float, nullable=False)
+    nh4no3 = db.Column(db.Float, nullable=False)
+    powder_factor = db.Column(db.Float, nullable=False)
+    total_explosive_quantity = db.Column(db.Float, nullable=False)
+    blasted_rock_volume = db.Column(db.Float, nullable=False)
+    base_royalty = db.Column(db.Float, nullable=False)
+    royalty_with_sscl = db.Column(db.Float, nullable=False)
+    total_amount = db.Column(db.Float, nullable=False)
+
 class ExplosivesCalculator:
     @staticmethod
     def calculate_total_explosive_quantity(water_gel: float, nh4no3: float) -> float:
@@ -29,9 +46,14 @@ class ExplosivesCalculator:
         return (water_gel * WATER_GEL_MULTIPLIER) + nh4no3
 
     @staticmethod
+    def calculate_rock_volume(teq: float, powder_factor: float) -> float:
+        """Calculate Rock Volume"""
+        return teq / powder_factor
+
+    @staticmethod
     def calculate_blasted_rock_volume(teq: float, powder_factor: float) -> float:
-        """Calculate Blasted Rock Volume"""
-        return (teq * BLASTED_ROCK_MULTIPLIER * DENSITY_FACTOR) / powder_factor
+        """Calculate Blasted Rock Volume using the new formula"""
+        return (teq * DENSITY_FACTOR) / (powder_factor * BLASTED_ROCK_MULTIPLIER)
 
     @staticmethod
     def calculate_royalty(volume: float) -> float:
@@ -40,13 +62,13 @@ class ExplosivesCalculator:
 
     @staticmethod
     def apply_sscl(royalty: float) -> float:
-        """Apply SSCL tax"""
-        return royalty * (1 + SSCL_RATE)
+        """Apply SSCL tax (2.56%)"""
+        return royalty * 1.0256
 
     @staticmethod
     def apply_vat(royalty_with_sscl: float) -> float:
-        """Apply VAT"""
-        return royalty_with_sscl * (1 + VAT_RATE)
+        """Apply VAT (18%)"""
+        return royalty_with_sscl * 1.18
 
 class RoyaltyCalculationResource(Resource):
     def post(self):
@@ -81,17 +103,34 @@ class RoyaltyCalculationResource(Resource):
             # Step 1: Calculate TEQ
             teq = calculator.calculate_total_explosive_quantity(water_gel, nh4no3)
             
-            # Step 2: Calculate Blasted Rock Volume
-            volume = calculator.calculate_blasted_rock_volume(teq, powder_factor)
+            # Step 2: Calculate Rock Volume
+            basic_volume = calculator.calculate_rock_volume(teq, powder_factor)
             
-            # Step 3: Calculate base royalty
-            base_royalty = calculator.calculate_royalty(volume)
+            # Step 3: Calculate Blasted Rock Volume
+            blasted_volume = calculator.calculate_blasted_rock_volume(teq, powder_factor)
             
-            # Step 4: Apply SSCL
+            # Step 4: Calculate base royalty
+            base_royalty = calculator.calculate_royalty(blasted_volume)
+            
+            # Step 5: Apply SSCL (2.56%)
             royalty_with_sscl = calculator.apply_sscl(base_royalty)
             
-            # Step 5: Apply VAT for final total
+            # Step 6: Apply VAT (18%)
             total_amount = calculator.apply_vat(royalty_with_sscl)
+            
+            # Save calculation to database
+            calculation = RoyaltyCalculation(
+                water_gel=water_gel,
+                nh4no3=nh4no3,
+                powder_factor=powder_factor,
+                total_explosive_quantity=teq,
+                blasted_rock_volume=blasted_volume,
+                base_royalty=base_royalty,
+                royalty_with_sscl=royalty_with_sscl,
+                total_amount=total_amount
+            )
+            db.session.add(calculation)
+            db.session.commit()
             
             response = {
                 "calculation_date": datetime.now().isoformat(),
@@ -102,15 +141,16 @@ class RoyaltyCalculationResource(Resource):
                 },
                 "calculations": {
                     "total_explosive_quantity": round(teq, 2),
-                    "blasted_rock_volume": round(volume, 2),
+                    "basic_volume": round(basic_volume, 2),
+                    "blasted_rock_volume": round(blasted_volume, 2),
                     "base_royalty": round(base_royalty, 2),
                     "royalty_with_sscl": round(royalty_with_sscl, 2),
                     "total_amount_with_vat": round(total_amount, 2)
                 },
                 "rates_applied": {
                     "royalty_rate_per_cubic_meter": ROYALTY_RATE_PER_CUBIC_METER,
-                    "sscl_rate": f"{SSCL_RATE * 100}%",
-                    "vat_rate": f"{VAT_RATE * 100}%"
+                    "sscl_rate": "2.56%",
+                    "vat_rate": "18%"
                 }
             }
             
@@ -118,6 +158,7 @@ class RoyaltyCalculationResource(Resource):
             return response, 200
             
         except Exception as e:
+            db.session.rollback()
             logger.error(f"Unexpected error: {str(e)}")
             return {"error": "Internal server error"}, 500
 
@@ -132,6 +173,10 @@ def home():
         "message": "Explosives Royalty Calculator API",
         "version": "1.0.0"
     })
+
+# Create database tables
+with app.app_context():
+    db.create_all()
 
 if __name__ == '__main__':
     try:
