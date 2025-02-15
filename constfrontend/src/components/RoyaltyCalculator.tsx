@@ -98,6 +98,13 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     const updatedCalculations = [...savedCalculations, newCalculation];
     setSavedCalculations(updatedCalculations);
     localStorage.setItem('royaltyCalculations', JSON.stringify(updatedCalculations));
+    
+    // Update the mining stats
+    onCalculated({
+      ...royaltyData,
+      calculation_date: new Date().toISOString() // Update the calculation date
+    });
+    
     toast.success('Calculation saved successfully!');
   };
 

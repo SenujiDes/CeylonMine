@@ -48,9 +48,12 @@ export default function MiningStats({
   useEffect(() => {
     const saved = localStorage.getItem('royaltyCalculations');
     if (saved) {
-      setSavedCalculations(JSON.parse(saved));
+      const calculations = JSON.parse(saved);
+      setSavedCalculations(calculations);
     }
-  }, []);
+  }, [lastCalculated]);
+
+  const latestCalculation = savedCalculations[savedCalculations.length - 1];
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
@@ -139,7 +142,7 @@ export default function MiningStats({
 
       <div className="bg-gray-800 rounded-xl p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium">Saved Calculations</h3>
+          <h3 className="text-lg font-medium">Calculation History</h3>
           <button
             onClick={() => setShowHistory(!showHistory)}
             className="text-sm text-blue-400 hover:text-blue-300"
@@ -155,13 +158,26 @@ export default function MiningStats({
             ) : (
               savedCalculations.map((calc) => (
                 <div key={calc.id} className="p-4 bg-gray-700 rounded-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                    <div>
+                      <p className="text-sm text-gray-400">Calculation Date & Time</p>
+                      <p className="font-medium">{new Date(calc.date).toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Due Date</p>
+                      <p className="font-medium">{new Date(calc.dueDate).toLocaleDateString()}</p>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                       <p className="text-sm text-gray-400">Total Amount</p>
-                      <p className="font-medium">LKR {calc.totalAmount.toLocaleString()}</p>
+                      <p className="font-medium">LKR {calc.totalAmount.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      })}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Explosive Quantity</p>
+                      <p className="text-sm text-gray-400">Explosive Used</p>
                       <p className="font-medium">{calc.explosiveQuantity.toFixed(2)} kg</p>
                     </div>
                     <div>
@@ -169,12 +185,14 @@ export default function MiningStats({
                       <p className="font-medium">{calc.blastedVolume.toFixed(2)} m³</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Calculation Date</p>
-                      <p className="font-medium">{new Date(calc.date).toLocaleDateString()}</p>
+                      <p className="text-sm text-gray-400">Input Details</p>
+                      <p className="font-medium text-sm">
+                        WG: {calc.waterGel}kg, NH4: {calc.nh4no3}kg, PF: {calc.powderFactor}
+                      </p>
                     </div>
                   </div>
                 </div>
-              ))
+              )).reverse()
             )}
           </div>
         )}
