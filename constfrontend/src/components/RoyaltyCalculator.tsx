@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { calculateRoyalty } from '@/services/royalty_calculator';
 
@@ -30,12 +30,33 @@ interface RoyaltyCalculatorProps {
   onCalculated: (data: RoyaltyData) => void;
 }
 
+interface SavedCalculation {
+  id: string;
+  date: string;
+  waterGel: number;
+  nh4no3: number;
+  powderFactor: number;
+  totalAmount: number;
+  explosiveQuantity: number;
+  blastedVolume: number;
+  dueDate: string;
+}
+
 export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorProps) {
   const [waterGel, setWaterGel] = useState('');
   const [nh4no3, setNh4no3] = useState('');
   const [powderFactor, setPowderFactor] = useState('');
   const [loading, setLoading] = useState(false);
   const [royaltyData, setRoyaltyData] = useState<RoyaltyData | null>(null);
+  const [savedCalculations, setSavedCalculations] = useState<SavedCalculation[]>([]);
+
+  // Load saved calculations from localStorage on component mount
+  useEffect(() => {
+    const saved = localStorage.getItem('royaltyCalculations');
+    if (saved) {
+      setSavedCalculations(JSON.parse(saved));
+    }
+  }, []);
 
   const handleCalculateRoyalty = async (e: FormEvent) => {
     e.preventDefault();
@@ -57,6 +78,35 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSaveCalculation = () => {
+    if (!royaltyData) return;
+
+    const newCalculation: SavedCalculation = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      waterGel: parseFloat(waterGel),
+      nh4no3: parseFloat(nh4no3),
+      powderFactor: parseFloat(powderFactor),
+      totalAmount: royaltyData.calculations.total_amount_with_vat,
+      explosiveQuantity: royaltyData.calculations.total_explosive_quantity,
+      blastedVolume: royaltyData.calculations.blasted_rock_volume,
+      dueDate: royaltyData.calculation_date
+    };
+
+    const updatedCalculations = [...savedCalculations, newCalculation];
+    setSavedCalculations(updatedCalculations);
+    localStorage.setItem('royaltyCalculations', JSON.stringify(updatedCalculations));
+    toast.success('Calculation saved successfully!');
+  };
+
+  const handleReset = () => {
+    setWaterGel('');
+    setNh4no3('');
+    setPowderFactor('');
+    setRoyaltyData(null);
+    toast.success('Calculator reset');
   };
 
   return (
@@ -120,7 +170,23 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
 
       {royaltyData && (
         <div className="mt-8 p-6 bg-gray-800 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">Royalty Calculation Results</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Royalty Calculation Results</h2>
+            <div className="space-x-4">
+              <button
+                onClick={handleSaveCalculation}
+                className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md text-sm font-medium transition-colors"
+              >
+                Save Calculation
+              </button>
+              <button
+                onClick={handleReset}
+                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md text-sm font-medium transition-colors"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-gray-700 rounded-lg">
