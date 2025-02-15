@@ -26,7 +26,11 @@ interface RoyaltyData {
   };
 }
 
-export default function RoyaltyCalculator() {
+interface RoyaltyCalculatorProps {
+  onCalculated: (data: RoyaltyData) => void;
+}
+
+export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorProps) {
   const [waterGel, setWaterGel] = useState('');
   const [nh4no3, setNh4no3] = useState('');
   const [powderFactor, setPowderFactor] = useState('');
@@ -45,6 +49,7 @@ export default function RoyaltyCalculator() {
       });
       
       setRoyaltyData(data);
+      onCalculated(data);
       toast.success('Royalty calculated successfully!');
     } catch (error) {
       console.error('Error calculating royalty:', error);

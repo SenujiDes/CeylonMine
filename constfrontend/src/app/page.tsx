@@ -1,11 +1,32 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
 import RoyaltyCalculator from "@/components/RoyaltyCalculator";
 import UserGreeting from "@/components/UserGreeting";
 import MiningStats from "@/components/MiningStats";
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { useState } from 'react';
 
 export default function Home() {
+  const [miningStats, setMiningStats] = useState({
+    explosiveQuantity: 0,
+    blastedVolume: 0,
+    totalRoyalty: 0,
+    dueDate: '',
+    lastCalculated: ''
+  });
+
+  const handleRoyaltyCalculated = (data: any) => {
+    setMiningStats({
+      explosiveQuantity: data.calculations.total_explosive_quantity,
+      blastedVolume: data.calculations.blasted_rock_volume,
+      totalRoyalty: data.calculations.total_amount_with_vat,
+      dueDate: data.calculation_date, // Assuming this is the due date
+      lastCalculated: data.calculation_date
+    });
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Main Content */}
@@ -14,14 +35,14 @@ export default function Home() {
         <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8">
           <UserGreeting />
           <h2 className="text-2xl font-bold mb-6">Mining Statistics</h2>
-          <MiningStats />
+          <MiningStats {...miningStats} />
         </div>
 
         {/* Royalty Calculator Box */}
         <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8">
           <h2 className="text-2xl font-bold mb-8">Mining Royalty Calculator</h2>
           <ErrorBoundary>
-            <RoyaltyCalculator />
+            <RoyaltyCalculator onCalculated={handleRoyaltyCalculated} />
           </ErrorBoundary>
         </div>
       </main>
