@@ -81,6 +81,25 @@ export default function MiningStats({
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
     onDueDateChange(date);
+
+    // Update the due date for the latest calculation
+    const saved = localStorage.getItem('royaltyCalculations');
+    if (saved) {
+      const calculations = JSON.parse(saved);
+      if (calculations.length > 0) {
+        // Update the most recent calculation's due date
+        const updatedCalculations = calculations.map((calc: SavedCalculation, index: number) => {
+          if (index === calculations.length - 1) {
+            return { ...calc, dueDate: date.toISOString() };
+          }
+          return calc;
+        });
+        
+        localStorage.setItem('royaltyCalculations', JSON.stringify(updatedCalculations));
+        setSavedCalculations(updatedCalculations);
+        toast.success('Due date saved successfully');
+      }
+    }
   };
 
   const handleDeleteCalculation = (id: string) => {
