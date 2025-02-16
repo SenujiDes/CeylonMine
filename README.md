@@ -1,4 +1,4 @@
-# 🏗️ Rock Royalty Calculation Web App
+# 🏗️ Royalty Calculation Web App
 
 🚀 **Developed for the Geological Survey and Mines Bureau (GSMB) of Sri Lanka**, this application automates the calculation of royalties for metal quarry operations. It streamlines the process by computing royalties based on explosive quantities, powder factor, and applicable taxes.
 
