@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
+import datetime
 
 app = Flask(__name__)
 CORS(app, resources={
@@ -18,6 +19,9 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# In-memory storage for demo (replace with database in production)
+applications = {}
 
 @app.route('/api/licenses/type-a', methods=['POST'])
 def type_a_license():
@@ -36,14 +40,24 @@ def type_a_license():
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        # Here you would typically:
-        # 1. Validate the data
-        # 2. Save to database
-        # 3. Process the application
-        
+        # Generate application ID and store status
+        application_id = f"IML-A-{len(applications) + 1}"
+        applications[application_id] = {
+            'status': 'Submitted',
+            'timeline': [
+                {
+                    'status': 'Submitted',
+                    'date': datetime.datetime.now().isoformat(),
+                    'comment': 'Application received and under initial review'
+                }
+            ],
+            'data': request.form
+        }
+
         return jsonify({
             'message': 'Application received successfully',
-            'status': 'success'
+            'status': 'success',
+            'applicationId': application_id
         }), 200
 
     except Exception as e:
@@ -107,6 +121,30 @@ def type_d_license():
             'message': str(e),
             'status': 'error'
         }), 500
+
+@app.route('/api/applications/<application_id>', methods=['GET'])
+def get_application_status(application_id):
+    if application_id in applications:
+        return jsonify(applications[application_id]), 200
+    return jsonify({'message': 'Application not found'}), 404
+
+@app.route('/api/applications/<application_id>/status', methods=['PUT'])
+def update_application_status(application_id):
+    if application_id not in applications:
+        return jsonify({'message': 'Application not found'}), 404
+    
+    data = request.json
+    new_status = data.get('status')
+    comment = data.get('comment', '')
+
+    applications[application_id]['status'] = new_status
+    applications[application_id]['timeline'].append({
+        'status': new_status,
+        'date': datetime.datetime.now().isoformat(),
+        'comment': comment
+    })
+
+    return jsonify({'message': 'Status updated successfully'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
