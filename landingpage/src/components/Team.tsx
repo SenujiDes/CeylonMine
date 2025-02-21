@@ -46,32 +46,32 @@ const Team = () => {
     {
       name: "Senuji De Silva",
       role: "Team Lead",
-      image: "/team/senuji.jpg"
+      image: "/teamimg/senuji.jpg"
     },
     {
       name: "Minsandi De Silva",
       role: "Developer",
-      image: "/team/minsandi.jpg"
+      image: "/teamimg/minsandi.jpg"
     },
     {
       name: "Janindu Amaraweera",
       role: "Developer",
-      image: "/team/janindu.jpg"
+      image: "/teamimg/janindua.jpg"
     },
     {
       name: "Nisil Liyanage",
       role: "Developer",
-      image: "/team/nisil.jpg"
+      image: "/teamimg/nisil.jpg"
     },
     {
       name: "Minidu Thiranjaya",
       role: "Developer",
-      image: "/team/minidu.jpg"
+      image: "/teamimg/minidu.jpg"
     },
     {
       name: "Thisal Induwara",
       role: "Developer",
-      image: "/team/thisal.jpg"
+      image: "/teamimg/thisal.jpg"
     }
   ];
 
