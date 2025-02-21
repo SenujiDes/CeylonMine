@@ -1,4 +1,13 @@
-export default function Features() {
+import React from 'react';
+
+const FeatureCard = ({ title, description }: { title: string; description: string }) => (
+  <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <h3 className="text-black text-xl font-semibold mb-2">{title}</h3>
+    <p className="text-gray-700">{description}</p>
+  </div>
+);
+
+const Features = () => {
   const features = [
     {
       title: "Online Mining License Requests",
@@ -26,25 +35,26 @@ export default function Features() {
     },
     {
       title: "Educational Resource Hub",
-      description: "Offering guides and training materials for industry professionals"
+      description: "Offering guides and training materials for industry"
     }
-  ]
+  ];
 
   return (
-    <section id="features" className="py-16 px-6 bg-white">
-      <div className="container mx-auto">
-        <h2 className="text-3xl font-bold text-black text-center mb-12">
-          Key Features of Ceylon Mine
-        </h2>
+    <section className="py-16 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-12">Key Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="bg-black p-6 rounded-lg hover:bg-gray-900 transition-colors">
-              <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
-              <p className="text-gray-300">{feature.description}</p>
-            </div>
+            <FeatureCard
+              key={index}
+              title={feature.title}
+              description={feature.description}
+            />
           ))}
         </div>
       </div>
     </section>
-  )
-} 
+  );
+};
+
+export default Features; 
