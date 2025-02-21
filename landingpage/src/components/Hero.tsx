@@ -1,15 +1,25 @@
-import Image from 'next/image'
+import React from 'react';
 import Link from 'next/link'
+import Image from 'next/image';
 
-export default function Hero() {
+const Hero = () => {
   return (
-    <section className="pt-20 pb-16 px-6 min-h-screen flex items-center">
+    <section className="pt-20 pb-16 px-6 min-h-screen flex items-center bg-black">
       <div className="container mx-auto text-center">
-        <div className="flex justify-center items-center gap-20 mb-6">
-          <span className="text-6xl md:text-8xl lg:text-9xl font-bold text-white animate-slide-left">
+        <div className="mb-6">
+          <Image 
+            src="/teamimg/logo.jpg"
+            alt="Ceylon Mine Logo"
+            width={200}
+            height={100}
+            className="mx-auto"
+          />
+        </div>
+        <div className="flex justify-center items-center mb-6">
+          <span className="text-7xl md:text-8xl lg:text-9xl font-bold text-white animate-slide-left mr-1">
             Ceylon
           </span>
-          <span className="text-6xl md:text-8xl lg:text-9xl font-bold text-white animate-slide-right">
+          <span className="text-7xl md:text-8xl lg:text-9xl font-bold text-white animate-slide-right">
             mine
           </span>
         </div>
@@ -24,5 +34,7 @@ export default function Hero() {
         </Link>
       </div>
     </section>
-  )
-} 
+  );
+};
+
+export default Hero;

@@ -46,32 +46,44 @@ const Team = () => {
     {
       name: "Senuji De Silva",
       role: "Team Lead",
-      image: "/teamimg/senuji.jpg"
+      image: "/teamimg/senuji.jpg",
+      linkedin: "https://www.linkedin.com/in/senuji",
+      github: "https://github.com/senuji"
     },
     {
       name: "Minsandi De Silva",
       role: "Developer",
-      image: "/teamimg/minsandi.jpg"
+      image: "/teamimg/minsandi.jpg",
+      linkedin: "https://www.linkedin.com/in/minsandi",
+      github: "https://github.com/minsandi"
     },
     {
       name: "Janindu Amaraweera",
       role: "Developer",
-      image: "/teamimg/janindua.jpg"
+      image: "/teamimg/janindua.jpg",
+      linkedin: "https://www.linkedin.com/in/janindu",
+      github: "https://github.com/janindu"
     },
     {
       name: "Nisil Liyanage",
       role: "Developer",
-      image: "/teamimg/nisil.jpg"
+      image: "/teamimg/nisil.jpg",
+      linkedin: "https://www.linkedin.com/in/nisil",
+      github: "https://github.com/nisil"
     },
     {
       name: "Minidu Thiranjaya",
       role: "Developer",
-      image: "/teamimg/minidu.jpg"
+      image: "/teamimg/minidu.jpg",
+      linkedin: "https://www.linkedin.com/in/minidu",
+      github: "https://github.com/minidu"
     },
     {
       name: "Thisal Induwara",
       role: "Developer",
-      image: "/teamimg/thisal.jpg"
+      image: "/teamimg/thisal.jpg",
+      linkedin: "https://www.linkedin.com/in/thisal",
+      github: "https://github.com/thisal"
     }
   ];
 
