@@ -82,7 +82,6 @@
 // };
 
 // export default Contact;
-
 "use client";
 
 import React, { useState } from 'react';
@@ -165,51 +164,63 @@ const Contact = () => {
           </button>
         </div>
 
-        {/* Contact Form Modal */}
+        {/* Enhanced Contact Form Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 bg-black/90 backdrop-blur-lg z-50 flex items-center justify-center p-4">
-            <div className="relative bg-gradient-to-br from-black via-[#001220] to-black/90 rounded-xl border border-amber-900/50 w-full max-w-2xl p-8 shadow-2xl shadow-amber-900/20">
+            <div className="relative bg-gradient-to-br from-black via-[#001220] to-black/90 rounded-xl border border-amber-900/50 w-full max-w-md md:max-w-2xl p-6 md:p-8 shadow-2xl shadow-amber-900/20 transform transition-all duration-300 scale-95 animate-in fade-in-90 zoom-in-95">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="absolute top-6 right-6 p-2 text-gray-400 hover:text-amber-500 transition-colors"
+                className="absolute top-4 right-4 md:top-6 md:right-6 p-2 text-gray-400 hover:text-amber-500 transition-colors"
+                aria-label="Close modal"
               >
                 <X className="w-6 h-6" />
               </button>
 
-              <h3 className="text-3xl font-bold text-amber-500 mb-8">Strategic Consultation Request</h3>
+              <h3 className="text-2xl md:text-3xl font-bold text-amber-500 mb-6 md:mb-8">
+                Strategic Consultation Request
+              </h3>
               
-              <form className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+              <form className="space-y-4 md:space-y-6">
+                <div className="grid gap-4 md:grid-cols-2 md:gap-6">
                   <div className="space-y-2">
-                    <label className="text-gray-300 font-light">Full Name</label>
+                    <label htmlFor="fullName" className="text-sm md:text-base text-gray-300 font-light">
+                      Full Name
+                    </label>
                     <input
+                      id="fullName"
                       type="text"
                       required
-                      className="w-full px-4 py-3 bg-black/30 border border-amber-900/50 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 text-gray-200"
+                      className="w-full px-4 py-2 md:py-3 text-sm md:text-base bg-black/30 border border-amber-900/50 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 text-gray-200"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-gray-300 font-light">Email Address</label>
+                    <label htmlFor="email" className="text-sm md:text-base text-gray-300 font-light">
+                      Email Address
+                    </label>
                     <input
+                      id="email"
                       type="email"
                       required
-                      className="w-full px-4 py-3 bg-black/30 border border-amber-900/50 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 text-gray-200"
+                      className="w-full px-4 py-2 md:py-3 text-sm md:text-base bg-black/30 border border-amber-900/50 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 text-gray-200"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-gray-300 font-light">Project Overview</label>
+                  <label htmlFor="projectOverview" className="text-sm md:text-base text-gray-300 font-light">
+                    Project Overview
+                  </label>
                   <textarea
-                    rows={5}
+                    id="projectOverview"
+                    rows={4}
                     required
-                    className="w-full px-4 py-3 bg-black/30 border border-amber-900/50 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 text-gray-200"
+                    className="w-full px-4 py-2 md:py-3 text-sm md:text-base bg-black/30 border border-amber-900/50 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 text-gray-200"
                   ></textarea>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-4 bg-gradient-to-r from-amber-600 to-amber-700 rounded-lg font-semibold text-lg text-black hover:from-amber-500 hover:to-amber-600 transition-all transform hover:scale-[1.01]"
+                  className="w-full py-3 md:py-4 text-sm md:text-base bg-gradient-to-r from-amber-600 to-amber-700 rounded-lg font-semibold text-black hover:from-amber-500 hover:to-amber-600 transition-all transform hover:scale-[1.01] active:scale-95"
                 >
                   Submit Proposal
                 </button>
