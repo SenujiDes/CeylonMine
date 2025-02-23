@@ -67,8 +67,8 @@ const WorkerModel = () => {
     <primitive
       ref={modelRef}
       object={scene}
-      scale={5}
-      position={[0, -2, 0]}
+      scale={7}
+      position={[0, -8, 0]}
       rotation={[0, Math.PI / 12, 0]}
     />
   );
