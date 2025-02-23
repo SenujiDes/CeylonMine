@@ -80,13 +80,12 @@
 //   )
 // }
 
-"use client"; // Required for Next.js App Router
+"use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Linkedin, Github, Instagram, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Linkedin, Github, Instagram, ChevronLeft, ChevronRight, X } from "lucide-react";
 
+// Interface definitions
 interface TeamMemberProps {
   name: string;
   role: string;
@@ -96,78 +95,293 @@ interface TeamMemberProps {
   instagram?: string;
 }
 
-const TeamCard: React.FC<TeamMemberProps> = ({ name, role, image, linkedin, github, instagram }) => {
+interface SocialModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  member: TeamMemberProps | null;
+}
+
+// Social Modal Component
+const SocialModal: React.FC<SocialModalProps> = ({ isOpen, onClose, member }) => {
+  if (!isOpen || !member) return null;
+
   return (
-    <div className="w-[320px] transform transition-all duration-300 hover:scale-105 shrink-0 mx-4 glow-effect">
-      <div className="relative group bg-black rounded-xl border border-amber-600 p-8 shadow-md">
-        <div className="relative w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden">
-          {image ? (
-            <Image
-              src={image}
-              alt={name}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-110"
-              sizes="160px"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-900 rounded-full">
-              <span className="text-gray-400 text-sm">No Image</span>
-            </div>
-          )}
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div className="bg-[#0a1527] p-8 rounded-xl max-w-md w-full mx-4 relative border border-amber-600/50 shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 text-gray-400 hover:text-white transition-colors"
+        >
+          <X size={24} />
+        </button>
+
+        {/* Member Info */}
+        <div className="text-center mb-8">
+          <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden ring-4 ring-amber-500/30">
+            {member.image ? (
+              <img
+                src={member.image}
+                alt={member.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-[#0a1527]">
+                <span className="text-gray-400 text-sm">No Image</span>
+              </div>
+            )}
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">{member.name}</h3>
+          <p className="text-amber-500">{member.role}</p>
         </div>
 
-        <div className="text-center">
-          <h3 className="text-xl font-bold text-white tracking-wide">{name}</h3>
-          <p className="text-amber-500 font-medium">{role}</p>
+        {/* Social Links */}
+        <div className="flex justify-center space-x-8">
+          {member.linkedin && (
+            <a
+              href={member.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-amber-400 hover:text-amber-300 transition-all duration-200 transform hover:scale-110"
+            >
+              <Linkedin size={32} />
+              <span className="block text-sm mt-2">LinkedIn</span>
+            </a>
+          )}
+          {member.github && (
+            <a
+              href={member.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-amber-400 hover:text-amber-300 transition-all duration-200 transform hover:scale-110"
+            >
+              <Github size={32} />
+              <span className="block text-sm mt-2">GitHub</span>
+            </a>
+          )}
+          {member.instagram && (
+            <a
+              href={member.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-amber-400 hover:text-amber-300 transition-all duration-200 transform hover:scale-110"
+            >
+              <Instagram size={32} />
+              <span className="block text-sm mt-2">Instagram</span>
+            </a>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-const Team = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+// TeamCard Component
+const TeamCard: React.FC<TeamMemberProps & { onShowSocials: (member: TeamMemberProps) => void }> = ({ 
+  name, 
+  role, 
+  image, 
+  onShowSocials,
+  ...member 
+}) => {
+  return (
+    <div className="w-80 transform transition-all duration-300 hover:scale-105 shrink-0 mx-4 snap-center">
+      <div className="relative group bg-[#0a1527] rounded-xl border border-amber-600/50 p-8 shadow-xl hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] transition-all duration-300">
+        {/* Profile Image */}
+        <div className="relative w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-amber-500/30">
+          {image ? (
+            <img
+              src={image}
+              alt={name}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-[#0a1527]">
+              <span className="text-gray-400 text-sm">No Image</span>
+            </div>
+          )}
+        </div>
 
+        {/* Name and Role */}
+        <div className="text-center">
+          <h3 className="text-xl font-bold text-white mb-2 tracking-wide">{name}</h3>
+          <p className="text-amber-500 font-medium">{role}</p>
+        </div>
+
+        {/* Socials Button */}
+        <button
+          onClick={() => onShowSocials({ name, role, image, ...member })}
+          className="mt-6 bg-gradient-to-r from-amber-600/90 to-amber-700/90 text-white py-2.5 px-4 rounded-lg w-full text-center hover:from-amber-500/90 hover:to-amber-600/90 transition-all duration-300 transform active:scale-95 font-medium"
+        >
+          View Socials
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Main Team Component
+const Team: React.FC = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isAtStart, setIsAtStart] = useState(true);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<TeamMemberProps | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Handle scroll position for button visibility
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setIsAtStart(scrollLeft <= 0);
+      setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 10);
+    }
+  };
+
+  // Auto scroll effect
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (scrollRef.current) {
-        if (scrollRef.current.scrollLeft + scrollRef.current.clientWidth >= scrollRef.current.scrollWidth) {
-          scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          scrollRef.current.scrollBy({ left: 350, behavior: "smooth" });
+    const scrollContainer = scrollRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll);
+      handleScroll(); // Initial check
+
+      const interval = setInterval(() => {
+        if (scrollContainer) {
+          if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 10) {
+            scrollContainer.scrollTo({ left: 0, behavior: "smooth" });
+          } else {
+            scrollContainer.scrollBy({ left: 350, behavior: "smooth" });
+          }
         }
-      }
-    }, 3000);
-    return () => clearInterval(interval);
+      }, 3000);
+
+      return () => {
+        clearInterval(interval);
+        scrollContainer.removeEventListener('scroll', handleScroll);
+      };
+    }
   }, []);
 
+  // Team members data
   const teamMembers: TeamMemberProps[] = [
-    { name: "Senuji De Silva", role: "Team Lead", image: "/teamimg/senuji.jpg", linkedin: "https://linkedin.com/in/senuji", github: "https://github.com/senuji", instagram: "https://instagram.com/senuji" },
-    { name: "Minsandi De Silva", role: "Developer", image: "/teamimg/minsandi.jpg", linkedin: "https://linkedin.com/in/minsandi", github: "https://github.com/minsandi", instagram: "https://instagram.com/minsandi" },
-    { name: "Janindu Amaraweera", role: "Developer", image: "/teamimg/janindua.jpg", linkedin: "https://linkedin.com/in/janindu", github: "https://github.com/janindu", instagram: "https://instagram.com/janindu" },
-    { name: "Nisil Liyanage", role: "Developer", image: "/teamimg/nisil.jpg", linkedin: "https://linkedin.com/in/nisil", github: "https://github.com/nisil", instagram: "https://instagram.com/nisil" },
-    { name: "Minidu Thiranjaya", role: "Developer", image: "/teamimg/minidu.jpg", linkedin: "https://linkedin.com/in/minidu", github: "https://github.com/minidu", instagram: "https://instagram.com/minidu" },
-    { name: "Thisal Induwara", role: "Developer", image: "/teamimg/thisal.jpg", linkedin: "https://linkedin.com/in/thisal", github: "https://github.com/thisal", instagram: "https://instagram.com/thisal" }
+    {
+      name: "Senuji De Silva",
+      role: "Team Lead",
+      image: "/teamimg/senuji.jpg",
+      linkedin: "https://linkedin.com/in/senuji",
+      github: "https://github.com/senuji",
+      instagram: "https://instagram.com/senuji"
+    },
+    {
+      name: "Minsandi De Silva",
+      role: "Developer",
+      image: "/teamimg/minsandi.jpg",
+      linkedin: "https://linkedin.com/in/minsandi",
+      github: "https://github.com/minsandi",
+      instagram: "https://instagram.com/minsandi"
+    },
+    {
+      name: "Janindu Amaraweera",
+      role: "Developer",
+      image: "/teamimg/janindua.jpg",
+      linkedin: "https://linkedin.com/in/janindu",
+      github: "https://github.com/janindu",
+      instagram: "https://instagram.com/janindu"
+    },
+    {
+      name: "Nisil Liyanage",
+      role: "Developer",
+      image: "/teamimg/nisil.jpg",
+      linkedin: "https://linkedin.com/in/nisil",
+      github: "https://github.com/nisil",
+      instagram: "https://instagram.com/nisil"
+    },
+    {
+      name: "Minidu Thiranjaya",
+      role: "Developer",
+      image: "/teamimg/minidu.jpg",
+      linkedin: "https://linkedin.com/in/minidu",
+      github: "https://github.com/minidu",
+      instagram: "https://instagram.com/minidu"
+    },
+    {
+      name: "Thisal Induwara",
+      role: "Developer",
+      image: "/teamimg/thisal.jpg",
+      linkedin: "https://linkedin.com/in/thisal",
+      github: "https://github.com/thisal",
+      instagram: "https://instagram.com/thisal"
+    }
   ];
 
+  const handleShowSocials = (member: TeamMemberProps) => {
+    setSelectedMember(member);
+    setIsModalOpen(true);
+  };
+
   return (
-    <section className="relative py-24 bg-black">
+    <section className="relative py-24 bg-black min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
-        <h2 className="text-5xl font-bold text-center text-white mb-10">Meet Our <span className="text-amber-500">Team</span></h2>
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold text-white mb-4">
+            Meet Our <span className="text-amber-500">Team</span>
+          </h2>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            Our talented team of developers and designers working together to create amazing experiences.
+          </p>
+        </div>
+
+        {/* Team Cards Container */}
         <div className="relative flex items-center">
-          <button onClick={() => scrollRef.current?.scrollBy({ left: -350, behavior: 'smooth' })} className="absolute left-0 p-3 bg-black/50 text-white rounded-full shadow-lg z-10">
+          {/* Left Scroll Button */}
+          <button
+            onClick={() => scrollRef.current?.scrollBy({ left: -350, behavior: 'smooth' })}
+            className={`absolute left-0 p-3 bg-black/50 text-white rounded-full shadow-lg z-10 hover:bg-black/70 transition-opacity duration-300 ${
+              isAtStart ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            }`}
+          >
             <ChevronLeft className="w-8 h-8" />
           </button>
-          <div ref={scrollRef} className="flex space-x-6 overflow-x-auto scrollbar-hide pb-6 snap-x snap-mandatory w-full">
+
+          {/* Team Cards Scrolling Section */}
+          <div
+            ref={scrollRef}
+            className="flex space-x-6 overflow-x-auto scrollbar-hide pb-10 snap-x snap-mandatory scroll-smooth"
+          >
             {teamMembers.map((member, index) => (
-              <TeamCard key={index} {...member} />
+              <TeamCard 
+                key={index} 
+                {...member} 
+                onShowSocials={handleShowSocials}
+              />
             ))}
           </div>
-          <button onClick={() => scrollRef.current?.scrollBy({ left: 350, behavior: 'smooth' })} className="absolute right-0 p-3 bg-black/50 text-white rounded-full shadow-lg z-10">
+
+          {/* Right Scroll Button */}
+          <button
+            onClick={() => scrollRef.current?.scrollBy({ left: 350, behavior: 'smooth' })}
+            className={`absolute right-0 p-3 bg-black/50 text-white rounded-full shadow-lg z-10 hover:bg-black/70 transition-opacity duration-300 ${
+              isAtEnd ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            }`}
+          >
             <ChevronRight className="w-8 h-8" />
           </button>
         </div>
+
+        {/* Scroll Indicator */}
+        <div className="flex justify-center mt-8 space-x-2">
+          <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+          <div className="w-2 h-2 rounded-full bg-amber-500/50"></div>
+          <div className="w-2 h-2 rounded-full bg-amber-500/50"></div>
+        </div>
       </div>
+
+      {/* Social Modal */}
+      <SocialModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        member={selectedMember}
+      />
     </section>
   );
 };

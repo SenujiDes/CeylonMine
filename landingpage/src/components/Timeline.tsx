@@ -66,10 +66,57 @@
 
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { CalendarDays } from "lucide-react";
+import * as THREE from "three";
 
 const Timeline = () => {
+  useEffect(() => {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById("threejs-container")?.appendChild(renderer.domElement);
+
+    const timelineObjects = [];
+    for (let i = 0; i < 5; i++) {
+      const geometry = new THREE.SphereGeometry(0.4, 32, 32);
+      const material = new THREE.MeshStandardMaterial({ color: 0xffd700, emissive: 0x222222, metalness: 0.7, roughness: 0.3 });
+      const sphere = new THREE.Mesh(geometry, material);
+      sphere.position.set(Math.random() * 4 - 2, Math.random() * 4 - 2, Math.random() * 4 - 2);
+      scene.add(sphere);
+      timelineObjects.push(sphere);
+    }
+
+    const light = new THREE.PointLight(0xffd700, 1, 100);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+
+    camera.position.z = 5;
+
+    let direction = 1;
+    const animate = () => {
+      requestAnimationFrame(animate);
+      timelineObjects.forEach((obj) => {
+        obj.rotation.x += 0.01;
+        obj.rotation.y += 0.01;
+        obj.position.x += 0.005 * direction;
+        obj.position.y += 0.0025 * direction;
+      });
+      
+      if (timelineObjects[0].position.x > 2 || timelineObjects[0].position.x < -2) {
+        direction *= -1;
+      }
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    return () => {
+      document.getElementById("threejs-container")?.removeChild(renderer.domElement);
+    };
+  }, []);
+
   const timelineItems = [
     {
       year: "2023",
@@ -96,12 +143,11 @@ const Timeline = () => {
 
   return (
     <section id="timeline" className="py-20 bg-black relative">
-      {/* Subtle Goldfish Texture & Glow */}
+      <div id="threejs-container" className="absolute inset-0 z-0"></div>
       <div className="absolute inset-0 bg-[url('/images/goldfish-texture.png')] opacity-10 mix-blend-overlay"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,215,0,0.15)_10%,rgba(0,0,0,0.9)_80%)]"></div>
 
       <div className="container mx-auto px-6 relative z-10">
-        {/* 3D Gold Gradient Title */}
         <h2 className="text-5xl font-bold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 drop-shadow-[0_3px_6px_rgba(255,215,0,0.6)]">
           Our Journey
         </h2>
@@ -109,15 +155,12 @@ const Timeline = () => {
         <div className="max-w-4xl mx-auto relative">
           {timelineItems.map((item, index) => (
             <div key={index} className="relative pl-10 pb-14 group">
-              {/* 3D Gold Gradient Timeline Line */}
               <div className="absolute left-5 top-0 h-full w-[3px] bg-gradient-to-b from-amber-700 to-yellow-500 group-last:h-1/2 shadow-lg"></div>
 
-              {/* Floating 3D Timeline Dot */}
               <div className="absolute left-0 top-0 flex items-center justify-center w-12 h-12 rounded-full bg-black border border-amber-600 shadow-lg transition-all duration-300 transform hover:scale-110 hover:shadow-amber-500">
                 <CalendarDays className="text-amber-500 w-7 h-7 transition-all duration-300 group-hover:text-white" />
               </div>
 
-              {/* Timeline Content with Gold Accents */}
               <div className="pl-6 group-hover:translate-x-2 transition-transform">
                 <div className="text-amber-400 font-semibold text-lg mb-1">{item.year}</div>
                 <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
