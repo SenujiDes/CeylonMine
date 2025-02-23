@@ -81,100 +81,137 @@
 // }
 
 // export default Team;
+"use client"; // Required for Next.js App Router
 
-"use client";
-
-import React, { useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Linkedin, Github, Instagram, X } from "lucide-react";
 
-// Define Team Member Props
 interface TeamMemberProps {
   name: string;
   role: string;
   image?: string;
   linkedin?: string;
   github?: string;
+  instagram?: string;
 }
 
-const TeamCard: React.FC<TeamMemberProps> = ({ name, role, image, linkedin, github }) => (
-  <div className="relative w-[260px] group transition-all duration-300 hover:scale-105">
-    {/* Glowing Effect on Hover */}
-    <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur-xl opacity-20 group-hover:opacity-80 transition-opacity"></div>
+const TeamCard: React.FC<TeamMemberProps> = ({ name, role, image, linkedin, github, instagram }) => {
+  const [showModal, setShowModal] = useState(false);
 
-    <div className="relative bg-gray-900/50 backdrop-blur-lg rounded-lg border border-gray-700 p-5 shadow-lg">
-      {/* Profile Image */}
-      <div className="w-40 h-40 mx-auto mb-4 overflow-hidden rounded-lg border-2 border-blue-500">
-        {image ? (
-          <Image src={image} alt={name} width={160} height={160} className="object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-700">
-            <span className="text-gray-400 text-sm">No Image</span>
+  return (
+    <div className="w-[320px] transform transition-all duration-300 hover:scale-105 shrink-0">
+      <div className="relative group bg-black rounded-xl border border-amber-600 p-8 shadow-md">
+        {/* Image */}
+        <div className="relative w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden">
+          {image ? (
+            <Image
+              src={image}
+              alt={name}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-110"
+              sizes="160px"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-900 rounded-full">
+              <span className="text-gray-400 text-sm">No Image</span>
+            </div>
+          )}
+        </div>
+
+        {/* Name & Role */}
+        <div className="text-center">
+          <h3 className="text-xl font-bold text-white tracking-wide">{name}</h3>
+          <p className="text-amber-500 font-medium">{role}</p>
+        </div>
+
+        {/* View Socials Button */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setShowModal(true)}
+            className="px-5 py-2 text-sm font-semibold rounded-lg transition-all
+              bg-gradient-to-r from-[#4b3a2d] via-[#5e4b3c] to-[#4b3a2d]
+              border border-[#6d5a48] text-white shadow-md
+              hover:from-[#3d2f25] hover:via-[#4e3d32] hover:to-[#3d2f25]
+              hover:border-[#5a4939]"
+          >
+            View Socials
+          </button>
+        </div>
+
+        {/* Modal (Pop-Up) */}
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-lg z-50">
+            <div className="bg-black border border-amber-600 rounded-xl p-6 max-w-md w-full text-center relative shadow-lg">
+              {/* Close Button */}
+              <button
+                onClick={() => setShowModal(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-white transition-all"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              {/* Title */}
+              <h3 className="text-xl font-bold text-amber-500 mb-4">Connect with {name}</h3>
+
+              {/* Social Links */}
+              <div className="flex justify-center space-x-6">
+                {linkedin && (
+                  <Link href={linkedin} target="_blank" className="p-3 rounded-full bg-black border border-amber-500 hover:bg-amber-700 transition-all">
+                    <Linkedin className="w-7 h-7 text-amber-500 hover:text-white" />
+                  </Link>
+                )}
+                {github && (
+                  <Link href={github} target="_blank" className="p-3 rounded-full bg-black border border-amber-500 hover:bg-amber-700 transition-all">
+                    <Github className="w-7 h-7 text-amber-500 hover:text-white" />
+                  </Link>
+                )}
+                {instagram && (
+                  <Link href={instagram} target="_blank" className="p-3 rounded-full bg-black border border-amber-500 hover:bg-amber-700 transition-all">
+                    <Instagram className="w-7 h-7 text-amber-500 hover:text-white" />
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
         )}
       </div>
-
-      <h3 className="text-lg font-semibold text-white text-center">{name}</h3>
-      <p className="text-blue-400 text-sm text-center mb-4">{role}</p>
-
-      {/* Social Links */}
-      <div className="flex justify-center space-x-4">
-        {linkedin && (
-          <Link href={linkedin} target="_blank" className="text-gray-400 hover:text-blue-400 transition-colors">
-            <i className="fab fa-linkedin text-xl"></i>
-          </Link>
-        )}
-        {github && (
-          <Link href={github} target="_blank" className="text-gray-400 hover:text-purple-400 transition-colors">
-            <i className="fab fa-github text-xl"></i>
-          </Link>
-        )}
-      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Team = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (scrollRef.current) {
-        scrollRef.current.scrollBy({ left: 270, behavior: "smooth" });
-
-        if (
-          scrollRef.current.scrollLeft + scrollRef.current.clientWidth >=
-          scrollRef.current.scrollWidth - 10
-        ) {
-          scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
-        }
-      }
-    }, 2500);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const teamMembers: TeamMemberProps[] = [
-    { name: "Senuji De Silva", role: "Team Lead", image: "/teamimg/senuji.jpg" },
-    { name: "Minsandi De Silva", role: "Developer", image: "/teamimg/minsandi.jpg" },
-    { name: "Janindu Amaraweera", role: "Developer", image: "/teamimg/janindua.jpg" },
-    { name: "Nisil Liyanage", role: "Developer", image: "/teamimg/nisil.jpg" },
-    { name: "Minidu Thiranjaya", role: "Developer", image: "/teamimg/minidu.jpg" },
-    { name: "Thisal Induwara", role: "Developer", image: "/teamimg/thisal.jpg" },
+    { name: "Senuji De Silva", role: "Team Lead", image: "/teamimg/senuji.jpg", linkedin: "https://linkedin.com/in/senuji", github: "https://github.com/senuji", instagram: "https://instagram.com/senuji" },
+    { name: "Minsandi De Silva", role: "Developer", image: "/teamimg/minsandi.jpg", linkedin: "https://linkedin.com/in/minsandi", github: "https://github.com/minsandi", instagram: "https://instagram.com/minsandi" },
+    { name: "Janindu Amaraweera", role: "Developer", image: "/teamimg/janindua.jpg", linkedin: "https://linkedin.com/in/janindu", github: "https://github.com/janindu", instagram: "https://instagram.com/janindu" },
+    { name: "Nisil Liyanage", role: "Developer", image: "/teamimg/nisil.jpg", linkedin: "https://linkedin.com/in/nisil", github: "https://github.com/nisil", instagram: "https://instagram.com/nisil" },
+    { name: "Minidu Thiranjaya", role: "Developer", image: "/teamimg/minidu.jpg", linkedin: "https://linkedin.com/in/minidu", github: "https://github.com/minidu", instagram: "https://instagram.com/minidu" },
+    { name: "Thisal Induwara", role: "Developer", image: "/teamimg/thisal.jpg", linkedin: "https://linkedin.com/in/thisal", github: "https://github.com/thisal", instagram: "https://instagram.com/thisal" },
   ];
 
   return (
-    <section id="team" className="py-16 px-6 bg-gray-900">
-      <div className="container mx-auto">
-        <h2 className="text-4xl font-bold text-white text-center mb-8 tracking-wide">Meet Our Team</h2>
+    <section className="relative py-24 bg-black">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold text-white mb-6 tracking-tight">
+            Meet Our{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500">
+              Team
+            </span>
+          </h2>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Passionate developers crafting exceptional experiences
+          </p>
+        </div>
 
-        {/* Auto-Scrolling Wrapper with Custom Scrollbar */}
-        <div
-          ref={scrollRef}
-          className="overflow-x-auto whitespace-nowrap flex space-x-6 px-6 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-800">
-          {teamMembers.map((member, index) => (
-            <TeamCard key={index} {...member} />
-          ))}
+        <div className="relative overflow-hidden px-4">
+          <div className="flex space-x-6 overflow-x-auto scrollbar-hide pb-6">
+            {teamMembers.map((member, index) => (
+              <TeamCard key={index} {...member} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

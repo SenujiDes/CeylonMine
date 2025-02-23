@@ -23,37 +23,47 @@ import Image from 'next/image';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  
+
   return (
-    <footer className="bg-gray-900 border-t border-gray-800">
-      <div className="container mx-auto px-6 py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <div className="flex items-center space-x-4 mb-4 md:mb-0">
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-75"></div>
-              <Image 
-                src="/teamimg/logo.jpg"
-                alt="Ceylon Mine Logo"
-                width={40}
-                height={40}
-                className="relative rounded-full border border-blue-500"
-              />
-            </div>
-            <span className="text-lg font-semibold text-white">Ceylon Mine</span>
+    <footer className="bg-black border-t border-amber-700 relative py-6">
+      {/* Subtle Gold Glow for Elegance */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,215,0,0.08)_10%,rgba(0,0,0,0.95)_90%)]"></div>
+
+      <div className="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between">
+        {/* Logo Section */}
+        <div className="flex items-center space-x-3 mb-4 md:mb-0">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-amber-700 via-yellow-500 to-amber-400 rounded-full blur opacity-20 group-hover:opacity-75 transition duration-300"></div>
+            <Image 
+              src="/teamimg/logo.jpg"
+              alt="Ceylon Mine Logo"
+              width={35}
+              height={35}
+              className="relative rounded-full border border-amber-500"
+            />
           </div>
-          
-          <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8">
-            <div className="flex space-x-4">
-              <a href="#features" className="text-gray-400 hover:text-white transition-colors">Features</a>
-              <a href="#team" className="text-gray-400 hover:text-white transition-colors">Team</a>
-              <a href="#contact" className="text-gray-400 hover:text-white transition-colors">Contact</a>
-            </div>
-            
-            <p className="text-gray-400">
-              © {currentYear} Ceylon Mine. All rights reserved.
-            </p>
-          </div>
+          <span className="text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-yellow-400">
+            Ceylon Mine
+          </span>
         </div>
+
+        {/* Navigation Links */}
+        <div className="flex space-x-6 text-gray-400">
+          <a href="#features" className="hover:text-amber-500 transition-all duration-300">
+            Features
+          </a>
+          <a href="#team" className="hover:text-amber-500 transition-all duration-300">
+            Team
+          </a>
+          <a href="#contact" className="hover:text-amber-500 transition-all duration-300">
+            Contact
+          </a>
+        </div>
+
+        {/* Copyright */}
+        <p className="text-gray-500 text-sm mt-4 md:mt-0">
+          © {currentYear} <span className="text-amber-500">Ceylon Mine</span>. All rights reserved.
+        </p>
       </div>
     </footer>
   );

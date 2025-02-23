@@ -213,7 +213,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Sphere, Torus, Stars, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
-// Animated Main Sphere (Big, Smooth, Glowing)
+// Animated Main Sphere (Gold, Glowing)
 const AnimatedSphere = () => {
   const sphereRef = useRef<THREE.Mesh>(null);
 
@@ -227,12 +227,12 @@ const AnimatedSphere = () => {
   return (
     <Sphere ref={sphereRef} args={[2.5, 100, 100]} scale={3.5}>
       <MeshDistortMaterial
-        color="#2563EB"
+        color="#FFD700" // Gold
         attach="material"
         distort={0.65} // More fluid distortion
         speed={3.2} // Smoother motion
-        roughness={0.15} // Glassy effect
-        metalness={0.9} // Metallic shine
+        roughness={0.3} // Matte-metallic effect
+        metalness={1} // Pure metallic shine
       />
     </Sphere>
   );
@@ -258,42 +258,42 @@ const AnimatedTorus = ({ position, scale, speed, color }) => {
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700">
+    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-amber-900">
       <div className="relative w-full h-[700px]">
         {/* Three.js Canvas */}
         <Canvas className="absolute top-0 left-0 w-full h-full">
           <OrbitControls enableZoom={false} />
           
-          {/* Ambient Space-Like Glow */}
-          <ambientLight intensity={0.7} />
-          <directionalLight position={[5, 7, 3]} intensity={1.5} color={"#2563EB"} />
-          <pointLight position={[0, 6, 4]} intensity={3} color={"#2563EB"} />
-          <spotLight position={[-5, 7, 6]} intensity={1.8} angle={0.4} penumbra={0.7} color={"#4F46E5"} />
+          {/* Ambient Mining Glow */}
+          <ambientLight intensity={0.8} />
+          <directionalLight position={[5, 7, 3]} intensity={2} color={"#FFD700"} /> {/* Gold */}
+          <pointLight position={[0, 6, 4]} intensity={3} color={"#FFA500"} /> {/* Orange Gold */}
+          <spotLight position={[-5, 7, 6]} intensity={1.8} angle={0.4} penumbra={0.7} color={"#DAA520"} /> {/* Goldenrod */}
 
           {/* Background Stars */}
-          <Stars radius={50} depth={50} count={200} factor={4} saturation={0} fade speed={1} />
+          <Stars radius={50} depth={50} count={250} factor={4} saturation={0} fade speed={1} />
 
           {/* 3D Objects */}
           <AnimatedSphere />
-          <AnimatedTorus position={[0, 0, -3]} scale={3} speed={1} color={"#1D4ED8"} />
-          <AnimatedTorus position={[0, 0, -5]} scale={2.5} speed={-1} color={"#60A5FA"} />
+          <AnimatedTorus position={[0, 0, -3]} scale={3} speed={1} color={"#FFD700"} /> {/* Gold */}
+          <AnimatedTorus position={[0, 0, -5]} scale={2.5} speed={-1} color={"#FFA500"} /> {/* Orange Gold */}
         </Canvas>
       </div>
 
       {/* Text Content */}
       <div className="absolute text-center">
-        <h1 className="text-6xl font-bold text-white drop-shadow-lg">
+        <h1 className="text-6xl font-bold text-amber-400 drop-shadow-lg">
           Ceylon Mine
         </h1>
         <p className="text-xl text-gray-300 mt-4">
           Revolutionizing Mining Industry with{" "}
-          <span className="text-blue-400">Advanced Technology</span>
+          <span className="text-amber-500">Advanced Technology</span>
         </p>
 
         {/* CTA Button */}
         <Link
           href="#features"
-          className="mt-8 inline-block px-6 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition shadow-lg"
+          className="mt-8 inline-block px-6 py-3 text-lg font-semibold text-black bg-amber-400 rounded-lg hover:bg-amber-500 transition shadow-lg"
         >
           Explore Features
         </Link>
