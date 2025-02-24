@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import Navbar from '../../navbar/page'
+import { motion } from 'framer-motion'
 
 interface FormData {
   explorationLicenseNo: string;
@@ -167,265 +168,314 @@ export default function TypeALicense() {
   };
 
   return (
-    <main>
-      <Navbar />
-      <div className="min-h-screen bg-gray-100">
-        <div className="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">IML Type A License Application</h1>
-          <div className="bg-white shadow-sm rounded-lg p-6">
-            <form onSubmit={handleSubmit} className="space-y-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-6"
+    >
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-gray-800 rounded-lg shadow-lg p-8 border border-gray-700"
+        >
+          <h2 className="text-3xl font-semibold text-gray-100 mb-6">Type A License</h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <motion.div
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-4"
+            >
               {/* 1. Exploration License */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">1. Exploration License No</h2>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Exploration License No (where applicable)
-                  </label>
-                  <input
-                    type="text"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    value={formData.explorationLicenseNo}
-                    onChange={(e) => setFormData({...formData, explorationLicenseNo: e.target.value})}
-                  />
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Exploration License No
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.explorationLicenseNo}
+                  onChange={(e) => setFormData({...formData, explorationLicenseNo: e.target.value})}
+                />
               </div>
 
               {/* 2. Individual Details */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">2. Individual Details</h2>
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Name of Applicant / Authorized Agent</label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      value={formData.individualDetails.applicantName}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        individualDetails: { ...formData.individualDetails, applicantName: e.target.value }
-                      })}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">National Identity Card No</label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      value={formData.individualDetails.nationalIdNo}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        individualDetails: { ...formData.individualDetails, nationalIdNo: e.target.value }
-                      })}
-                    />
-                  </div>
-                  {/* Add other individual fields similarly */}
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Name of Applicant / Authorized Agent
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.individualDetails.applicantName}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    individualDetails: { ...formData.individualDetails, applicantName: e.target.value }
+                  })}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  National Identity Card No
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.individualDetails.nationalIdNo}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    individualDetails: { ...formData.individualDetails, nationalIdNo: e.target.value }
+                  })}
+                />
               </div>
 
               {/* 3. Corporation Details */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">3. Corporation Details</h2>
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Name of Company/Partnership</label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      value={formData.corporationDetails.companyName}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        corporationDetails: { ...formData.corporationDetails, companyName: e.target.value }
-                      })}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Articles of Association</label>
-                    <input
-                      type="file"
-                      className="mt-1 block w-full"
-                      onChange={handleFileChange('corporationDetails', 'articlesOfAssociation')}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Last three years Annual Reports</label>
-                    <input
-                      type="file"
-                      multiple
-                      className="mt-1 block w-full"
-                      onChange={handleFileChange('corporationDetails', 'annualReports')}
-                    />
-                  </div>
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Name of Company/Partnership
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.corporationDetails.companyName}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    corporationDetails: { ...formData.corporationDetails, companyName: e.target.value }
+                  })}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Articles of Association
+                </label>
+                <input
+                  type="file"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  onChange={handleFileChange('corporationDetails', 'articlesOfAssociation')}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Last three years Annual Reports
+                </label>
+                <input
+                  type="file"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  onChange={handleFileChange('corporationDetails', 'annualReports')}
+                />
               </div>
 
               {/* 4. Technical/Professional Data */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">4. Technical/Professional Data</h2>
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Licensed Boundary Survey</label>
-                    <input
-                      type="file"
-                      className="mt-1 block w-full"
-                      onChange={handleFileChange('technicalData', 'licensedBoundarySurvey')}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Professional/Technical Credentials</label>
-                    <input
-                      type="file"
-                      className="mt-1 block w-full"
-                      onChange={handleFileChange('technicalData', 'projectTeamCredentials')}
-                    />
-                  </div>
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Licensed Boundary Survey
+                </label>
+                <input
+                  type="file"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  onChange={handleFileChange('technicalData', 'licensedBoundarySurvey')}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Professional/Technical Credentials
+                </label>
+                <input
+                  type="file"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  onChange={handleFileChange('technicalData', 'projectTeamCredentials')}
+                />
               </div>
 
               {/* 5. Industrial Mining Operation */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">5. Type of Industrial Mining Operation</h2>
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Blasting Method</label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      value={formData.industrialMiningOperation.blastingMethod}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        industrialMiningOperation: { ...formData.industrialMiningOperation, blastingMethod: e.target.value }
-                      })}
-                    />
-                  </div>
-                  {/* Add other mining operation fields */}
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Blasting Method
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.industrialMiningOperation.blastingMethod}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    industrialMiningOperation: { ...formData.industrialMiningOperation, blastingMethod: e.target.value }
+                  })}
+                />
               </div>
 
               {/* 6. License Area Details */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">6. Details of License Area</h2>
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Name of Land</label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      value={formData.licenseAreaDetails.landName}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        licenseAreaDetails: { ...formData.licenseAreaDetails, landName: e.target.value }
-                      })}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Deed and Survey Plan</label>
-                    <input
-                      type="file"
-                      className="mt-1 block w-full"
-                      onChange={handleFileChange('licenseAreaDetails', 'deedCopy')}
-                    />
-                  </div>
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Name of Land
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.licenseAreaDetails.landName}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    licenseAreaDetails: { ...formData.licenseAreaDetails, landName: e.target.value }
+                  })}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Deed and Survey Plan
+                </label>
+                <input
+                  type="file"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  onChange={handleFileChange('licenseAreaDetails', 'deedCopy')}
+                />
               </div>
 
               {/* 7. Mine Restoration Plan */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">7. Detailed Mine Restoration Plan</h2>
-                <div>
-                  <input
-                    type="file"
-                    className="mt-1 block w-full"
-                    onChange={handleFileChange('', 'mineRestorationPlan')}
-                  />
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Detailed Mine Restoration Plan
+                </label>
+                <input
+                  type="file"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  onChange={handleFileChange('', 'mineRestorationPlan')}
+                />
               </div>
 
               {/* 8. Bond Details */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">8. Nature of Amount of Bond</h2>
-                <div>
-                  <input
-                    type="text"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    value={formData.bondDetails}
-                    onChange={(e) => setFormData({...formData, bondDetails: e.target.value})}
-                  />
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Nature of Amount of Bond
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.bondDetails}
+                  onChange={(e) => setFormData({...formData, bondDetails: e.target.value})}
+                />
               </div>
 
               {/* 9. Minerals */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">9. Names of Mineral/Minerals to be Mined</h2>
-                <div>
-                  <input
-                    type="text"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    value={formData.mineralsToMine}
-                    onChange={(e) => setFormData({...formData, mineralsToMine: e.target.value})}
-                  />
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Names of Mineral/Minerals to be Mined
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.mineralsToMine}
+                  onChange={(e) => setFormData({...formData, mineralsToMine: e.target.value})}
+                />
               </div>
 
               {/* 10. License Fee */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">10. License Fee Receipt</h2>
-                <div>
-                  <input
-                    type="file"
-                    className="mt-1 block w-full"
-                    onChange={handleFileChange('', 'licenseFeeReceipt')}
-                  />
-                </div>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  License Fee Receipt
+                </label>
+                <input
+                  type="file"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  onChange={handleFileChange('', 'licenseFeeReceipt')}
+                />
               </div>
 
               {/* Declaration */}
-              <div className="space-y-4 border-t pt-6">
-                <h2 className="text-xl font-semibold">Declaration</h2>
-                <p className="text-sm text-gray-600">
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Declaration
+                </label>
+                <p className="text-sm text-gray-400">
                   I, the undersigned, do hereby certify that the statements contained in this application are true and
                   correct to the best of my knowledge and undertake to comply with the provisions the Mines & Minerals Act No.33 of 1992,
                   and the Regulation made thereunder.
                 </p>
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Date</label>
-                    <input
-                      type="date"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      value={formData.declaration.date}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        declaration: { ...formData.declaration, date: e.target.value }
-                      })}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Mine Manager</label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      value={formData.declaration.mineManager}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        declaration: { ...formData.declaration, mineManager: e.target.value }
-                      })}
-                    />
-                  </div>
-                </div>
               </div>
 
-              <div className="pt-5">
-                <button
-                  type="submit"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Submit Application
-                </button>
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.declaration.date}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    declaration: { ...formData.declaration, date: e.target.value }
+                  })}
+                />
               </div>
-            </form>
-          </div>
-        </div>
+
+              <div className="form-group">
+                <label className="block text-gray-300 text-sm font-medium mb-2">
+                  Mine Manager
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           text-gray-100 placeholder-gray-400"
+                  value={formData.declaration.mineManager}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    declaration: { ...formData.declaration, mineManager: e.target.value }
+                  })}
+                />
+              </div>
+            </motion.div>
+            
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full bg-blue-500 text-gray-900 py-3 px-6 rounded-md 
+                       hover:bg-blue-400 transition-colors font-medium"
+              type="submit"
+            >
+              Submit
+            </motion.button>
+          </form>
+        </motion.div>
       </div>
-    </main>
+    </motion.div>
   );
 } 

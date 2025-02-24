@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react'
 import Navbar from '../navbar/page'
 import Link from 'next/link'
+import { motion } from 'framer-motion';
 
 export default function LicensePortal() {
   const licenses = [
@@ -31,28 +34,44 @@ export default function LicensePortal() {
   ]
 
   return (
-    <main>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-6"
+    >
       <Navbar />
-      <div className="min-h-screen bg-gray-100">
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">License Portal</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-            {licenses.map((license) => (
-              <Link href={license.path} key={license.id}>
-                <div className="bg-white overflow-hidden shadow-sm rounded-lg p-6 hover:shadow-md transition-shadow duration-300">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-2">{license.name}</h2>
-                  <p className="text-gray-600">{license.description}</p>
-                  <div className="mt-4">
-                    <span className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                      Apply Now
-                    </span>
-                  </div>
+      <div className="max-w-7xl mx-auto">
+        <motion.h1 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-4xl font-bold text-gray-100 mb-8"
+        >
+          License Portal
+        </motion.h1>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {licenses.map((license) => (
+            <motion.div
+              key={license.id}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-700"
+            >
+              <Link href={license.path}>
+                <h2 className="text-xl font-semibold text-gray-100 mb-2">{license.name}</h2>
+                <p className="text-gray-400">{license.description}</p>
+                <div className="mt-4">
+                  <span className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-900 bg-blue-400 hover:bg-blue-500">
+                    Apply Now
+                  </span>
                 </div>
               </Link>
-            ))}
-          </div>
+            </motion.div>
+          ))}
         </div>
       </div>
-    </main>
+    </motion.div>
   )
 }
