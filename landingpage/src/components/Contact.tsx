@@ -137,7 +137,7 @@ const Contact = () => {
             <div className="grid grid-cols-3 gap-4">
               {[
                 { href: "https://www.linkedin.com/company/ceylon-mine/posts/?feedView=all", icon: Linkedin, label: "LinkedIn" },
-                { href: "https://github.com/SenujiDes/", icon: Github, label: "GitHub" },
+                { href: "#", icon: Github, label: "GitHub" },
                 { href: "https://www.instagram.com/ceylon_mine/", icon: Instagram, label: "Instagram" },
               ].map(({ href, icon: Icon, label }, index) => (
                 <Link
