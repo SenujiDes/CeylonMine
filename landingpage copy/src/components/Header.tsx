@@ -90,7 +90,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Navigation, Users, Phone, Calendar } from "lucide-react";
-import Image from "next/image";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -123,12 +122,10 @@ export default function Header() {
           <Link href="/" className="flex items-center space-x-3">
             <div className="relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-yellow-700 to-amber-500 rounded-full blur opacity-50 group-hover:opacity-100 transition duration-300"></div>
-              <Image
+              <img
                 src="/teamimg/logo.jpg"
                 alt="Logo"
-                width={48}
-                height={48}
-                className="relative rounded-full border-2 border-amber-500"
+                className="relative w-12 h-12 rounded-full border-2 border-amber-500"
               />
             </div>
             <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-yellow-300">

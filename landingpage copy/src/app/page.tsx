@@ -5,7 +5,6 @@ import Features from '../components/Features';
 import Theme from '../components/Theme';
 import Timeline from '../components/Timeline';
 import Team from '../components/Team';
-import FAQ from '@/components/faq';
 import Contact from '../components/Contact';
 
 export default function Home() {
@@ -17,7 +16,6 @@ export default function Home() {
       <Theme />
       <Team />
       <Timeline />
-      <FAQ />
       <Contact />
     </main>
   );

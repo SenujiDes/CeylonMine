@@ -80,14 +80,12 @@
 //   )
 // }
 
-// Team.tsx
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import { Linkedin, Github, Instagram, ChevronLeft, ChevronRight, X } from "lucide-react";
-import Image from "next/image";
 
-// Interface definitions (rest of interfaces remain the same)
+// Interface definitions
 interface TeamMemberProps {
   name: string;
   role: string;
@@ -110,6 +108,7 @@ const SocialModal: React.FC<SocialModalProps> = ({ isOpen, onClose, member }) =>
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-sm">
       <div className="bg-[#0a1527] p-8 rounded-xl max-w-md w-full mx-4 relative border border-amber-600/50 shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-400 hover:text-white transition-colors"
@@ -117,14 +116,13 @@ const SocialModal: React.FC<SocialModalProps> = ({ isOpen, onClose, member }) =>
           <X size={24} />
         </button>
 
+        {/* Member Info */}
         <div className="text-center mb-8">
           <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden ring-4 ring-amber-500/30">
             {member.image ? (
-              <Image
+              <img
                 src={member.image}
                 alt={member.name}
-                width={128}
-                height={128}
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -137,6 +135,7 @@ const SocialModal: React.FC<SocialModalProps> = ({ isOpen, onClose, member }) =>
           <p className="text-amber-500">{member.role}</p>
         </div>
 
+        {/* Social Links */}
         <div className="flex justify-center space-x-8">
           {member.linkedin && (
             <a
@@ -188,13 +187,12 @@ const TeamCard: React.FC<TeamMemberProps & { onShowSocials: (member: TeamMemberP
   return (
     <div className="w-80 transform transition-all duration-300 hover:scale-105 shrink-0 mx-4 snap-center">
       <div className="relative group bg-[#0a1527] rounded-xl border border-amber-600/50 p-8 shadow-xl hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] transition-all duration-300">
+        {/* Profile Image */}
         <div className="relative w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-amber-500/30">
           {image ? (
-            <Image
+            <img
               src={image}
               alt={name}
-              width={160}
-              height={160}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
             />
           ) : (
@@ -204,11 +202,13 @@ const TeamCard: React.FC<TeamMemberProps & { onShowSocials: (member: TeamMemberP
           )}
         </div>
 
+        {/* Name and Role */}
         <div className="text-center">
           <h3 className="text-xl font-bold text-white mb-2 tracking-wide">{name}</h3>
           <p className="text-amber-500 font-medium">{role}</p>
         </div>
 
+        {/* Socials Button */}
         <button
           onClick={() => onShowSocials({ name, role, image, ...member })}
           className="mt-6 bg-gradient-to-r from-amber-600/90 to-amber-700/90 text-white py-2.5 px-4 rounded-lg w-full text-center hover:from-amber-500/90 hover:to-amber-600/90 transition-all duration-300 transform active:scale-95 font-medium"
@@ -220,7 +220,7 @@ const TeamCard: React.FC<TeamMemberProps & { onShowSocials: (member: TeamMemberP
   );
 };
 
-// Main Team Component (rest of the component remains the same)
+// Main Team Component
 const Team: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
@@ -267,49 +267,49 @@ const Team: React.FC = () => {
       name: "Senuji De Silva",
       role: "Team Lead",
       image: "/teamimg/senuji.jpg",
-      linkedin: "https://linkedin.com/in/senujidesilva/",
-      github: "https://github.com/SenujiDes",
-      instagram: "https://instagram.com/notintoyoutho"
+      linkedin: "https://linkedin.com/in/senuji",
+      github: "https://github.com/senuji",
+      instagram: "https://instagram.com/senuji"
     },
     {
       name: "Minsandi De Silva",
       role: "Developer",
       image: "/teamimg/minsandi.jpg",
-      linkedin: "https://linkedin.com/in/minsandi-de-silva-3424552a7/",
-      github: "https://github.com/Minsandi03",
-      instagram: "https://instagram.com/min_siiiii"
+      linkedin: "https://linkedin.com/in/minsandi",
+      github: "https://github.com/minsandi",
+      instagram: "https://instagram.com/minsandi"
     },
     {
       name: "Janindu Amaraweera",
       role: "Developer",
       image: "/teamimg/janindua.jpg",
-      linkedin: "https://linkedin.com/in/janinduamaraweera/",
-      github: "https://github.com/Janindu02",
+      linkedin: "https://linkedin.com/in/janindu",
+      github: "https://github.com/janindu",
       instagram: "https://instagram.com/janindu"
     },
     {
       name: "Nisil Liyanage",
       role: "Developer",
       image: "/teamimg/nisil.jpg",
-      linkedin: "https://linkedin.com/in/nisil-liyanage/",
-      github: "https://github.com/nisilliyanagel",
-      instagram: "https://instagram.com/nisilliyanage"
+      linkedin: "https://linkedin.com/in/nisil",
+      github: "https://github.com/nisil",
+      instagram: "https://instagram.com/nisil"
     },
     {
       name: "Minidu Thiranjaya",
       role: "Developer",
-      image: "/teamimg/minidu.png",
-      linkedin: "https://linkedin.com/in/minidu-thiranjaya-988113320/",
-      github: "https://github.com/NanayakkaraMiniduThiranjaya",
-      instagram: "https://instagram.com/minidu_thiranjaya2003"
+      image: "/teamimg/minidu.jpg",
+      linkedin: "https://linkedin.com/in/minidu",
+      github: "https://github.com/minidu",
+      instagram: "https://instagram.com/minidu"
     },
     {
       name: "Thisal Induwara",
       role: "Developer",
       image: "/teamimg/thisal.jpg",
       linkedin: "https://linkedin.com/in/thisal",
-      github: "https://github.com/Thisal03",
-      instagram: "https://instagram.com/thi.sal_indu.wara"
+      github: "https://github.com/thisal",
+      instagram: "https://instagram.com/thisal"
     }
   ];
 

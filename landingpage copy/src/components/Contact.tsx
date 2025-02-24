@@ -104,7 +104,7 @@ const Contact = () => {
             Connect with Excellence
           </h2>
           <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
-            Lets discuss how we can bring your vision to life with precision and expertise.
+            Let's discuss how we can bring your vision to life with precision and expertise.
           </p>
         </div>
 
@@ -112,8 +112,8 @@ const Contact = () => {
           {/* Contact Information */}
           <div className="space-y-6">
             {[
-              { icon: MapPin, title: "Global Headquarters", detail: "Ceylon Mine , Colombo, Sri Lanka" },
-              { icon: Phone, title: "Direct Line", detail: "+94 759 171 701" },
+              { icon: MapPin, title: "Global Headquarters", detail: "123 Ceylon Mine St, Colombo, Sri Lanka" },
+              { icon: Phone, title: "Direct Line", detail: "+94 123 456 789" },
               { icon: Mail, title: "Executive Support", detail: "contact@ceylonmine.com" },
             ].map(({ icon: Icon, title, detail }, index) => (
               <div
@@ -136,9 +136,9 @@ const Contact = () => {
             <h3 className="text-2xl font-semibold text-amber-100 mb-8">Strategic Partnerships</h3>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { href: "https://www.linkedin.com/company/ceylon-mine/posts/?feedView=all", icon: Linkedin, label: "LinkedIn" },
-                { href: "https://github.com/SenujiDes/", icon: Github, label: "GitHub" },
-                { href: "https://www.instagram.com/ceylon_mine/", icon: Instagram, label: "Instagram" },
+                { href: "#", icon: Linkedin, label: "LinkedIn" },
+                { href: "#", icon: Github, label: "GitHub" },
+                { href: "#", icon: Instagram, label: "Instagram" },
               ].map(({ href, icon: Icon, label }, index) => (
                 <Link
                   key={index}

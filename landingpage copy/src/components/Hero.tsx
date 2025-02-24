@@ -205,7 +205,6 @@
 
 //_________
 
-// Hero.tsx
 "use client";
 
 import React, { useRef } from "react";
@@ -214,44 +213,36 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Sphere, Torus, Stars, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
-// Define types for the Torus props
-interface AnimatedTorusProps {
-  position: [number, number, number];
-  scale: number;
-  speed: number;
-  color: string;
-}
-
 // Animated Main Sphere (Gold, Glowing)
 const AnimatedSphere = () => {
   const sphereRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
     if (sphereRef.current) {
-      sphereRef.current.position.y = Math.sin(clock.elapsedTime * 1.5) * 0.4;
-      sphereRef.current.rotation.y += 0.003;
+      sphereRef.current.position.y = Math.sin(clock.elapsedTime * 1.5) * 0.4; // Floating
+      sphereRef.current.rotation.y += 0.003; // Slow rotation
     }
   });
 
   return (
     <Sphere ref={sphereRef} args={[2.5, 100, 100]} scale={3.5}>
       <MeshDistortMaterial
-        color="#FFD700"
+        color="#FFD700" // Gold
         attach="material"
-        distort={0.65}
-        speed={3.2}
-        roughness={0.3}
-        metalness={1}
+        distort={0.65} // More fluid distortion
+        speed={3.2} // Smoother motion
+        roughness={0.3} // Matte-metallic effect
+        metalness={1} // Pure metallic shine
       />
     </Sphere>
   );
 };
 
-// Floating Animated Torus Rings with proper typing
-const AnimatedTorus: React.FC<AnimatedTorusProps> = ({ position, scale, speed, color }) => {
+// Floating Animated Torus Rings
+const AnimatedTorus = ({ position, scale, speed, color }) => {
   const torusRef = useRef<THREE.Mesh>(null);
 
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (torusRef.current) {
       torusRef.current.rotation.x += 0.005 * speed;
       torusRef.current.rotation.y += 0.008 * speed;
@@ -259,67 +250,37 @@ const AnimatedTorus: React.FC<AnimatedTorusProps> = ({ position, scale, speed, c
   });
 
   return (
-    <Torus 
-      ref={torusRef} 
-      args={[3, 0.2, 32, 100]} 
-      position={position} 
-      scale={[scale, scale, scale]}
-    >
-      <MeshDistortMaterial 
-        color={color} 
-        distort={0.4} 
-        speed={2} 
-        metalness={1} 
-        roughness={0.2} 
-      />
+    <Torus ref={torusRef} args={[3, 0.2, 32, 100]} position={position} scale={scale}>
+      <MeshDistortMaterial color={color} distort={0.4} speed={2} metalness={1} roughness={0.2} />
     </Torus>
   );
 };
 
-const Hero: React.FC = () => {
+export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-amber-900">
       <div className="relative w-full h-[700px]">
+        {/* Three.js Canvas */}
         <Canvas className="absolute top-0 left-0 w-full h-full">
           <OrbitControls enableZoom={false} />
           
+          {/* Ambient Mining Glow */}
           <ambientLight intensity={0.8} />
-          <directionalLight position={[5, 7, 3]} intensity={2} color="#FFD700" />
-          <pointLight position={[0, 6, 4]} intensity={3} color="#FFA500" />
-          <spotLight 
-            position={[-5, 7, 6]} 
-            intensity={1.8} 
-            angle={0.4} 
-            penumbra={0.7} 
-            color="#DAA520" 
-          />
+          <directionalLight position={[5, 7, 3]} intensity={2} color={"#FFD700"} /> {/* Gold */}
+          <pointLight position={[0, 6, 4]} intensity={3} color={"#FFA500"} /> {/* Orange Gold */}
+          <spotLight position={[-5, 7, 6]} intensity={1.8} angle={0.4} penumbra={0.7} color={"#DAA520"} /> {/* Goldenrod */}
 
-          <Stars 
-            radius={50} 
-            depth={50} 
-            count={250} 
-            factor={4} 
-            saturation={0} 
-            fade 
-            speed={1} 
-          />
+          {/* Background Stars */}
+          <Stars radius={50} depth={50} count={250} factor={4} saturation={0} fade speed={1} />
 
+          {/* 3D Objects */}
           <AnimatedSphere />
-          <AnimatedTorus 
-            position={[0, 0, -3]} 
-            scale={3} 
-            speed={1} 
-            color="#FFD700" 
-          />
-          <AnimatedTorus 
-            position={[0, 0, -5]} 
-            scale={2.5} 
-            speed={-1} 
-            color="#FFA500" 
-          />
+          <AnimatedTorus position={[0, 0, -3]} scale={3} speed={1} color={"#FFD700"} /> {/* Gold */}
+          <AnimatedTorus position={[0, 0, -5]} scale={2.5} speed={-1} color={"#FFA500"} /> {/* Orange Gold */}
         </Canvas>
       </div>
 
+      {/* Text Content */}
       <div className="absolute text-center">
         <h1 className="text-6xl font-bold text-amber-400 drop-shadow-lg">
           Ceylon Mine
@@ -329,6 +290,7 @@ const Hero: React.FC = () => {
           <span className="text-amber-500">Advanced Technology</span>
         </p>
 
+        {/* CTA Button */}
         <Link
           href="#features"
           className="mt-8 inline-block px-6 py-3 text-lg font-semibold text-black bg-amber-400 rounded-lg hover:bg-amber-500 transition shadow-lg"
@@ -338,6 +300,4 @@ const Hero: React.FC = () => {
       </div>
     </section>
   );
-};
-
-export default Hero;
+}

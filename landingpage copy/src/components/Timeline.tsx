@@ -78,17 +78,10 @@ const Timeline = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById("threejs-container")?.appendChild(renderer.domElement);
 
-    // Explicitly type the array as THREE.Mesh[]
-    const timelineObjects: THREE.Mesh[] = [];
-    
+    const timelineObjects = [];
     for (let i = 0; i < 5; i++) {
       const geometry = new THREE.SphereGeometry(0.4, 32, 32);
-      const material = new THREE.MeshStandardMaterial({ 
-        color: 0xffd700, 
-        emissive: 0x222222, 
-        metalness: 0.7, 
-        roughness: 0.3 
-      });
+      const material = new THREE.MeshStandardMaterial({ color: 0xffd700, emissive: 0x222222, metalness: 0.7, roughness: 0.3 });
       const sphere = new THREE.Mesh(geometry, material);
       sphere.position.set(Math.random() * 4 - 2, Math.random() * 4 - 2, Math.random() * 4 - 2);
       scene.add(sphere);
@@ -126,23 +119,23 @@ const Timeline = () => {
 
   const timelineItems = [
     {
-      year: "2024",
+      year: "2023",
       title: "Project Inception",
       description:
         "Initial research and planning phase for Ceylon Mine. Established core team and project vision.",
     },
     {
-      year: "2025 Q1",
+      year: "2024 Q1",
       title: "Development Phase",
       description: "Building core features and establishing the technical infrastructure.",
     },
     {
-      year: "2025 Q2",
+      year: "2024 Q2",
       title: "Beta Testing",
       description: "Launching beta version with selected mining partners for real-world testing.",
     },
     {
-      year: "2025 Q3",
+      year: "2024 Q3",
       title: "Official Launch",
       description: "Full-scale deployment of Ceylon Mine platform across Sri Lanka.",
     },
