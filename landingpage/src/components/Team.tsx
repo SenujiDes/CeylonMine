@@ -276,7 +276,7 @@ const Team: React.FC = () => {
       role: "Developer",
       image: "/teamimg/minsandi.jpg",
       linkedin: "https://linkedin.com/in/minsandi-de-silva-3424552a7/",
-      github: "https://github.com/Minsandi03",
+      github: "https://github.com/MinsandiDeSilva",
       instagram: "https://instagram.com/min_siiiii"
     },
     {
@@ -307,7 +307,7 @@ const Team: React.FC = () => {
       name: "Thisal Induwara",
       role: "Developer",
       image: "/teamimg/thisal.jpg",
-      linkedin: "https://linkedin.com/in/thisal",
+      linkedin: "https://linkedin.com/in/thisal-induwara-0b3555294/",
       github: "https://github.com/Thisal03",
       instagram: "https://instagram.com/thi.sal_indu.wara"
     }
