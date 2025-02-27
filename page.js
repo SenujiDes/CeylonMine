@@ -99,16 +99,43 @@ export default function EducationalPage() {
             Mineral Royalties
           </Typography>
           <Typography paragraph>
-            Mineral royalties are payments made by mining operators to the government as compensation for the extraction of natural resources. CeylonMine simplifies the calculation, tracking, and payment of mineral royalties, ensuring compliance with Sri Lankan regulations.
+            
+            Mineral royalties are payments made by mining operators to the government as compensation for the extraction of natural resources. CeylonMine simplifies the calculation, tracking, and payment of mineral royalties, ensuring compliance with Sri Lankan regulations.<br/>
+
+            Mineral royalties are typically calculated based on:
+            The amount of water gel, Ammonium Nitrate (NH4NO3), and the Powder Factor<br/>
+            
           </Typography>
         </TabPanel>
 
         <TabPanel value={selectedTab} index={3}>
           <Typography variant="h5" gutterBottom>
+            Frequently Asked Questions
+          </Typography>
+          <Typography paragraph>
+          <b>Question:</b> What types of mining licenses are available?<br/>
+          <b>Answer:</b><br/>
+          The available types of licenses include:<br/>
+
+          <b>1. Exploration License (EL)</b><br/>
+          <b>2. Mining Licenses</b><br/>
+          <b>3. Trading License (TDL)</b><br/>
+          <b>4. Transport License (TL)</b><br/>
+          <b>5. Export of Minerals</b><br/>
+          
+          </Typography>
+        </TabPanel>
+
+        <TabPanel value={selectedTab} index={4}>
+          <Typography variant="h5" gutterBottom>
             Licensing Categories
           </Typography>
           <Typography paragraph>
-            Mineral royalties are payments made by mining operators to the government as compensation for the extraction of natural resources. CeylonMine simplifies the calculation, tracking, and payment of mineral royalties, ensuring compliance with Sri Lankan regulations.
+          <b>1. Exploration License (EL)</b><br/>
+          <b>2. Mining Licenses</b><br/>
+          <b>3. Trading License (TDL)</b><br/>
+          <b>4. Transport License (TL)</b><br/>
+          <b>5. Export of Minerals</b><br/>
           </Typography>
         </TabPanel>
       </Paper>
