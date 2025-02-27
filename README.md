@@ -1,86 +1,36 @@
-# Educational Page for Mining Education & Resources
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-This project is a React-based web application that provides educational content and resources related to mining in Sri Lanka. It is built using Material UI for UI components and features navigation tabs to organize information efficiently.
+## Getting Started
 
-## Features
-- **Tab Navigation:** Interactive tab component for switching between different content sections.
-- **Educational Content:** Includes information on Licensing Guidelines, Environmental Compliance, Mineral Royalties, and FAQs.
-- **Responsive Design:** The application is responsive and adapts to different screen sizes.
+First, run the development server:
 
-## Installation and Setup
-### Prerequisites
-Ensure you have the following installed:
-- Node.js (v14 or higher)
-- npm or yarn
-
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd educational-page
-   ```
-3. Install the dependencies:
-   ```bash
-   npm install
-   ```
-
-### Running the Application
-Start the development server with the following command:
 ```bash
-npm start
-```
-The application will be available at `http://localhost:3000`.
-
-## Project Structure
-```
-.
-├── public
-├── src
-│   ├── components
-│   ├── pages
-│   ├── App.js
-│   └── index.js
-└── package.json
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-### Key Files
-- **App.js:** Main entry point for the application.
-- **EducationalPage.js:** Contains the layout and content for the educational page.
-- **index.js:** Renders the app to the DOM.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Usage
-Navigate through the tabs to access different educational sections:
-1. **Licensing Guidelines:** Information about obtaining and maintaining mining licenses.
-2. **Environmental Compliance:** Details on environmental regulations and compliance for mining operations.
-3. **Mineral Royalties:** Explanation of royalty payments and regulations.
-4. **FAQs:** Answers to common questions related to mining licenses and operations.
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-## Customization
-- To add new content sections, modify the `EducationalPage.js` file.
-- Update styles using Material UI's `sx` prop or custom CSS classes.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Dependencies
-- React: ^17.0.0
-- Material UI: ^5.0.0
+## Learn More
 
-## Contributing
-1. Fork the project.
-2. Create your feature branch:
-   ```bash
-   git checkout -b feature/YourFeatureName
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m 'Add some feature'
-   ```
-4. Push to the branch:
-   ```bash
-   git push origin feature/YourFeatureName
-   ```
-5. Open a pull request.
+To learn more about Next.js, take a look at the following resources:
 
-## License
-This project is licensed under the MIT License.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
