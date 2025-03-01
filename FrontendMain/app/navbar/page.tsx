@@ -24,9 +24,33 @@ export default function Navbar() {
 
   // Toggle dark/light mode
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode)
-    document.documentElement.classList.toggle('dark') // Toggle dark class on the root element
+    const newTheme = !isDarkMode
+    setIsDarkMode(newTheme)
+
+    // Apply the theme to the root HTML element
+    if (newTheme) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+
+    // Save the theme preference to localStorage (optional)
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light')
   }
+
+  // Initialize theme from localStorage or system preference
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme')
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+      setIsDarkMode(true)
+      document.documentElement.classList.add('dark')
+    } else {
+      setIsDarkMode(false)
+      document.documentElement.classList.remove('dark')
+    }
+  }, [])
 
   const navItems = [
     { name: 'Home', path: '/' },
