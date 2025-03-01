@@ -178,11 +178,11 @@ export default function Home() {
       </motion.button>
 
       {/* Hero Section */}
-      <main className="relative z-10 pt-10 pb-24">
+      <main className="relative z-10 pt-24 pb-16"> {/* Added padding-top for spacing */}
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <motion.h1 
-              className="text-5xl md:text-7xl font-bold mb-4"
+              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4" // Responsive font size
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -190,7 +190,7 @@ export default function Home() {
               AUSTRALIAN-MADE<br />FOR TOUGH CONDITIONS
             </motion.h1>
             <motion.p 
-              className={`text-xl md:text-2xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}
+              className={`text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`} // Responsive font size
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -217,15 +217,15 @@ export default function Home() {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
                     <div className="flex flex-col justify-center">
-                      <h2 className="text-4xl md:text-6xl font-bold mb-2">{product.title}</h2>
-                      <p className="text-xl text-orange-500 mb-4">{product.subtitle}</p>
-                      <p className={`text-lg mb-6 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{product.description}</p>
-                      <p className="text-2xl font-bold mb-8">{product.price}</p>
+                      <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-2">{product.title}</h2>
+                      <p className="text-lg md:text-xl lg:text-2xl text-orange-500 mb-4">{product.subtitle}</p>
+                      <p className={`text-base md:text-lg lg:text-xl mb-6 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{product.description}</p>
+                      <p className="text-xl md:text-2xl lg:text-3xl font-bold mb-8">{product.price}</p>
                       <div>
-                        <button className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-md text-lg font-medium transition-colors mr-4">
+                        <button className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors mr-4">
                           Explore Now
                         </button>
-                        <button className={`border ${isDarkMode ? 'border-white' : 'border-gray-900'} hover:border-orange-500 hover:text-orange-500 py-3 px-8 rounded-md text-lg font-medium transition-colors`}>
+                        <button className={`border ${isDarkMode ? 'border-white' : 'border-gray-900'} hover:border-orange-500 hover:text-orange-500 py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors`}>
                           View Features
                         </button>
                       </div>
@@ -280,8 +280,8 @@ export default function Home() {
       <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-black' : 'bg-gray-100'}`}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">BUILT DIFFERENT</h2>
-            <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">BUILT DIFFERENT</h2>
+            <p className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
               Our campers are engineered with innovative features that set us apart from the competition.
             </p>
           </div>
@@ -326,8 +326,8 @@ export default function Home() {
       <section className="relative z-10 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">EXPLORE OUR GALLERY</h2>
-            <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">EXPLORE OUR GALLERY</h2>
+            <p className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
               Discover the beauty and functionality of our campers through stunning visuals.
             </p>
           </div>
@@ -363,8 +363,8 @@ export default function Home() {
       <section className="relative z-10 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">WHAT OUR CUSTOMERS SAY</h2>
-            <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">WHAT OUR CUSTOMERS SAY</h2>
+            <p className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
               Hear from our satisfied customers who have experienced the Mars Campers difference.
             </p>
           </div>
@@ -419,11 +419,11 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">READY FOR YOUR NEXT ADVENTURE?</h2>
-            <p className={`text-lg mb-8 max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">READY FOR YOUR NEXT ADVENTURE?</h2>
+            <p className={`text-base md:text-lg lg:text-xl mb-8 max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
               Book a test drive today and experience the Mars Campers difference for yourself.
             </p>
-            <button className={`bg-white text-orange-500 hover:bg-gray-100 py-3 px-8 rounded-md text-lg font-medium transition-colors`}>
+            <button className={`bg-white text-orange-500 hover:bg-gray-100 py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors`}>
               Book A Test Drive
             </button>
           </motion.div>
@@ -440,8 +440,8 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">STAY CONNECTED</h2>
-            <p className={`text-lg mb-8 max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">STAY CONNECTED</h2>
+            <p className={`text-base md:text-lg lg:text-xl mb-8 max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
               Join our newsletter for exclusive updates, special offers, and adventure inspiration.
             </p>
             <div className="max-w-2xl mx-auto flex flex-col md:flex-row gap-4">
