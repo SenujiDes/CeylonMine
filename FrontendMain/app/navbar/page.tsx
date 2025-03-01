@@ -1,14 +1,13 @@
 'use client'
-import { AppBar, Toolbar, IconButton } from '@mui/material'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
-import MenuIcon from '@mui/icons-material/Menu'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(true) // Default to dark mode
 
   // Add scroll effect
   useEffect(() => {
@@ -22,6 +21,12 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [scrolled])
+
+  // Toggle dark/light mode
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode)
+    document.documentElement.classList.toggle('dark') // Toggle dark class on the root element
+  }
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -57,8 +62,8 @@ export default function Navbar() {
       initial="hidden"
       animate="show"
       variants={navAnimation}
-      className={`${scrolled ? 'bg-[#0A192F] shadow-lg' : 'bg-transparent'} 
-        fixed w-full z-50 transition-all duration-300`}
+      className={`${scrolled ? (isDarkMode ? 'bg-[#0A192F]' : 'bg-white') : 'bg-transparent'} 
+        fixed w-full z-50 transition-all duration-300 shadow-lg`}
     >
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
@@ -92,11 +97,11 @@ export default function Navbar() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link href={item.path}>
-                  <span className="px-3 py-2 text-[#E6F1FF] hover:text-[#FFA500] 
-                    hover:bg-[rgba(255,165,0,0.1)] rounded-md transition-all duration-200
+                  <span className={`px-3 py-2 ${isDarkMode ? 'text-[#E6F1FF]' : 'text-gray-900'} 
+                    hover:text-[#FFA500] hover:bg-[rgba(255,165,0,0.1)] rounded-md transition-all duration-200
                     relative after:content-[''] after:absolute after:bottom-0 after:left-0 
                     after:w-0 after:h-[2px] after:bg-[#FFA500] after:transition-all 
-                    after:duration-300 hover:after:w-full">
+                    after:duration-300 hover:after:w-full`}>
                     {item.name}
                   </span>
                 </Link>
@@ -104,32 +109,60 @@ export default function Navbar() {
             ))}
           </motion.div>
 
-          {/* Sign Up Button */}
-          <motion.div 
-            variants={itemAnimation}
-            className="hidden md:block"
-          >
-            <Link href="/signup">
-              <motion.span
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-[#FFA500] text-[#0A192F] px-4 py-2 rounded-lg 
-                  hover:bg-[#FFD700] transition-colors duration-200 cursor-pointer
-                  font-semibold"
-              >
-                Sign Up
-              </motion.span>
-            </Link>
-          </motion.div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <IconButton
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-[#FFA500] hover:bg-[rgba(255,165,0,0.1)] p-2 rounded-md"
+          {/* Right Side (Theme Toggle and Sign Up Button) */}
+          <div className="flex items-center space-x-4">
+            {/* Theme Toggle Button */}
+            <motion.button
+              onClick={toggleTheme}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-900'} 
+                hover:opacity-80 transition-all`}
             >
-              <MenuIcon />
-            </IconButton>
+              {isDarkMode ? '🌞' : '🌙'}
+            </motion.button>
+
+            {/* Sign Up Button */}
+            <motion.div 
+              variants={itemAnimation}
+              className="hidden md:block"
+            >
+              <Link href="/signup">
+                <motion.span
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-[#FFA500] text-[#0A192F] px-4 py-2 rounded-lg 
+                    hover:bg-[#FFD700] transition-colors duration-200 cursor-pointer
+                    font-semibold"
+                >
+                  Sign Up
+                </motion.span>
+              </Link>
+            </motion.div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={`p-2 rounded-md ${isDarkMode ? 'text-[#FFA500]' : 'text-gray-900'} 
+                  hover:bg-[rgba(255,165,0,0.1)]`}
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16m-7 6h7"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -138,7 +171,7 @@ export default function Navbar() {
           initial={false}
           animate={isOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out
-            bg-[#112240] rounded-b-lg`}
+            ${isDarkMode ? 'bg-[#112240]' : 'bg-gray-100'} rounded-b-lg`}
         >
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navItems.map((item) => (
@@ -148,8 +181,8 @@ export default function Navbar() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link href={item.path}>
-                  <span className="block px-3 py-2 text-[#E6F1FF] hover:text-[#FFA500] 
-                    hover:bg-[rgba(255,165,0,0.1)] rounded-md transition-all duration-200">
+                  <span className={`block px-3 py-2 ${isDarkMode ? 'text-[#E6F1FF]' : 'text-gray-900'} 
+                    hover:text-[#FFA500] hover:bg-[rgba(255,165,0,0.1)] rounded-md transition-all duration-200`}>
                     {item.name}
                   </span>
                 </Link>
