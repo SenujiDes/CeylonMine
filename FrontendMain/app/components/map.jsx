@@ -265,8 +265,10 @@
 
 import dynamic from "next/dynamic";
 import { Container } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import * as THREE from "three";
+import { useRouter } from "next/navigation";
 
 const MapComponent = dynamic(() => import("./LeafletMap"), {
   ssr: false,
@@ -275,6 +277,8 @@ const MapComponent = dynamic(() => import("./LeafletMap"), {
 const Map = () => {
   const [isPopped, setIsPopped] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const canvasRef = useRef(null);
+  const router = useRouter();
 
   // Toggle dark/light mode
   const toggleTheme = () => {
@@ -282,20 +286,107 @@ const Map = () => {
     document.documentElement.classList.toggle('dark'); // Apply dark mode globally
   };
 
+  // Button navigation handlers
+  const scrollToLocations = () => {
+    document.getElementById('service-network').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const goToHomePage = () => {
+    router.push('/');
+  };
+
+  // Initialize 3D sand effect (from home page)
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    // Set up Three.js scene
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvasRef.current,
+      alpha: true,
+    });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Create sand particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 5000;
+    
+    const posArray = new Float32Array(particlesCount * 3);
+    
+    for (let i = 0; i < particlesCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 5;
+    }
+    
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    
+    // Create sand material
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.005,
+      color: 0xD2B48C, // Sand color
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      opacity: 0.4, // Lower opacity so it doesn't interfere with map visibility
+    });
+    
+    // Create the particles mesh
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    
+    // Position camera
+    camera.position.z = 2;
+    
+    // Mouse movement effect
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    function onDocumentMouseMove(event) {
+      mouseX = (event.clientX - window.innerWidth / 2) / 100;
+      mouseY = (event.clientY - window.innerHeight / 2) / 100;
+    }
+    
+    document.addEventListener('mousemove', onDocumentMouseMove);
+    
+    // Handle window resize
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    
+    window.addEventListener('resize', onWindowResize);
+    
+    // Animation loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+      
+      particlesMesh.rotation.x += 0.0005;
+      particlesMesh.rotation.y += 0.0005;
+      
+      // Respond to mouse movement
+      particlesMesh.rotation.x += mouseY * 0.0005;
+      particlesMesh.rotation.y += mouseX * 0.0005;
+      
+      renderer.render(scene, camera);
+    };
+    
+    animate();
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener('mousemove', onDocumentMouseMove);
+      window.removeEventListener('resize', onWindowResize);
+    };
+  }, []);
+
   return (
     <div
       className={`relative min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px",
-        fontFamily: "Arial, sans-serif",
-      }}
     >
       {/* Sand Background Canvas */}
-      <div className="fixed inset-0 w-full h-full z-0"></div>
+      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-0"></canvas>
       
       {/* Dark/Light Mode Toggle Button (Bottom-Right Corner) */}
       <motion.button
@@ -305,23 +396,36 @@ const Map = () => {
         className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg ${
           isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-900'
         } hover:opacity-80 transition-all z-50`}
-        style={{
-          zIndex: 1000,
-        }}
       >
         {isDarkMode ? '🌞' : '🌙'}
       </motion.button>
 
-      {/* Title Section */}
+      {/* Added Navigation Buttons at the top */}
+      <div className="relative z-20 container mx-auto px-4 pt-4 flex justify-center gap-4 mb-4">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={goToHomePage}
+          className={`bg-orange-500 text-white py-2 px-6 rounded-md text-lg font-medium transition-colors`}
+        >
+          Home Page
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={scrollToLocations}
+          className={`border ${isDarkMode ? 'border-white' : 'border-gray-900'} hover:border-orange-500 hover:text-orange-500 py-2 px-6 rounded-md text-lg font-medium transition-colors`}
+        >
+          About Locations
+        </motion.button>
+      </div>
+
+      {/* Title Section - Added pt-8 to adjust spacing after buttons */}
       <div 
-        className="relative z-10 text-center mb-8"
-        style={{
-          marginTop: "2rem",
-          marginBottom: "2rem",
-        }}
+        className="relative z-10 text-center mb-12 pt-8 container mx-auto px-4"
       >
         <motion.h1 
-          className="text-4xl md:text-5xl font-bold mb-2"
+          className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -339,95 +443,222 @@ const Map = () => {
       </div>
 
       {/* Map Container */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 w-full"
-        style={{
-          maxWidth: "1200px",
-          width: "100%",
-        }}
-      >
-        <Container
-          style={{
-            background: isDarkMode ? "#0b0f19" : "#fff",
-            borderRadius: "20px",
-            boxShadow: isDarkMode
-              ? "0 10px 30px rgba(255,255,255,0.2)"
-              : "0 10px 30px rgba(0,0,0,0.2)",
-            padding: "0px",
-            width: "100%",
-            border: `2px solid ${isDarkMode ? "#444" : "#ddd"}`,
-            overflow: "hidden",
-            transition: "transform 0.3s ease-in-out",
-            height: "75vh",
-            cursor: "pointer",
-          }}
-          onClick={() => setIsPopped(!isPopped)}
-          className={isPopped ? "transform scale-105" : ""}
+      <div className="container mx-auto px-4 mb-16">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10 w-full"
         >
-          <div
+          <Container
             style={{
+              background: isDarkMode ? "#0b0f19" : "#fff",
               borderRadius: "20px",
-              overflow: "hidden",
-              boxShadow: isPopped
-                ? isDarkMode
-                  ? "0 20px 50px rgba(255, 255, 255, 0.5)"
-                  : "0 20px 50px rgba(0, 0, 0, 0.5)"
-                : isDarkMode
-                ? "0 15px 30px rgba(255, 255, 255, 0.3)"
-                : "0 15px 30px rgba(0, 0, 0, 0.3)",
-              backgroundColor: isDarkMode ? "#0b0f19" : "#f0f0f0",
+              boxShadow: isDarkMode
+                ? "0 10px 30px rgba(255,255,255,0.2)"
+                : "0 10px 30px rgba(0,0,0,0.2)",
               padding: "0px",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: `2px solid ${isDarkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)"}`,
+              width: "100%",
+              border: `2px solid ${isDarkMode ? "#444" : "#ddd"}`,
+              overflow: "hidden",
+              transition: "transform 0.3s ease-in-out",
+              height: "75vh",
+              cursor: "pointer",
             }}
+            onClick={() => setIsPopped(!isPopped)}
+            className={isPopped ? "transform scale-105" : ""}
           >
-            <MapComponent isDarkMode={isDarkMode} />
-          </div>
-        </Container>
-      </motion.div>
+            <div
+              style={{
+                borderRadius: "20px",
+                overflow: "hidden",
+                boxShadow: isPopped
+                  ? isDarkMode
+                    ? "0 20px 50px rgba(255, 255, 255, 0.5)"
+                    : "0 20px 50px rgba(0, 0, 0, 0.5)"
+                  : isDarkMode
+                  ? "0 15px 30px rgba(255, 255, 255, 0.3)"
+                  : "0 15px 30px rgba(0, 0, 0, 0.3)",
+                backgroundColor: isDarkMode ? "#0b0f19" : "#f0f0f0",
+                padding: "0px",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: `2px solid ${isDarkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)"}`,
+              }}
+            >
+              <MapComponent isDarkMode={isDarkMode} />
+            </div>
+          </Container>
+        </motion.div>
+      </div>
 
-      {/* Legend or Description */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className={`relative z-10 mt-8 p-6 rounded-lg ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white bg-opacity-90'}`}
-        style={{
-          maxWidth: "1200px",
-          width: "100%",
-          boxShadow: isDarkMode
-            ? "0 5px 15px rgba(255,255,255,0.1)"
-            : "0 5px 15px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h2 className="text-2xl font-bold mb-3">Our Service Network</h2>
-        <p className={`mb-4 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-          With service centers across Australia, we ensure you're always covered no matter where your adventures take you.
-          Click on any marker to see details about our locations and the services offered.
-        </p>
-        <div className="flex flex-wrap gap-4 mt-4">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-md text-base font-medium transition-colors"
-          >
-            View All Locations
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`border ${isDarkMode ? 'border-white' : 'border-gray-900'} hover:border-orange-500 hover:text-orange-500 py-2 px-6 rounded-md text-base font-medium transition-colors`}
-          >
-            Find Nearest Dealer
-          </motion.button>
+      {/* Service Network Section - Redesigned to match home page style */}
+      <section id="service-network" className={`relative z-10 py-16 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              OUR SERVICE NETWORK
+            </motion.h2>
+            <motion.p 
+              className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              With service centers across Australia, we ensure you're always covered no matter where your adventures take you
+            </motion.p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "SHOWROOMS",
+                icon: "🏢",
+                description: "Visit our showrooms to experience our campers in person and talk to our experts."
+              },
+              {
+                title: "SERVICE CENTERS",
+                icon: "🔧",
+                description: "Our certified service centers provide maintenance and repairs for all our models."
+              },
+              {
+                title: "PARTNER DEALERS",
+                icon: "🤝",
+                description: "Authorized dealers across the country offering sales and support services."
+              },
+            ].map((feature, index) => (
+              <motion.div 
+                key={index}
+                className={`rounded-lg p-8 text-center ${isDarkMode ? 'bg-gray-800 bg-opacity-70' : 'bg-white bg-opacity-90'}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)" }}
+              >
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </motion.div>
+      </section>
+
+      {/* Location Search CTA - Added to match home page style */}
+      <section className="relative z-10 py-16">
+        <div className="container mx-auto px-4">
+          <motion.div 
+            className={`bg-orange-500 rounded-lg p-8 md:p-12 text-center text-white`}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">FIND YOUR NEAREST LOCATION</h2>
+            <p className="text-lg mb-8 max-w-3xl mx-auto opacity-90">
+              Use our location finder to discover the closest Mars Campers showroom or service center to you.
+            </p>
+            <div className="flex flex-col md:flex-row justify-center gap-4">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`bg-white text-orange-500 hover:bg-gray-100 py-3 px-8 rounded-md text-lg font-medium transition-colors`}
+              >
+                View All Locations
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`border border-white hover:bg-white hover:text-orange-500 py-3 px-8 rounded-md text-lg font-medium transition-colors`}
+              >
+                Find Nearest Dealer
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Location Features */}
+      <section className="relative z-10 py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className={`p-6 rounded-lg ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white bg-opacity-90'}`}
+            >
+              <h3 className="text-2xl font-bold mb-4">AT OUR LOCATIONS</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <span className="text-orange-500 mr-2">✓</span>
+                  <span>Test drives of all our camper models</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-orange-500 mr-2">✓</span>
+                  <span>Expert consultation and personalized advice</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-orange-500 mr-2">✓</span>
+                  <span>Financing options and warranty information</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-orange-500 mr-2">✓</span>
+                  <span>Accessory showcases and customization options</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-orange-500 mr-2">✓</span>
+                  <span>Service and maintenance packages</span>
+                </li>
+              </ul>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className={`p-6 rounded-lg ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white bg-opacity-90'}`}
+            >
+              <h3 className="text-2xl font-bold mb-4">BOOK AN APPOINTMENT</h3>
+              <p className={`mb-6 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+                Schedule a visit to one of our locations for a personalized experience
+                and dedicated attention from our team of experts.
+              </p>
+              <div className="space-y-4">
+                <input 
+                  type="text" 
+                  placeholder="Your Name"
+                  className={`w-full px-4 py-2 rounded-md ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
+                />
+                <input 
+                  type="email" 
+                  placeholder="Your Email"
+                  className={`w-full px-4 py-2 rounded-md ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
+                />
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-md text-base font-medium transition-colors"
+                >
+                  Request Appointment
+                </motion.button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
