@@ -270,7 +270,7 @@ export default function MiningEducation() {
     }
   ];
 
-  // Initialize 3D rock particles effect
+  // Initialize 3D rock particles effect - similar to the sand effect from home page
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -297,7 +297,7 @@ export default function MiningEducation() {
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     
-    // Create rock material
+    // Create rock material - similar color scheme as home page
     const particlesMaterial = new THREE.PointsMaterial({
       size: 0.005,
       color: 0x8B4513, // Rock/mineral color
@@ -385,9 +385,9 @@ export default function MiningEducation() {
         onClick={toggleTheme}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg ${
+        className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg z-50 ${
           isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-900'
-        } hover:opacity-80 transition-all z-50`}
+        } hover:opacity-80 transition-all`}
       >
         {isDarkMode ? '🌞' : '🌙'}
       </motion.button>
@@ -457,64 +457,147 @@ export default function MiningEducation() {
       </main>
 
       {/* Featured Courses Section - Slider */}
-            {/* Featured Courses Section - Slider */}
-            <section className="relative z-10 py-16 bg-gradient-to-r from-gray-900 to-black">
+      <section className="relative z-10 py-16 bg-gradient-to-b from-transparent via-gray-900/50 to-transparent">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500">
-            Featured Courses
-          </h2>
-
-          {/* Courses Slider */}
-          <div className="relative overflow-hidden">
-            <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
-              {courses.map((course, index) => (
-                <div key={index} className="min-w-full flex-shrink-0 px-4">
-                  <div className={`rounded-lg p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
-                    <img src={course.image} alt={course.title} className="w-full h-48 object-cover rounded-lg mb-6" />
-                    <h3 className="text-2xl font-bold mb-2">{course.title}</h3>
-                    <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-4`}>{course.description}</p>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{course.duration}</span>
-                      <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{course.level}</span>
-                    </div>
-                    <ul className="list-disc list-inside mb-4">
-                      {course.topics.map((topic, idx) => (
-                        <li key={idx} className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{topic}</li>
-                      ))}
-                    </ul>
-                    <Link href="/courses" className="inline-block px-6 py-2 bg-gradient-to-r from-amber-400 to-orange-500 text-black font-semibold rounded-lg hover:opacity-80 transition-all">
-                      Enroll Now
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">FEATURED COURSES</h2>
+            <p className={`text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+              Explore our curated selection of mining courses designed to enhance your knowledge and skills.
+            </p>
           </div>
 
-          {/* Slider Controls */}
-          <div className="flex justify-center mt-8 space-x-4">
-            <button
-              onClick={prevSlide}
-              className="p-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all"
-            >
-              &larr;
-            </button>
-            <button
-              onClick={nextSlide}
-              className="p-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all"
-            >
-              &rarr;
-            </button>
+          {/* Course Slider */}
+          <div className="relative overflow-hidden rounded-lg">
+            <div className={`course-slider relative h-96 md:h-[600px] ${isDarkMode ? 'bg-gray-900' : 'bg-gray-200'} rounded-lg overflow-hidden`}>
+              {/* Slides */}
+              {courses.map((course, index) => (
+                <motion.div 
+                  key={index}
+                  className={`absolute inset-0 flex items-center ${index === activeSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ 
+                    opacity: index === activeSlide ? 1 : 0,
+                    scale: index === activeSlide ? 1 : 0.9,
+                    x: index === activeSlide ? 0 : (index < activeSlide ? -100 : 100)
+                  }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+                    <div className="flex flex-col justify-center">
+                      <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-2">{course.title}</h2>
+                      <p className="text-lg md:text-xl lg:text-2xl text-orange-500 mb-4">{course.duration} | {course.level}</p>
+                      <p className={`text-base md:text-lg lg:text-xl mb-6 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{course.description}</p>
+                      <div>
+                        <button className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors mr-4">
+                          Enroll Now
+                        </button>
+                        <button className={`border ${isDarkMode ? 'border-white' : 'border-gray-900'} hover:border-orange-500 hover:text-orange-500 py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors`}>
+                          View Syllabus
+                        </button>
+                      </div>
+                    </div>
+                    <div className="relative">
+                      <motion.img 
+                        src={course.image} 
+                        alt={course.title} 
+                        className="rounded-lg object-cover w-full h-full"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+              
+              {/* Navigation Arrows */}
+              <button 
+                onClick={prevSlide} 
+                className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDarkMode ? 'bg-black bg-opacity-50' : 'bg-white bg-opacity-50'} rounded-full p-2 z-20 hover:bg-opacity-70 transition-all`}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+              </button>
+              <button 
+                onClick={nextSlide} 
+                className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDarkMode ? 'bg-black bg-opacity-50' : 'bg-white bg-opacity-50'} rounded-full p-2 z-20 hover:bg-opacity-70 transition-all`}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+              
+              {/* Dots Indicator */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+                {courses.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveSlide(index)}
+                    className={`w-3 h-3 rounded-full ${index === activeSlide ? 'bg-orange-500' : isDarkMode ? 'bg-white bg-opacity-50' : 'bg-gray-900 bg-opacity-50'}`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer Section */}
-      <footer className="relative z-10 py-8 bg-gray-900 bg-opacity-70 backdrop-blur-sm">
-        <div className="container mx-auto px-4 text-center">
-          <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-            &copy; {new Date().getFullYear()} Mining Education Center. All rights reserved.
-          </p>
+      {/* Footer */}
+      <footer className={`relative z-10 py-12 ${isDarkMode ? 'bg-black' : 'bg-gray-900'}`}>
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-xl font-bold mb-4">MINING EDUCATION CENTER</h3>
+              <p className="opacity-70 mb-4">
+                Comprehensive resources to expand your knowledge and skills in modern mining practices.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-white hover:text-orange-500 transition-colors">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12z"></path>
+                  </svg>
+                </a>
+                <a href="#" className="text-white hover:text-orange-500 transition-colors">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5.15 11.65L12 17.78l-5.15-4.13c-.26-.21-.42-.53-.42-.87 0-.34.16-.66.42-.87l4.82-3.86c.2-.16.48-.16.68 0l4.82 3.86c.26.21.42.53.42.87s-.16.66-.42.87z"></path>
+                  </svg>
+                </a>
+                <a href="#" className="text-white hover:text-orange-500 transition-colors">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-4">COURSES</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Introduction to Mining Engineering</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Advanced Mining Techniques</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Mining Safety and Regulations</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-4">COMPANY</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">About Us</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Our Story</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Careers</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-4">CONTACT</h3>
+              <ul className="space-y-2">
+                <li className="opacity-70">123 Mining Way, Melbourne, VIC 3000</li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">1800 MINING</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">info@miningeducation.com.au</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Support</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-12 pt-8 border-t border-gray-800 text-center opacity-70">
+            <p>© 2025 Mining Education Center. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
