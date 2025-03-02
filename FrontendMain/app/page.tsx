@@ -32,27 +32,27 @@ export default function Home() {
   const products = [
     {
       id: 1,
-      title: "SPIRIT",
-      subtitle: "HYBRID OFFROAD CAMPER",
-      description: "Designed for Australian conditions with tough, lightweight construction.",
-      image: "/api/placeholder/800/500",
-      price: "FROM $32,990",
+      title: "GOLD MINING",
+      subtitle: "PRECIOUS METAL EXTRACTION",
+      description: "Specializing in sustainable gold mining practices with advanced technology.",
+      image: "/images/gold-mining.jpg",
+      price: "FROM $1.2M INVESTMENT",
     },
     {
       id: 2,
-      title: "RANGER",
-      subtitle: "COMPACT OFFROAD CAMPER",
-      description: "Perfect for exploring remote locations with ease and comfort.",
-      image: "/api/placeholder/800/500",
-      price: "FROM $29,990",
+      title: "GEMSTONE MINING",
+      subtitle: "LUXURY GEMSTONE EXTRACTION",
+      description: "Unearth rare and exquisite gemstones from Sri Lanka's rich mineral deposits.",
+      image: "/images/gemstone-mining.jpg",
+      price: "FROM $800K INVESTMENT",
     },
     {
       id: 3,
-      title: "EXPLORER",
-      subtitle: "PREMIUM ADVENTURE CAMPER",
-      description: "Luxury features for extended stays in the Australian outback.",
-      image: "/api/placeholder/800/500",
-      price: "FROM $39,990",
+      title: "INDUSTRIAL MINERALS",
+      subtitle: "HIGH-QUALITY MINERAL EXTRACTION",
+      description: "Providing industrial minerals for global manufacturing and construction.",
+      image: "/images/industrial-minerals.jpg",
+      price: "FROM $500K INVESTMENT",
     },
   ];
 
@@ -154,8 +154,8 @@ export default function Home() {
     <div className={`relative min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'} overflow-hidden`} ref={scrollRef}>
       <Navbar />
       <Head>
-        <title>Mars Campers | Premium Australian Camper Trailers</title>
-        <meta name="description" content="Australian-made camper trailers built for tough conditions" />
+        <title>Ceylon Mine | Sustainable Mining Solutions</title>
+        <meta name="description" content="Ceylon Mine specializes in sustainable mining of gold, gemstones, and industrial minerals in Sri Lanka." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -187,7 +187,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              AUSTRALIAN-MADE<br />FOR TOUGH CONDITIONS
+              SUSTAINABLE MINING<br />FOR A BETTER FUTURE
             </motion.h1>
             <motion.p 
               className={`text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`} // Responsive font size
@@ -195,7 +195,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Engineered to handle the harshest environments with premium build quality and cutting-edge features.
+              Committed to ethical mining practices and environmental conservation.
             </motion.p>
           </div>
 
@@ -223,10 +223,10 @@ export default function Home() {
                       <p className="text-xl md:text-2xl lg:text-3xl font-bold mb-8">{product.price}</p>
                       <div>
                         <button className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors mr-4">
-                          Explore Now
+                          Learn More
                         </button>
                         <button className={`border ${isDarkMode ? 'border-white' : 'border-gray-900'} hover:border-orange-500 hover:text-orange-500 py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors`}>
-                          View Features
+                          View Projects
                         </button>
                       </div>
                     </div>
@@ -280,28 +280,28 @@ export default function Home() {
       <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-black' : 'bg-gray-100'}`}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">BUILT DIFFERENT</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">OUR COMMITMENT</h2>
             <p className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Our campers are engineered with innovative features that set us apart from the competition.
+              We are dedicated to sustainable mining practices that benefit both people and the planet.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "LIGHTWEIGHT DESIGN",
-                icon: "🏗️",
-                description: "Advanced materials provide exceptional strength without the weight penalty."
+                title: "ENVIRONMENTAL CARE",
+                icon: "🌱",
+                description: "Minimizing environmental impact through responsible mining techniques."
               },
               {
-                title: "ALL-TERRAIN CAPABILITY",
-                icon: "🏞️",
-                description: "Go anywhere with our heavy-duty independent suspension system."
+                title: "COMMUNITY ENGAGEMENT",
+                icon: "🤝",
+                description: "Supporting local communities and creating sustainable livelihoods."
               },
               {
-                title: "PREMIUM COMFORT",
-                icon: "🛌",
-                description: "Enjoy luxury amenities even in the most remote locations."
+                title: "TECHNOLOGY DRIVEN",
+                icon: "💻",
+                description: "Using cutting-edge technology for efficient and safe mining operations."
               },
             ].map((feature, index) => (
               <motion.div 
@@ -326,20 +326,20 @@ export default function Home() {
       <section className="relative z-10 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">EXPLORE OUR GALLERY</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">OUR MINING OPERATIONS</h2>
             <p className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Discover the beauty and functionality of our campers through stunning visuals.
+              Explore our mining sites and see how we operate sustainably.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              "/api/placeholder/800/600",
-              "/api/placeholder/800/601",
-              "/api/placeholder/800/602",
-              "/api/placeholder/800/603",
-              "/api/placeholder/800/604",
-              "/api/placeholder/800/605"
+              "/images/mining-1.jpg",
+              "/images/mining-2.jpg",
+              "/images/mining-3.jpg",
+              "/images/mining-4.jpg",
+              "/images/mining-5.jpg",
+              "/images/mining-6.jpg"
             ].map((image, index) => (
               <motion.div 
                 key={index}
@@ -349,7 +349,7 @@ export default function Home() {
               >
                 <img 
                   src={image} 
-                  alt={`Gallery Image ${index + 1}`}
+                  alt={`Mining Operation ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300" />
@@ -363,9 +363,9 @@ export default function Home() {
       <section className="relative z-10 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">WHAT OUR CUSTOMERS SAY</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">WHAT OUR PARTNERS SAY</h2>
             <p className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Hear from our satisfied customers who have experienced the Mars Campers difference.
+              Hear from our partners and clients who trust us for sustainable mining solutions.
             </p>
           </div>
           
@@ -373,21 +373,21 @@ export default function Home() {
             {[
               {
                 name: "John Doe",
-                location: "Sydney, NSW",
-                testimonial: "The Spirit Camper has completely changed the way we travel. It's lightweight yet incredibly durable.",
-                image: "/api/placeholder/100/100",
+                location: "Colombo, Sri Lanka",
+                testimonial: "Ceylon Mine has been a reliable partner in our gold mining ventures. Their commitment to sustainability is unmatched.",
+                image: "/images/partner-1.jpg",
               },
               {
                 name: "Jane Smith",
-                location: "Melbourne, VIC",
-                testimonial: "We took the Ranger Camper on a 3-month trip across the outback, and it performed flawlessly.",
-                image: "/api/placeholder/100/100",
+                location: "Kandy, Sri Lanka",
+                testimonial: "Their gemstone mining operations are both ethical and efficient. Highly recommend Ceylon Mine for any mining project.",
+                image: "/images/partner-2.jpg",
               },
               {
                 name: "Mike Johnson",
-                location: "Brisbane, QLD",
-                testimonial: "The Explorer Camper is the perfect blend of luxury and ruggedness. Highly recommend it!",
-                image: "/api/placeholder/100/100",
+                location: "Galle, Sri Lanka",
+                testimonial: "The industrial minerals provided by Ceylon Mine have been crucial for our manufacturing processes.",
+                image: "/images/partner-3.jpg",
               },
             ].map((testimonial, index) => (
               <motion.div 
@@ -419,12 +419,12 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">READY FOR YOUR NEXT ADVENTURE?</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">READY TO PARTNER WITH US?</h2>
             <p className={`text-base md:text-lg lg:text-xl mb-8 max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Book a test drive today and experience the Mars Campers difference for yourself.
+              Contact us today to explore sustainable mining opportunities.
             </p>
             <button className={`bg-white text-orange-500 hover:bg-gray-100 py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors`}>
-              Book A Test Drive
+              Get In Touch
             </button>
           </motion.div>
         </div>
@@ -440,9 +440,9 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">STAY CONNECTED</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">STAY UPDATED</h2>
             <p className={`text-base md:text-lg lg:text-xl mb-8 max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Join our newsletter for exclusive updates, special offers, and adventure inspiration.
+              Subscribe to our newsletter for the latest updates on our mining projects and initiatives.
             </p>
             <div className="max-w-2xl mx-auto flex flex-col md:flex-row gap-4">
               <input 
@@ -469,9 +469,9 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">MARS CAMPERS</h3>
+              <h3 className="text-xl font-bold mb-4">CEYLON MINE</h3>
               <p className="opacity-70 mb-4">
-                Australian-made camper trailers designed for the toughest conditions.
+                Sustainable mining solutions for a better future.
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-white hover:text-orange-500 transition-colors">
@@ -492,35 +492,35 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-4">PRODUCTS</h3>
+              <h3 className="text-xl font-bold mb-4">SERVICES</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Spirit Camper</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Ranger Camper</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Explorer Camper</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Accessories</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Gold Mining</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Gemstone Mining</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Industrial Minerals</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Consulting</a></li>
               </ul>
             </div>
             <div>
               <h3 className="text-xl font-bold mb-4">COMPANY</h3>
               <ul className="space-y-2">
                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">About Us</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Our Story</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Showrooms</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Our Mission</a></li>
                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Careers</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">News</a></li>
               </ul>
             </div>
             <div>
               <h3 className="text-xl font-bold mb-4">CONTACT</h3>
               <ul className="space-y-2">
-                <li className="opacity-70">123 Camper Way, Melbourne, VIC 3000</li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">1800 CAMPER</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">info@marscampers.com.au</a></li>
+                <li className="opacity-70">123 Mining Road, Colombo, Sri Lanka</li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">+94 112 345 678</a></li>
+                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">info@ceylonmine.lk</a></li>
                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Support</a></li>
               </ul>
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-800 text-center opacity-70">
-            <p>© 2025 Mars Campers. All rights reserved.</p>
+            <p>© 2025 Ceylon Mine. All rights reserved.</p>
           </div>
         </div>
       </footer>

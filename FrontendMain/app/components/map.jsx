@@ -286,15 +286,6 @@ const Map = () => {
     document.documentElement.classList.toggle('dark'); // Apply dark mode globally
   };
 
-  // Button navigation handlers
-  const scrollToLocations = () => {
-    document.getElementById('service-network').scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const goToHomePage = () => {
-    router.push('/');
-  };
-
   // Initialize 3D sand effect (from home page)
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -400,32 +391,12 @@ const Map = () => {
         {isDarkMode ? '🌞' : '🌙'}
       </motion.button>
 
-      {/* Added Navigation Buttons at the top */}
-      <div className="relative z-20 container mx-auto px-4 pt-4 flex justify-center gap-4 mb-4">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={goToHomePage}
-          className={`bg-orange-500 text-white py-2 px-6 rounded-md text-lg font-medium transition-colors`}
-        >
-          Home Page
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={scrollToLocations}
-          className={`border ${isDarkMode ? 'border-white' : 'border-gray-900'} hover:border-orange-500 hover:text-orange-500 py-2 px-6 rounded-md text-lg font-medium transition-colors`}
-        >
-          About Locations
-        </motion.button>
-      </div>
-
-      {/* Title Section - Added pt-8 to adjust spacing after buttons */}
+      {/* Title Section - Adjusted header size */}
       <div 
-        className="relative z-10 text-center mb-12 pt-8 container mx-auto px-4"
+        className="relative z-10 text-center mb-8 pt-12 container mx-auto px-4"
       >
         <motion.h1 
-          className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
+          className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -442,8 +413,8 @@ const Map = () => {
         </motion.p>
       </div>
 
-      {/* Map Container */}
-      <div className="container mx-auto px-4 mb-16">
+      {/* Map Container - Added margin-top for gap */}
+      <div className="container mx-auto px-4 mt-8 mb-16">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
