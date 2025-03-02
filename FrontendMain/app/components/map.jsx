@@ -1,16 +1,186 @@
+// // // "use client";
+
+// // // import dynamic from "next/dynamic";
+
+// // // const MapComponent = dynamic(() => import("./LeafletMap"), {
+// // //   ssr: false, // Ensures Leaflet loads only on the client side
+// // // });
+
+// // // const Map = () => {
+// // //   return (
+// // //     <div>
+// // //       <h1>Sri Lanka Map</h1>
+// // //       <MapComponent />
+// // //     </div>
+// // //   );
+// // // };
+
+// // // export default Map;
+
 // // "use client";
 
 // // import dynamic from "next/dynamic";
+// // import { Container } from "react-bootstrap";
+// // import { useState, useEffect } from "react";
+// // import { useRouter } from "next/navigation"; // ✅ FIXED: Updated from 'next/router'
 
 // // const MapComponent = dynamic(() => import("./LeafletMap"), {
-// //   ssr: false, // Ensures Leaflet loads only on the client side
+// //   ssr: false, // ✅ Ensures Leaflet loads only on the client side
 // // });
 
 // // const Map = () => {
+// //   const [isPopped, setIsPopped] = useState(false);
+// //   const [showSplash, setShowSplash] = useState(true);
+// //   const router = useRouter();
+
+// //   // Hide splash screen after 1.5 seconds
+// //   // useEffect(() => {
+// //   //   const timer = setTimeout(() => {
+// //   //     setShowSplash(false);
+// //   //   }, 1500);
+// //   //   return () => clearTimeout(timer);
+// //   // }, []);
+
+// //   // if (showSplash) {
+// //   //   return (
+// //   //     <div
+// //   //       style={{
+// //   //         display: "flex",
+// //   //         alignItems: "center",
+// //   //         justifyContent: "center",
+// //   //         height: "100vh",
+// //   //         background: "#000",
+// //   //         color: "#fff",
+// //   //         fontSize: "2rem",
+// //   //         fontWeight: "bold",
+// //   //         flexDirection: "column",
+// //   //         textAlign: "center",
+// //   //       }}
+// //   //     >
+// //   //       Welcome to the Map
+// //   //     </div>
+// //   //   );
+// //   // }
+
 // //   return (
-// //     <div>
-// //       <h1>Sri Lanka Map</h1>
-// //       <MapComponent />
+// //     <div
+// //       style={{
+// //         background: "#1e1e1e",
+// //         minHeight: "100vh",
+// //         display: "flex",
+// //         flexDirection: "column",
+// //         alignItems: "center",
+// //         justifyContent: "center",
+// //         padding: "20px",
+// //         fontFamily: "Arial, sans-serif",
+// //       }}
+// //     >
+// //       {/* Navigation Buttons */}
+// //       <div
+// //         style={{
+// //           position: "absolute",
+// //           top: "20px",
+// //           left: "50%",
+// //           transform: "translateX(-50%)",
+// //           zIndex: 1000,
+// //           display: "flex",
+// //           flexWrap: "wrap",
+// //           justifyContent: "center",
+// //           gap: "10px",
+// //           width: "90%",
+// //         }}
+// //       >
+// //         {[
+// //           { label: "Map", route: "/" },
+// //           { label: "Map More", route: "/map-more" },
+// //         ].map(({ label, route }, index) => (
+// //           <button
+// //             key={index}
+// //             style={{
+// //               background: "linear-gradient(145deg, #111, #222)",
+// //               color: "#fff",
+// //               border: "1px solid #444",
+// //               padding: "12px 24px",
+// //               fontSize: "16px",
+// //               fontWeight: "bold",
+// //               borderRadius: "10px",
+// //               boxShadow:
+// //                 "3px 3px 10px rgba(0,0,0,0.5), -3px -3px 10px rgba(255,255,255,0.1)",
+// //               cursor: "pointer",
+// //               transition: "all 0.2s ease-in-out",
+// //               outline: "none",
+// //               minWidth: "120px",
+// //               textAlign: "center",
+// //             }}
+// //             onMouseOver={(e) =>
+// //               (e.target.style.boxShadow =
+// //                 "5px 5px 15px rgba(0,0,0,0.7), -5px -5px 15px rgba(255,255,255,0.2)")
+// //             }
+// //             onMouseOut={(e) =>
+// //               (e.target.style.boxShadow =
+// //                 "3px 3px 10px rgba(0,0,0,0.5), -3px -3px 10px rgba(255,255,255,0.1)")
+// //             }
+// //             onClick={() => router.push(route)}
+// //           >
+// //             {label}
+// //           </button>
+// //         ))}
+// //       </div>
+
+// //       {/* Map Container */}
+// //       <Container
+// //         style={{
+// //           background: "#000",
+// //           borderRadius: "20px",
+// //           boxShadow: "0 10px 30px rgba(255,255,255,0.2)",
+// //           padding: "0px",
+// //           maxWidth: "1200px",
+// //           width: "100%",
+// //           border: "2px solid #444",
+// //           overflow: "hidden",
+// //           transition: "transform 0.3s ease-in-out",
+// //           height: "85vh",
+// //           cursor: "pointer",
+// //         }}
+// //         onClick={() => setIsPopped(!isPopped)}
+// //       >
+// //         <div
+// //           style={{
+// //             borderRadius: "20px",
+// //             overflow: "hidden",
+// //             boxShadow: isPopped
+// //               ? "0 20px 50px rgba(255, 255, 255, 0.5)"
+// //               : "0 15px 30px rgba(255, 255, 255, 0.3)",
+// //             backgroundColor: "#0b0f19",
+// //             padding: "0px",
+// //             height: "100%",
+// //             display: "flex",
+// //             alignItems: "center",
+// //             justifyContent: "center",
+// //             border: "2px solid rgba(255,255,255,0.2)",
+// //           }}
+// //         >
+// //           <MapComponent />
+// //         </div>
+// //       </Container>
+
+// //       {/* Responsive Styles */}
+// //       <style jsx>{`
+// //         @media (max-width: 768px) {
+// //           button {
+// //             padding: 10px 16px;
+// //             font-size: 14px;
+// //             min-width: 100px;
+// //           }
+// //         }
+// //         @media (max-width: 480px) {
+// //           button {
+// //             padding: 8px 12px;
+// //             font-size: 12px;
+// //             min-width: 90px;
+// //           }
+// //         }
+// //       `}</style>
 // //     </div>
 // //   );
 // // };
@@ -21,51 +191,19 @@
 
 // import dynamic from "next/dynamic";
 // import { Container } from "react-bootstrap";
-// import { useState, useEffect } from "react";
-// import { useRouter } from "next/navigation"; // ✅ FIXED: Updated from 'next/router'
+// import { useState } from "react";
 
 // const MapComponent = dynamic(() => import("./LeafletMap"), {
-//   ssr: false, // ✅ Ensures Leaflet loads only on the client side
+//   ssr: false,
 // });
 
-// const Map = () => {
+// const Map = ({ isDarkMode }) => {
 //   const [isPopped, setIsPopped] = useState(false);
-//   const [showSplash, setShowSplash] = useState(true);
-//   const router = useRouter();
-
-//   // Hide splash screen after 1.5 seconds
-//   // useEffect(() => {
-//   //   const timer = setTimeout(() => {
-//   //     setShowSplash(false);
-//   //   }, 1500);
-//   //   return () => clearTimeout(timer);
-//   // }, []);
-
-//   // if (showSplash) {
-//   //   return (
-//   //     <div
-//   //       style={{
-//   //         display: "flex",
-//   //         alignItems: "center",
-//   //         justifyContent: "center",
-//   //         height: "100vh",
-//   //         background: "#000",
-//   //         color: "#fff",
-//   //         fontSize: "2rem",
-//   //         fontWeight: "bold",
-//   //         flexDirection: "column",
-//   //         textAlign: "center",
-//   //       }}
-//   //     >
-//   //       Welcome to the Map
-//   //     </div>
-//   //   );
-//   // }
 
 //   return (
 //     <div
 //       style={{
-//         background: "#1e1e1e",
+//         background: isDarkMode ? "#1e1e1e" : "#f5f5f5",
 //         minHeight: "100vh",
 //         display: "flex",
 //         flexDirection: "column",
@@ -75,68 +213,18 @@
 //         fontFamily: "Arial, sans-serif",
 //       }}
 //     >
-//       {/* Navigation Buttons */}
-//       <div
-//         style={{
-//           position: "absolute",
-//           top: "20px",
-//           left: "50%",
-//           transform: "translateX(-50%)",
-//           zIndex: 1000,
-//           display: "flex",
-//           flexWrap: "wrap",
-//           justifyContent: "center",
-//           gap: "10px",
-//           width: "90%",
-//         }}
-//       >
-//         {[
-//           { label: "Map", route: "/" },
-//           { label: "Map More", route: "/map-more" },
-//         ].map(({ label, route }, index) => (
-//           <button
-//             key={index}
-//             style={{
-//               background: "linear-gradient(145deg, #111, #222)",
-//               color: "#fff",
-//               border: "1px solid #444",
-//               padding: "12px 24px",
-//               fontSize: "16px",
-//               fontWeight: "bold",
-//               borderRadius: "10px",
-//               boxShadow:
-//                 "3px 3px 10px rgba(0,0,0,0.5), -3px -3px 10px rgba(255,255,255,0.1)",
-//               cursor: "pointer",
-//               transition: "all 0.2s ease-in-out",
-//               outline: "none",
-//               minWidth: "120px",
-//               textAlign: "center",
-//             }}
-//             onMouseOver={(e) =>
-//               (e.target.style.boxShadow =
-//                 "5px 5px 15px rgba(0,0,0,0.7), -5px -5px 15px rgba(255,255,255,0.2)")
-//             }
-//             onMouseOut={(e) =>
-//               (e.target.style.boxShadow =
-//                 "3px 3px 10px rgba(0,0,0,0.5), -3px -3px 10px rgba(255,255,255,0.1)")
-//             }
-//             onClick={() => router.push(route)}
-//           >
-//             {label}
-//           </button>
-//         ))}
-//       </div>
-
 //       {/* Map Container */}
 //       <Container
 //         style={{
-//           background: "#000",
+//           background: isDarkMode ? "#000" : "#fff",
 //           borderRadius: "20px",
-//           boxShadow: "0 10px 30px rgba(255,255,255,0.2)",
+//           boxShadow: isDarkMode
+//             ? "0 10px 30px rgba(255,255,255,0.2)"
+//             : "0 10px 30px rgba(0,0,0,0.2)",
 //           padding: "0px",
 //           maxWidth: "1200px",
 //           width: "100%",
-//           border: "2px solid #444",
+//           border: `2px solid ${isDarkMode ? "#444" : "#ddd"}`,
 //           overflow: "hidden",
 //           transition: "transform 0.3s ease-in-out",
 //           height: "85vh",
@@ -149,38 +237,24 @@
 //             borderRadius: "20px",
 //             overflow: "hidden",
 //             boxShadow: isPopped
-//               ? "0 20px 50px rgba(255, 255, 255, 0.5)"
-//               : "0 15px 30px rgba(255, 255, 255, 0.3)",
-//             backgroundColor: "#0b0f19",
+//               ? isDarkMode
+//                 ? "0 20px 50px rgba(255, 255, 255, 0.5)"
+//                 : "0 20px 50px rgba(0, 0, 0, 0.5)"
+//               : isDarkMode
+//               ? "0 15px 30px rgba(255, 255, 255, 0.3)"
+//               : "0 15px 30px rgba(0, 0, 0, 0.3)",
+//             backgroundColor: isDarkMode ? "#0b0f19" : "#f0f0f0",
 //             padding: "0px",
 //             height: "100%",
 //             display: "flex",
 //             alignItems: "center",
 //             justifyContent: "center",
-//             border: "2px solid rgba(255,255,255,0.2)",
+//             border: `2px solid ${isDarkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)"}`,
 //           }}
 //         >
-//           <MapComponent />
+//           <MapComponent isDarkMode={isDarkMode} />
 //         </div>
 //       </Container>
-
-//       {/* Responsive Styles */}
-//       <style jsx>{`
-//         @media (max-width: 768px) {
-//           button {
-//             padding: 10px 16px;
-//             font-size: 14px;
-//             min-width: 100px;
-//           }
-//         }
-//         @media (max-width: 480px) {
-//           button {
-//             padding: 8px 12px;
-//             font-size: 12px;
-//             min-width: 90px;
-//           }
-//         }
-//       `}</style>
 //     </div>
 //   );
 // };
@@ -191,20 +265,27 @@
 
 import dynamic from "next/dynamic";
 import { Container } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const MapComponent = dynamic(() => import("./LeafletMap"), {
   ssr: false,
 });
 
-const Map = ({ isDarkMode }) => {
+const Map = () => {
   const [isPopped, setIsPopped] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  // Toggle dark/light mode
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle('dark'); // Apply dark mode globally
+  };
 
   return (
     <div
+      className={`relative min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}
       style={{
-        background: isDarkMode ? "#1e1e1e" : "#f5f5f5",
-        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -213,48 +294,140 @@ const Map = ({ isDarkMode }) => {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* Map Container */}
-      <Container
+      {/* Sand Background Canvas */}
+      <div className="fixed inset-0 w-full h-full z-0"></div>
+      
+      {/* Dark/Light Mode Toggle Button (Bottom-Right Corner) */}
+      <motion.button
+        onClick={toggleTheme}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg ${
+          isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-900'
+        } hover:opacity-80 transition-all z-50`}
         style={{
-          background: isDarkMode ? "#000" : "#fff",
-          borderRadius: "20px",
-          boxShadow: isDarkMode
-            ? "0 10px 30px rgba(255,255,255,0.2)"
-            : "0 10px 30px rgba(0,0,0,0.2)",
-          padding: "0px",
+          zIndex: 1000,
+        }}
+      >
+        {isDarkMode ? '🌞' : '🌙'}
+      </motion.button>
+
+      {/* Title Section */}
+      <div 
+        className="relative z-10 text-center mb-8"
+        style={{
+          marginTop: "2rem",
+          marginBottom: "2rem",
+        }}
+      >
+        <motion.h1 
+          className="text-4xl md:text-5xl font-bold mb-2"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          EXPLORE OUR LOCATIONS
+        </motion.h1>
+        <motion.p 
+          className={`text-lg md:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          Discover our showrooms and service centers across Australia
+        </motion.p>
+      </div>
+
+      {/* Map Container */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="relative z-10 w-full"
+        style={{
           maxWidth: "1200px",
           width: "100%",
-          border: `2px solid ${isDarkMode ? "#444" : "#ddd"}`,
-          overflow: "hidden",
-          transition: "transform 0.3s ease-in-out",
-          height: "85vh",
-          cursor: "pointer",
         }}
-        onClick={() => setIsPopped(!isPopped)}
       >
-        <div
+        <Container
           style={{
+            background: isDarkMode ? "#0b0f19" : "#fff",
             borderRadius: "20px",
-            overflow: "hidden",
-            boxShadow: isPopped
-              ? isDarkMode
-                ? "0 20px 50px rgba(255, 255, 255, 0.5)"
-                : "0 20px 50px rgba(0, 0, 0, 0.5)"
-              : isDarkMode
-              ? "0 15px 30px rgba(255, 255, 255, 0.3)"
-              : "0 15px 30px rgba(0, 0, 0, 0.3)",
-            backgroundColor: isDarkMode ? "#0b0f19" : "#f0f0f0",
+            boxShadow: isDarkMode
+              ? "0 10px 30px rgba(255,255,255,0.2)"
+              : "0 10px 30px rgba(0,0,0,0.2)",
             padding: "0px",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: `2px solid ${isDarkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)"}`,
+            width: "100%",
+            border: `2px solid ${isDarkMode ? "#444" : "#ddd"}`,
+            overflow: "hidden",
+            transition: "transform 0.3s ease-in-out",
+            height: "75vh",
+            cursor: "pointer",
           }}
+          onClick={() => setIsPopped(!isPopped)}
+          className={isPopped ? "transform scale-105" : ""}
         >
-          <MapComponent isDarkMode={isDarkMode} />
+          <div
+            style={{
+              borderRadius: "20px",
+              overflow: "hidden",
+              boxShadow: isPopped
+                ? isDarkMode
+                  ? "0 20px 50px rgba(255, 255, 255, 0.5)"
+                  : "0 20px 50px rgba(0, 0, 0, 0.5)"
+                : isDarkMode
+                ? "0 15px 30px rgba(255, 255, 255, 0.3)"
+                : "0 15px 30px rgba(0, 0, 0, 0.3)",
+              backgroundColor: isDarkMode ? "#0b0f19" : "#f0f0f0",
+              padding: "0px",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: `2px solid ${isDarkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)"}`,
+            }}
+          >
+            <MapComponent isDarkMode={isDarkMode} />
+          </div>
+        </Container>
+      </motion.div>
+
+      {/* Legend or Description */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className={`relative z-10 mt-8 p-6 rounded-lg ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white bg-opacity-90'}`}
+        style={{
+          maxWidth: "1200px",
+          width: "100%",
+          boxShadow: isDarkMode
+            ? "0 5px 15px rgba(255,255,255,0.1)"
+            : "0 5px 15px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h2 className="text-2xl font-bold mb-3">Our Service Network</h2>
+        <p className={`mb-4 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+          With service centers across Australia, we ensure you're always covered no matter where your adventures take you.
+          Click on any marker to see details about our locations and the services offered.
+        </p>
+        <div className="flex flex-wrap gap-4 mt-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-md text-base font-medium transition-colors"
+          >
+            View All Locations
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`border ${isDarkMode ? 'border-white' : 'border-gray-900'} hover:border-orange-500 hover:text-orange-500 py-2 px-6 rounded-md text-base font-medium transition-colors`}
+          >
+            Find Nearest Dealer
+          </motion.button>
         </div>
-      </Container>
+      </motion.div>
     </div>
   );
 };
