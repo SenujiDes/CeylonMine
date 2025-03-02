@@ -110,7 +110,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import Navbar from "../navbar/page";
-import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
 
@@ -270,7 +269,7 @@ export default function MiningEducation() {
     }
   ];
 
-  // Initialize 3D rock particles effect - similar to the sand effect from home page
+  // Initialize 3D sand effect
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -285,7 +284,7 @@ export default function MiningEducation() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Create rock particles
+    // Create sand particles
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesCount = 5000;
     
@@ -297,10 +296,10 @@ export default function MiningEducation() {
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     
-    // Create rock material - similar color scheme as home page
+    // Create sand material
     const particlesMaterial = new THREE.PointsMaterial({
       size: 0.005,
-      color: 0x8B4513, // Rock/mineral color
+      color: 0xD2B48C, // Sand color
       transparent: true,
       blending: THREE.AdditiveBlending,
     });
@@ -374,7 +373,7 @@ export default function MiningEducation() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* 3D Rock Particles Background */}
+      {/* 3D Sand Background */}
       <canvas 
         ref={canvasRef} 
         className="fixed inset-0 w-full h-full z-0"
@@ -538,6 +537,52 @@ export default function MiningEducation() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Additional Sections */}
+      <section className="relative z-10 py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">MINING INNOVATIONS</h2>
+            <p className={`text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+              Discover the latest advancements in mining technology and practices.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Automation",
+                icon: "🤖",
+                description: "Automated machinery and robotics are revolutionizing mining operations."
+              },
+              {
+                title: "Sustainability",
+                icon: "🌱",
+                description: "Eco-friendly practices are being adopted to reduce environmental impact."
+              },
+              {
+                title: "Data Analytics",
+                icon: "📊",
+                description: "Big data is being used to optimize mining processes and improve efficiency."
+              },
+            ].map((feature, index) => (
+              <motion.div 
+                key={index}
+                className={`rounded-lg p-8 text-center ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white bg-opacity-70'}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)" }}
+              >
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{feature.description}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
