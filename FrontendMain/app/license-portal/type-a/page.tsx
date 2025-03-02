@@ -633,7 +633,7 @@ export default function TypeALicense() {
   return (
     <main className={`${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
       <Navbar />
-      <div className="min-h-screen">
+      <div className="min-h-screen pt-20"> {/* Added padding-top to create space below navbar */}
         <div className="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8">
           {/* Dark/Light Mode Toggle Button */}
           <button
@@ -648,13 +648,15 @@ export default function TypeALicense() {
           <h1 className={`text-3xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
             IML Type A License Application
           </h1>
-          <div className={`${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white'} shadow-sm rounded-lg p-6`}>
+          <div className={`${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white'} shadow-lg rounded-lg p-6`}>
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* 1. Exploration License */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">1. Exploration License No</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  1. Exploration License No
+                </h2>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     Exploration License No (where applicable)
                   </label>
                   <input
@@ -670,10 +672,14 @@ export default function TypeALicense() {
 
               {/* 2. Individual Details */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">2. Individual Details</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  2. Individual Details
+                </h2>
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Name of Applicant / Authorized Agent</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Name of Applicant / Authorized Agent
+                    </label>
                     <input
                       type="text"
                       className={`mt-1 block w-full rounded-md ${
@@ -687,7 +693,9 @@ export default function TypeALicense() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">National Identity Card No</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      National Identity Card No
+                    </label>
                     <input
                       type="text"
                       className={`mt-1 block w-full rounded-md ${
@@ -706,10 +714,14 @@ export default function TypeALicense() {
 
               {/* 3. Corporation Details */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">3. Corporation Details</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  3. Corporation Details
+                </h2>
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Name of Company/Partnership</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Name of Company/Partnership
+                    </label>
                     <input
                       type="text"
                       className={`mt-1 block w-full rounded-md ${
@@ -723,7 +735,9 @@ export default function TypeALicense() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Articles of Association</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Articles of Association
+                    </label>
                     <input
                       type="file"
                       className="mt-1 block w-full"
@@ -731,7 +745,9 @@ export default function TypeALicense() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Last three years Annual Reports</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Last three years Annual Reports
+                    </label>
                     <input
                       type="file"
                       multiple
@@ -744,10 +760,14 @@ export default function TypeALicense() {
 
               {/* 4. Technical/Professional Data */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">4. Technical/Professional Data</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  4. Technical/Professional Data
+                </h2>
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Licensed Boundary Survey</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Licensed Boundary Survey
+                    </label>
                     <input
                       type="file"
                       className="mt-1 block w-full"
@@ -755,7 +775,9 @@ export default function TypeALicense() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Professional/Technical Credentials</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Professional/Technical Credentials
+                    </label>
                     <input
                       type="file"
                       className="mt-1 block w-full"
@@ -767,10 +789,14 @@ export default function TypeALicense() {
 
               {/* 5. Industrial Mining Operation */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">5. Type of Industrial Mining Operation</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  5. Type of Industrial Mining Operation
+                </h2>
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Blasting Method</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Blasting Method
+                    </label>
                     <input
                       type="text"
                       className={`mt-1 block w-full rounded-md ${
@@ -789,10 +815,14 @@ export default function TypeALicense() {
 
               {/* 6. License Area Details */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">6. Details of License Area</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  6. Details of License Area
+                </h2>
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Name of Land</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Name of Land
+                    </label>
                     <input
                       type="text"
                       className={`mt-1 block w-full rounded-md ${
@@ -806,7 +836,9 @@ export default function TypeALicense() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Deed and Survey Plan</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Deed and Survey Plan
+                    </label>
                     <input
                       type="file"
                       className="mt-1 block w-full"
@@ -818,7 +850,9 @@ export default function TypeALicense() {
 
               {/* 7. Mine Restoration Plan */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">7. Detailed Mine Restoration Plan</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  7. Detailed Mine Restoration Plan
+                </h2>
                 <div>
                   <input
                     type="file"
@@ -830,7 +864,9 @@ export default function TypeALicense() {
 
               {/* 8. Bond Details */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">8. Nature of Amount of Bond</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  8. Nature of Amount of Bond
+                </h2>
                 <div>
                   <input
                     type="text"
@@ -845,7 +881,9 @@ export default function TypeALicense() {
 
               {/* 9. Minerals */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">9. Names of Mineral/Minerals to be Mined</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  9. Names of Mineral/Minerals to be Mined
+                </h2>
                 <div>
                   <input
                     type="text"
@@ -860,7 +898,9 @@ export default function TypeALicense() {
 
               {/* 10. License Fee */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold">10. License Fee Receipt</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  10. License Fee Receipt
+                </h2>
                 <div>
                   <input
                     type="file"
@@ -872,7 +912,9 @@ export default function TypeALicense() {
 
               {/* Declaration */}
               <div className="space-y-4 border-t pt-6">
-                <h2 className="text-xl font-semibold">Declaration</h2>
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  Declaration
+                </h2>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                   I, the undersigned, do hereby certify that the statements contained in this application are true and
                   correct to the best of my knowledge and undertake to comply with the provisions the Mines & Minerals Act No.33 of 1992,
@@ -880,7 +922,9 @@ export default function TypeALicense() {
                 </p>
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Date</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Date
+                    </label>
                     <input
                       type="date"
                       className={`mt-1 block w-full rounded-md ${
@@ -894,7 +938,9 @@ export default function TypeALicense() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Mine Manager</label>
+                    <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Mine Manager
+                    </label>
                     <input
                       type="text"
                       className={`mt-1 block w-full rounded-md ${
