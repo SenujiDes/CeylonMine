@@ -73,14 +73,14 @@ Notifications via email/SMS on status changes.
 
 🖥️ Backend (Flask)
 
-git clone https://github.com/your-repo/complaint-management-backend.git
+git clone(https://github.com/SenujiDes/CeylonMine/tree/MinsandiDeSilva/complainPage_backend)
 cd complaint-management-backend
 pip install -r requirements.txt
 python app.py
 
 🖥️ Frontend (Next.js)
 
-git clone https://github.com/your-repo/complaint-management-frontend.git
+git clone (https://github.com/SenujiDes/CeylonMine/tree/MinsandiDeSilva/complainPage_frontend)
 cd complaint-management-frontend
 npm install
 npm run dev
