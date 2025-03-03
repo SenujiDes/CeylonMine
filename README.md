@@ -1,4 +1,4 @@
-🛠️ Complaint Management Web Page
+🛠️ Complaint Web Page Of CeylonMine Web App
 
 Developed for the Geological Survey and Mines Bureau (GSMB) of Sri Lanka, this web-based solution simplifies complaint submissions and tracking for quarry operations. It allows users to report concerns, track complaint progress, and ensures timely resolutions by authorities.
 
