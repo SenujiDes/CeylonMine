@@ -90,6 +90,19 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
 
+// New ArrowIcon component for FAQ items
+const ArrowIcon = ({ rotated }) => (
+  <svg
+    className={`w-6 h-6 transform transition-transform duration-200 ${rotated ? 'rotate-180' : ''}`}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+  </svg>
+);
+
 export default function LicensePortal() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [expandedFaq, setExpandedFaq] = useState(null);
@@ -101,7 +114,7 @@ export default function LicensePortal() {
     document.documentElement.classList.toggle('dark');
   };
   
-  // Licenses data with enhanced metadata
+  // Updated licenses data with refined icons
   const licenses = [
     {
       id: 1,
@@ -109,8 +122,8 @@ export default function LicensePortal() {
       description: 'Standard mining operations license for small-scale projects.',
       features: ['Suitable for operations under 5 hectares', 'Valid for 3 years', 'Basic environmental compliance'],
       path: '/license-portal/type-a',
-      icon: '🏗️',
-      color: 'from-amber-500 to-orange-500'
+     
+      color: 'bg-amber-500'
     },
     {
       id: 2, 
@@ -118,8 +131,8 @@ export default function LicensePortal() {
       description: 'Advanced license for medium-scale mineral extraction operations.',
       features: ['Operations between 5-20 hectares', 'Valid for 5 years', 'Advanced safety protocols required'],
       path: '/license-portal/type-b',
-      icon: '⛏️',
-      color: 'from-orange-500 to-red-500'
+     
+      color: 'bg-amber-500'
     },
     {
       id: 3,
@@ -127,8 +140,8 @@ export default function LicensePortal() {
       description: 'Comprehensive license for large-scale mining operations.',
       features: ['Operations over 20 hectares', 'Valid for 7 years', 'Full environmental impact assessment required'],
       path: '/license-portal/type-c',
-      icon: '🔍',
-      color: 'from-blue-500 to-purple-500'
+     
+      color: 'bg-amber-500'
     },
     {
       id: 4,
@@ -136,12 +149,12 @@ export default function LicensePortal() {
       description: 'Specialized license for rare minerals and precious metals.',
       features: ['For restricted minerals and metals', 'Valid for 10 years', 'Requires enhanced security measures'],
       path: '/license-portal/type-d',
-      icon: '💎',
-      color: 'from-emerald-500 to-teal-500'
+  
+      color: 'bg-amber-500'
     }
   ];
 
-  // Enhanced FAQ data
+  // FAQ data (unchanged)
   const faqs = [
     {
       question: "How long does the application process take?",
@@ -169,22 +182,24 @@ export default function LicensePortal() {
     }
   ];
 
-  // Initialize 3D background effect with enhanced particles
+  // Simplified 3D background effect with fewer particle colors
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    // Set up Three.js scene
+    // Set up Three.js scene with black background
     const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+    
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({
       canvas: canvasRef.current,
       alpha: true,
     });
-
+    renderer.setClearColor(0x000000);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Create two particle systems for more visual interest
+    // Create particle system with a single color scheme
     const createParticleSystem = (count, size, color, range) => {
       const geometry = new THREE.BufferGeometry();
       const posArray = new Float32Array(count * 3);
@@ -205,27 +220,17 @@ export default function LicensePortal() {
       return new THREE.Points(geometry, material);
     };
 
-    // Create foreground and background particle systems
-    const particlesFg = createParticleSystem(
-      3000, 
-      0.008, 
-      isDarkMode ? 0xD2B48C : 0x4682B4, 
-      5
-    );
-    
-    const particlesBg = createParticleSystem(
-      2000, 
-      0.005, 
-      isDarkMode ? 0x8B4513 : 0x87CEEB, 
-      8
-    );
+    // Simplified particles - using just one main color scheme
+    const particleColor = isDarkMode ? 0xD2B48C : 0x4682B4;
+    const particlesFg = createParticleSystem(3000, 0.008, particleColor, 5);
+    const particlesBg = createParticleSystem(2000, 0.005, particleColor, 8);
     
     scene.add(particlesFg, particlesBg);
     
     // Position camera
     camera.position.z = 2;
     
-    // Enhanced mouse movement effect
+    // Mouse movement effect
     let mouseX = 0;
     let mouseY = 0;
     let targetMouseX = 0;
@@ -247,7 +252,7 @@ export default function LicensePortal() {
     
     window.addEventListener('resize', onWindowResize);
     
-    // Animation loop with smooth interpolation
+    // Animation loop
     const animate = () => {
       requestAnimationFrame(animate);
       
@@ -292,7 +297,7 @@ export default function LicensePortal() {
   };
 
   return (
-    <div className={`relative min-h-screen ${isDarkMode ? 'bg-gradient-to-b from-gray-900 to-black text-white' : 'bg-gradient-to-b from-blue-50 to-gray-50 text-gray-900'} overflow-hidden`}>
+    <div className={`relative min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'} overflow-hidden`}>
       <Navbar />
       
       {/* 3D Background Canvas */}
@@ -323,7 +328,7 @@ export default function LicensePortal() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, type: "spring" }}
             >
-              <div className="text-5xl">{isDarkMode ? '⚒️' : '📜'}</div>
+              <div className="text-5xl">{isDarkMode ? '' : ''}</div>
             </motion.div>
             
             <motion.h1 
@@ -332,11 +337,11 @@ export default function LicensePortal() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-amber-500">LICENSE PORTAL</span>
+              <span className={`${isDarkMode ? 'text-white' : 'text-amber-500'}`}>LICENSE PORTAL</span>
             </motion.h1>
             
             <motion.p 
-              className={`text-xl md:text-2xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-85' : 'opacity-90'}`}
+              className="text-xl md:text-2xl max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -350,7 +355,7 @@ export default function LicensePortal() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white py-3 px-8 rounded-full text-lg font-medium transition-all shadow-lg hover:shadow-orange-500/20 transform hover:-translate-y-1">
+              <button className="bg-amber-500 hover:bg-amber-600 text-white py-3 px-8 rounded-full text-lg font-medium transition-all shadow-lg transform hover:-translate-y-1">
                 Get Started Now
               </button>
             </motion.div>
@@ -368,7 +373,7 @@ export default function LicensePortal() {
               <div className="absolute top-4 left-0 right-0 h-1 bg-gray-600 opacity-30"></div>
               {['Apply', 'Review', 'Approve', 'Issue'].map((step, index) => (
                 <div key={index} className="relative z-10 flex flex-col items-center">
-                  <div className={`w-8 h-8 rounded-full ${isDarkMode ? 'bg-orange-500' : 'bg-orange-400'} flex items-center justify-center text-white font-bold`}>
+                  <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold">
                     {index + 1}
                   </div>
                   <p className="mt-2 font-medium">{step}</p>
@@ -383,7 +388,7 @@ export default function LicensePortal() {
               <Link href={license.path} key={license.id} legacyBehavior>
                 <a>
                   <motion.div 
-                    className={`rounded-xl overflow-hidden h-full ${isDarkMode ? 'bg-gray-800 bg-opacity-70 hover:bg-gray-800 hover:bg-opacity-90' : 'bg-white bg-opacity-90 hover:bg-opacity-100'} backdrop-blur-sm border border-opacity-10 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} shadow-xl transition-all`}
+                    className={`rounded-xl overflow-hidden h-full ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'} border border-opacity-10 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} shadow-xl transition-all`}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -393,7 +398,7 @@ export default function LicensePortal() {
                       boxShadow: isDarkMode ? "0 20px 30px rgba(0, 0, 0, 0.3)" : "0 20px 30px rgba(0, 0, 0, 0.1)" 
                     }}
                   >
-                    <div className={`bg-gradient-to-r ${license.color} h-2 w-full`}></div>
+                    <div className={`${license.color} h-2 w-full`}></div>
                     <div className="p-8">
                       <div className="text-5xl mb-6">{license.icon}</div>
                       <h3 className="text-2xl font-bold mb-3">{license.name}</h3>
@@ -408,7 +413,7 @@ export default function LicensePortal() {
                         ))}
                       </ul>
                       
-                      <button className={`bg-gradient-to-r ${license.color} text-white py-3 px-8 rounded-md text-lg font-medium transition-all hover:scale-105`}>
+                      <button className={`${license.color} text-white py-3 px-8 rounded-md text-lg font-medium transition-all hover:scale-105`}>
                         Learn More
                       </button>
                     </div>
@@ -431,7 +436,7 @@ export default function LicensePortal() {
               {faqs.map((faq, index) => (
                 <motion.div 
                   key={index}
-                  className={`rounded-lg ${isDarkMode ? 'bg-gray-800 bg-opacity-70' : 'bg-white bg-opacity-90'} backdrop-blur-sm border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} shadow-lg`}
+                  className={`rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} shadow-lg`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -443,9 +448,7 @@ export default function LicensePortal() {
                   >
                     <div className="flex justify-between items-center">
                       <h3 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{faq.question}</h3>
-                      <span className={`transform transition-transform ${expandedFaq === index ? 'rotate-180' : ''}`}>
-                        {isDarkMode ? '🔽' : '🔽'}
-                      </span>
+                      <ArrowIcon rotated={expandedFaq === index} />
                     </div>
                   </button>
                   {expandedFaq === index && (
