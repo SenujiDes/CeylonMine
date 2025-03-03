@@ -79,7 +79,7 @@ export default function AboutUs() {
       id: 4,
       name: "Thisal Induwara",
       position: "Frontend Engineer & UI/UX Developer",
-      image: "/images/thisal.jpg",
+      image: "/images/thisal2.jpg",
       bio: "With expertise in regulatory frameworks and environmental sustainability, Thisal ensures Ceylon Mine aligns with industry best practices. He integrates compliance tracking and environmental safeguards into the platform’s core functionality.",
       socialLinks: {
         linkedin: "#",
