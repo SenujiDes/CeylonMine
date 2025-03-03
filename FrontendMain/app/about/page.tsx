@@ -41,10 +41,12 @@ export default function AboutUs() {
   const teamMembers = [
     {
       id: 1,
-      name: "Sarah Johnson",
-      position: "Founder & CEO",
-      image: "/api/placeholder/400/400",
-      bio: "With over 15 years of experience in the camper industry, Sarah founded Mars Campers with a vision to create tough, lightweight campers specifically for Australian conditions.",
+      name: "Senuji De Silva",
+      position: "Co-Founder & Lead Developer",
+      image: "/images/senuji.png",
+      
+      bio: "With a passion for innovation and sustainability, Senuji co-founded Ceylon Mine to modernize mining operations through technology. She leads the development of intelligent systems that optimize efficiency, transparency, and compliance in the industry.",
+      
       socialLinks: {
         linkedin: "#",
         twitter: "#",
@@ -53,10 +55,10 @@ export default function AboutUs() {
     },
     {
       id: 2,
-      name: "James Wilson",
-      position: "Head of Design",
-      image: "/api/placeholder/401/401",
-      bio: "James brings innovative design principles to every Mars Camper. His background in automotive design ensures our campers are both beautiful and functional.",
+      name: "Minsandi De Silva",
+      position: "Co-Founder & Software Solutions Lead",
+      image: "/images/minsandi.jpg",
+      bio: "Driven by a vision for digital transformation, Minsandi ensures that Ceylon Mine bridges the gap between technology and the mining sector. She oversees project execution, ensuring seamless integration of automation and user-centric solutions.",
       socialLinks: {
         linkedin: "#",
         twitter: "#"
@@ -64,10 +66,10 @@ export default function AboutUs() {
     },
     {
       id: 3,
-      name: "Emily Chen",
-      position: "Production Manager",
-      image: "/api/placeholder/402/402",
-      bio: "Emily oversees our manufacturing process, ensuring every camper meets our exacting standards for quality and durability.",
+      name: "Nisil Liyanage",
+      position: "Software Architect & Backend Specialist ",
+      image: "/images/nisil2.PNG",
+      bio: "Nisil specializes in developing scalable and secure infrastructures for enterprise applications. At Ceylon Mine, he focuses on building a reliable, data-driven platform that enhances efficiency in mining operations.",
       socialLinks: {
         linkedin: "#",
         instagram: "#"
@@ -75,10 +77,10 @@ export default function AboutUs() {
     },
     {
       id: 4,
-      name: "Michael Rodriguez",
-      position: "Sales Director",
-      image: "/api/placeholder/403/403",
-      bio: "Michael's passion for the outdoors and extensive knowledge of our products helps customers find the perfect camper for their adventures.",
+      name: "Thisal Induwara",
+      position: "Frontend Engineer & UI/UX Developer",
+      image: "/images/thisal.jpg",
+      bio: "With expertise in regulatory frameworks and environmental sustainability, Thisal ensures Ceylon Mine aligns with industry best practices. He integrates compliance tracking and environmental safeguards into the platform’s core functionality.",
       socialLinks: {
         linkedin: "#",
         instagram: "#"
@@ -86,10 +88,10 @@ export default function AboutUs() {
     },
     {
       id: 5,
-      name: "Olivia Thompson",
-      position: "Marketing Manager",
-      image: "/api/placeholder/404/404",
-      bio: "Olivia brings our brand story to life through engaging content and strategic partnerships with adventure enthusiasts across Australia.",
+      name: "Janindu Amaraweera",
+      position: "AI & Data Systems Engineerr",
+      image: "/images/janidu.jpg",
+      bio: "Janindu is committed to making Ceylon Mine an intuitive and engaging platform. He designs user-friendly interfaces that simplify complex mining processes, ensuring accessibility for all stakeholders.",
       socialLinks: {
         linkedin: "#",
         twitter: "#",
@@ -98,10 +100,10 @@ export default function AboutUs() {
     },
     {
       id: 6,
-      name: "David Nguyen",
-      position: "Customer Experience Lead",
-      image: "/api/placeholder/405/405",
-      bio: "David ensures every customer receives exceptional service and support throughout their Mars Campers journey.",
+      name: "Minidu Thiranjaya",
+      position: "Frontend Engineer & UI/UX Developert",
+      image: "/images/minidupng.png",
+      bio: "Minidu harnesses the power of AI and big data to drive intelligent decision-making at Ceylon Mine. His expertise enhances automation, real-time insights, and predictive analytics for a smarter mining ecosystem.",
       socialLinks: {
         linkedin: "#",
         twitter: "#"
@@ -287,7 +289,7 @@ export default function AboutUs() {
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">OUR STORY</h1>
             <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
             <p className={`text-lg md:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Mars Campers was born from a passion for the Australian outback and a desire to create camper trailers that can withstand the toughest conditions while providing exceptional comfort and convenience.
+            Ceylon Mine was founded to revolutionize sustainable mining in Sri Lanka, balancing efficient mineral extraction with environmental responsibility for a greener future.
             </p>
           </motion.div>
         </div>
@@ -306,10 +308,10 @@ export default function AboutUs() {
               <h2 className="text-3xl md:text-4xl font-bold mb-6">OUR MISSION</h2>
               <div className="w-16 h-1 bg-orange-500 mb-8"></div>
               <p className={`text-lg mb-6 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-                At Mars Campers, we're on a mission to revolutionize the way Australians experience the great outdoors. We believe that exploring the most remote and beautiful parts of our country shouldn't require sacrificing comfort or reliability.
+              At Ceylon Mine, we are committed to transforming the mining industry through sustainable and responsible practices. Our goal is to extract valuable resources while preserving the environment, ensuring a balance between progress and conservation.
               </p>
               <p className={`text-lg mb-6 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-                Our team is dedicated to designing and building camper trailers that combine rugged durability with innovative features, ensuring that your adventures are limited only by your imagination, not your equipment.
+              We are dedicated to innovation, ethical practices, and ensuring that Sri Lanka’s mineral wealth benefits both the industry and future generations.
               </p>
               <div className="flex space-x-4 mt-8">
                 <motion.button 
@@ -336,8 +338,8 @@ export default function AboutUs() {
               className="relative aspect-square rounded-lg overflow-hidden"
             >
               <img 
-                src="/api/placeholder/600/600" 
-                alt="Mars Campers Team" 
+                src="/images/us.png" 
+                alt="ceylon" 
                 className="w-full h-full object-cover"
               />
               <div className={`absolute inset-0 ${isDarkMode ? 'bg-orange-500' : 'bg-orange-400'} opacity-20`}></div>

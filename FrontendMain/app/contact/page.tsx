@@ -281,10 +281,10 @@ export default function Contact() {
                       } border focus:outline-none focus:ring-2 focus:ring-orange-500`}
                     >
                       <option value="" disabled>Select a subject</option>
-                      <option value="Sales Inquiry">Sales Inquiry</option>
-                      <option value="Product Support">Product Support</option>
-                      <option value="Test Drive Request">Test Drive Request</option>
-                      <option value="Spare Parts">Spare Parts</option>
+                      <option value="Sales Inquiry">Mine Inquiry</option>
+                      <option value="Product Support">Technical Support</option>
+                      <option value="Test Drive Request">Licensing Request</option>
+                      <option value="Spare Parts">Construction Work</option>
                       <option value="General Inquiry">General Inquiry</option>
                     </select>
                   </div>
@@ -350,9 +350,9 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-xl font-medium mb-1">Visit Us</h3>
-                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'} mb-1`}>123 Camper Way</p>
-                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'} mb-1`}>Melbourne, VIC 3000</p>
-                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>Australia</p>
+                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'} mb-1`}>528 R.A.De Mel Mawatha</p>
+                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'} mb-1`}>Colombo</p>
+                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>Sri Lanka</p>
                   </div>
                 </div>
                 
@@ -365,8 +365,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-xl font-medium mb-1">Call Us</h3>
-                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'} mb-1`}>Sales: 1800 CAMPER (1800 226 737)</p>
-                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>Support: +61 3 9555 1234</p>
+                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>Support: +94 759 171 701</p>
                   </div>
                 </div>
                 
@@ -380,8 +379,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-xl font-medium mb-1">Email Us</h3>
-                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'} mb-1`}>Sales: sales@marscampers.com.au</p>
-                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>Support: support@marscampers.com.au</p>
+                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'} mb-1`}>Technical: technical@ceylonmine.lk</p>
+                    <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>Support: support@ceylonmine.lk</p>
                   </div>
                 </div>
                 
@@ -393,7 +392,7 @@ export default function Contact() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-xl font-medium mb-1">Business Hours</h3>
+                    <h3 className="text-xl font-medium mb-1">Working Hours</h3>
                     <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'} mb-1`}>Monday - Friday: 9:00 AM - 5:30 PM</p>
                     <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'} mb-1`}>Saturday: 9:00 AM - 4:00 PM</p>
                     <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>Sunday: 10:00 AM - 3:00 PM</p>
@@ -415,18 +414,20 @@ export default function Contact() {
                       <path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"></path>
                     </svg>
                   </a>
-                  <a href="#" className={`p-3 rounded-full ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-200 hover:bg-gray-300'} transition-colors`}>
+                  {/* <a href="#" className={`p-3 rounded-full ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-200 hover:bg-gray-300'} transition-colors`}>
                     <svg className="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
                     </svg>
-                  </a>
-                  <a href="#" className={`p-3 rounded-full ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-200 hover:bg-gray-300'} transition-colors`}>
+                  </a> */}
+                  {/* <a href="#" className={`p-3 rounded-full ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-200 hover:bg-gray-300'} transition-colors`}>
                     <svg className="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
                     </svg>
-                  </a>
+                  </a> */}
                 </div>
               </div>
+
+
             </motion.div>
           </div>
         </div>
@@ -452,7 +453,7 @@ export default function Contact() {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              Visit our showroom to experience our premium campers in person.
+              Visit the head office to experience process  in person.
             </motion.p>
           </div>
           
@@ -465,14 +466,18 @@ export default function Contact() {
           >
             {/* Placeholder for the map (in a real project you'd use Google Maps or similar) */}
             <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-              <div className="text-center">
-                <svg className="w-16 h-16 text-orange-500 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
-                </svg>
-                <p className="text-xl font-medium">Interactive Map Would Be Displayed Here</p>
-                <p className="opacity-70 mt-2">123 Camper Way, Melbourne, VIC 3000, Australia</p>
-              </div>
+            <div className="w-full h-96"> {/* Adjust height as needed */}
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.798511757687!2d79.91845431477226!3d6.914657295003654!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae256db1a6771c5%3A0x2c63e344ab9a7536!2sIIT%20Battaramulla!5e0!3m2!1sen!2slk!4v1698765432105!5m2!1sen!2slk"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
+          </div>
           </motion.div>
         </div>
       </section>
@@ -497,34 +502,35 @@ export default function Contact() {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              Find answers to common questions about our products and services.
+              Find answers to common questions about our services.
             </motion.p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {[
               {
-                question: "How do I schedule a test drive?",
-                answer: "You can schedule a test drive by filling out the contact form on this page, calling our sales team at 1800 CAMPER, or visiting our showroom during business hours."
-              },              {
-                question: "What warranty do your campers come with?",
-                answer: "All our campers come with a comprehensive 3-year warranty covering major components and a 1-year warranty on accessories. We also offer extended warranty options."
+                question: "How do I apply for a mining license?",
+                answer: "You can apply for a mining license by submitting the required documents through our web portal or visiting the nearest provincial office. Our system allows for both digital and physical submissions."
               },
               {
-                question: "Can I customize my camper?",
-                answer: "Yes, we offer a wide range of customization options to suit your needs. From interior layouts to exterior colors, our team will work with you to create your dream camper."
+                question: "What documents are required for a mining license?",
+                answer: "The required documents include an Environmental Clearance Report, Police and Grama Niladhari reports, landowner consent forms, and details of the intended mining site."
               },
               {
-                question: "Do you offer financing options?",
-                answer: "We partner with several financial institutions to offer flexible financing options. Contact our sales team to discuss the best plan for your budget."
+                question: "How long does it take to get a mining license approved?",
+                answer: "The approval process varies depending on the completeness of the submitted documents and regulatory review. Typically, it takes between 4 to 6 weeks."
               },
               {
-                question: "How long does it take to build a custom camper?",
-                answer: "The build time for a custom camper typically ranges from 8 to 12 weeks, depending on the complexity of the customization and current demand."
+                question: "How is the royalty for mining calculated?",
+                answer: "Our platform integrates real-time mineral pricing and extraction data from the Geological Survey and Mines Bureau (GSMB) to ensure accurate royalty calculations. Royalties are based on the type and volume of minerals extracted."
               },
               {
-                question: "Do you ship campers internationally?",
-                answer: "Yes, we ship our campers worldwide. Contact us for a detailed quote and shipping timeline based on your location."
+                question: "Can I pay my royalties online?",
+                answer: "Yes! Our system supports integrated payment solutions, allowing miners to calculate and pay royalties securely without visiting GSMB offices."
+              },
+              {
+                question: "Does the system support environmental compliance tracking?",
+                answer: "Absolutely! Our platform uses GIS-based mapping to monitor mining sites and ensure compliance with environmental regulations."
               }
             ].map((faq, index) => (
               <motion.div
