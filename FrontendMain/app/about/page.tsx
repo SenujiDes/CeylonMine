@@ -112,38 +112,39 @@ export default function AboutUs() {
   ];
 
   // Company milestones
-  const milestones = [
-    {
-      year: "2015",
-      title: "Founded in Melbourne",
-      description: "Mars Campers was established with a mission to revolutionize off-road camping."
-    },
-    {
-      year: "2017",
-      title: "First Spirit Camper",
-      description: "Launch of our flagship model that set new standards for lightweight off-road campers."
-    },
-    {
-      year: "2019",
-      title: "Expanded Nationwide",
-      description: "Opened showrooms across Australia to bring Mars Campers to more adventurers."
-    },
-    {
-      year: "2021",
-      title: "Award-Winning Design",
-      description: "Received industry recognition for our innovative camper designs and build quality."
-    },
-    {
-      year: "2023",
-      title: "Sustainable Manufacturing",
-      description: "Introduced eco-friendly production processes and materials across our range."
-    },
-    {
-      year: "2025",
-      title: "Next Generation Launch",
-      description: "Unveiled our new Explorer series with cutting-edge features and technology."
-    }
-  ];
+const milestones = [
+  {
+    year: "2024",
+    title: "Conceptualization & Problem Identification",
+    description: "CeylonMine was conceived to tackle critical challenges in Sri Lanka’s mining sector, focusing on outdated processes, illegal mining, and environmental degradation."
+  },
+  {
+    year: "2024",
+    title: "In-depth Research & Literature Review",
+    description: "The team conducted extensive research on global mining practices and digital solutions, laying the foundation for a centralized platform to modernize mining operations."
+  },
+  {
+    year: "2024",
+    title: "Design & Planning Phase",
+    description: "Adopting a hybrid methodology, the team defined the system architecture, key functionalities, and resource requirements to streamline licensing and automate royalty calculations."
+  },
+  {
+    year: "2024",
+    title: "Prototype Development",
+    description: "The initial prototype of CeylonMine was built, integrating digital licensing, centralized data management, and GIS mapping for real-time monitoring."
+  },
+  {
+    year: "2025",
+    title: "Pilot Testing & Iterative Improvements",
+    description: "Rigorous testing and stakeholder feedback helped refine the platform’s functionalities, ensuring enhanced transparency, compliance, and efficiency."
+  },
+  {
+    year: "2025",
+    title: "Full Implementation & Future Vision",
+    description: "CeylonMine was successfully implemented, marking a digital revolution in mining regulation with plans for further enhancements and sustainability initiatives."
+  }
+];
+
 
   // Initialize 3D sand effect (same as in the home page)
   useEffect(() => {
@@ -350,71 +351,72 @@ export default function AboutUs() {
 
       {/* Values Section */}
       <section className="relative z-10 py-16">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">OUR VALUES</h2>
-            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-            <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              The core principles that guide everything we do at Mars Campers.
-            </p>
-          </motion.div>
+  <div className="container mx-auto px-4">
+    <motion.div 
+      className="text-center mb-16"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true }}
+    >
+      <h2 className="text-3xl md:text-5xl font-bold mb-6">OUR VALUES</h2>
+      <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
+      <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+        The core principles that drive CeylonMine’s digital revolution in the mining industry.
+      </p>
+    </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: "⚒️",
-                title: "QUALITY CRAFTSMANSHIP",
-                description: "Every component is carefully selected and tested to ensure exceptional durability and performance."
-              },
-              {
-                icon: "🔍",
-                title: "INNOVATIVE DESIGN",
-                description: "We continuously push boundaries to create smarter, more functional camper trailers."
-              },
-              {
-                icon: "🌿",
-                title: "ENVIRONMENTAL RESPONSIBILITY",
-                description: "We're committed to sustainable manufacturing practices and leaving minimal impact on the places we love."
-              },
-              {
-                icon: "🤝",
-                title: "CUSTOMER PARTNERSHIP",
-                description: "We view our customers as partners and value your feedback in our continuous improvement process."
-              },
-              {
-                icon: "🛠️",
-                title: "AUSTRALIAN MADE",
-                description: "Proudly designed and manufactured in Australia for Australian conditions."
-              },
-              {
-                icon: "💪",
-                title: "ADVENTURE SPIRIT",
-                description: "We encourage the spirit of adventure and making memories that last a lifetime."
-              }
-            ].map((value, index) => (
-              <motion.div 
-                key={index}
-                className={`rounded-lg p-8 text-center ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white'} shadow-lg`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -10, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)" }}
-              >
-                <div className="text-4xl mb-4">{value.icon}</div>
-                <h3 className="text-xl font-bold mb-4">{value.title}</h3>
-                <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {[
+        {
+          icon: "🔍",
+          title: "TRANSPARENCY & ACCOUNTABILITY",
+          description: "Our platform ensures clear, data-driven processes for mining licensing and royalty calculations, building trust among all stakeholders."
+        },
+        {
+          icon: "⚙️",
+          title: "EFFICIENCY & AUTOMATION",
+          description: "By digitizing manual processes, we streamline operations, reduce errors, and save valuable time for regulators and miners alike."
+        },
+        {
+          icon: "🌿",
+          title: "SUSTAINABILITY",
+          description: "Committed to eco-friendly practices, we promote sustainable mining that preserves natural resources and protects the environment."
+        },
+        {
+          icon: "💡",
+          title: "INNOVATION",
+          description: "Leveraging cutting-edge technologies like GIS, AI, and real-time analytics, we continuously transform mining operations for a modern era."
+        },
+        {
+          icon: "🤝",
+          title: "COLLABORATION",
+          description: "We work closely with industry stakeholders, regulators, and local communities to drive continuous improvement and foster shared success."
+        },
+        {
+          icon: "📈",
+          title: "DATA-DRIVEN DECISION MAKING",
+          description: "Centralized data and advanced analytics empower us to make informed decisions that enhance regulatory oversight and operational performance."
+        }
+      ].map((value, index) => (
+        <motion.div 
+          key={index}
+          className={`rounded-lg p-8 text-center ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white'} shadow-lg`}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+          viewport={{ once: true }}
+          whileHover={{ y: -10, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)" }}
+        >
+          <div className="text-4xl mb-4">{value.icon}</div>
+          <h3 className="text-xl font-bold mb-4">{value.title}</h3>
+          <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{value.description}</p>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
+
 
       {/* Team Section */}
       <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-gray-100'}`}>
