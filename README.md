@@ -1,4 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MineMORE Platform
+
+MineMORE is a comprehensive platform designed to manage mining operations, handle complaints, and track royalty payments.
+
+## Features
+
+- **Complaint Management System**
+  - Submit and track mining-related complaints
+  - Administrative dashboard for complaint resolution
+  - Real-time status updates
+
+- **Royalty Payment Tracking**
+  - Monitor mining royalty payments
+  - Generate payment reports
+  - Track payment history
 
 ## Getting Started
 
@@ -16,21 +30,49 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+minemore/
+├── app/
+│   ├── components/
+│   │   ├── ComplaintForm.jsx
+│   │   └── AdminComplaints.jsx
+│   ├── minemore/
+│   ├── complains/
+│   ├── royalty/
+│   └── navbar/
+├── public/
+└── ...
+```
+
+## Technologies
+
+- [Next.js](https://nextjs.org) - React framework
+- React - UI library
+- Tailwind CSS - Styling
+- TypeScript - Type safety
+
+## Development
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a custom font family.
+
+You can start editing the pages by modifying files in the `app` directory. The pages auto-update as you edit the files.
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about the technologies used:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://react.dev)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+The project can be deployed using [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Support
+
+For support, please open an issue in the repository.
