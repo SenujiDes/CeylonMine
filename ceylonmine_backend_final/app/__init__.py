@@ -8,6 +8,11 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+
+    #connecting with the FE
+    CORS(app, resources={r"/*": {"origins": "*"}})
+
+
     db.init_app(app)
 
     # Import and register Blueprints
