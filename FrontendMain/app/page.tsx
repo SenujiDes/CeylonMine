@@ -855,34 +855,12 @@ export default function Home() {
       </section>
 
       {/* Footer Section */}
-      <footer className={`relative z-10 py-8 ${isDarkMode ? 'bg-black' : 'bg-gray-900'} text-white`}>
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">CeylonMine</h3>
-              <p className="opacity-80">
-                Transforming the mining industry with digital innovation, transparency, and sustainability.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="opacity-80 hover:opacity-100 transition-opacity">Home</a></li>
-                <li><a href="#" className="opacity-80 hover:opacity-100 transition-opacity">About Us</a></li>
-                <li><a href="#" className="opacity-80 hover:opacity-100 transition-opacity">Features</a></li>
-                <li><a href="#" className="opacity-80 hover:opacity-100 transition-opacity">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">Contact Us</h3>
-              <p className="opacity-80">Email: info@ceylonmine.com</p>
-              <p className="opacity-80">Phone: +94 112 345 678</p>
-              <p className="opacity-80">Address: 123 Mining Rd, Colombo, Sri Lanka</p>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-            <p className="opacity-80">&copy; {new Date().getFullYear()} CeylonMine. All rights reserved.</p>
-          </div>
+      {/* Footer */}
+      <footer className={`relative z-10 py-8 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-800'}`}>
+        <div className="container mx-auto px-4 text-center">
+          <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`}>
+            &copy; {new Date().getFullYear()} Ceylon Mine. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

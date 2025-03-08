@@ -553,17 +553,12 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Footer Section */}
-      <footer className="relative z-10 py-8 bg-gray-900 bg-opacity-50 mt-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <p className={`text-sm ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              &copy; {new Date().getFullYear()} Mars Campers. All rights reserved.
-            </p>
-            <p className={`text-sm mt-2 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Designed with ❤️ by Mars Campers Team
-            </p>
-          </div>
+      {/* Footer */}
+      <footer className={`relative z-10 py-8 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-800'}`}>
+        <div className="container mx-auto px-4 text-center">
+          <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`}>
+            &copy; {new Date().getFullYear()} Ceylon Mine. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

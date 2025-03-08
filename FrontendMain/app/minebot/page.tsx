@@ -15,6 +15,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Navbar from "../navbar/page";
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export default function MineBot() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -24,7 +26,9 @@ export default function MineBot() {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const canvasRef = useRef(null);
+  const modelCanvasRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const modelRef = useRef(null);
 
   // Listen for theme changes from navbar
   useEffect(() => {
@@ -49,64 +53,91 @@ export default function MineBot() {
     };
   }, []);
 
-  // Initialize 3D sand effect
+  // Initialize 3D model
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!modelCanvasRef.current) return;
 
-    // Set up Three.js scene
+    // Set up Three.js scene for the 3D model
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, 9, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({
-      canvas: canvasRef.current,
+      canvas: modelCanvasRef.current,
       alpha: true,
+      antialias: true
     });
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Set pixel ratio for sharper rendering on high-DPI screens
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Create sand particles
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 5000;
-    
-    const posArray = new Float32Array(particlesCount * 3);
-    
-    for (let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 5;
-    }
-    
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    
-    // Create sand material - adjust color based on theme
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.005,
-      color: isDarkMode ? 0xD2B48C : 0xFFD700, // Sand color: darker for dark mode, gold for light mode
-      transparent: true,
-      blending: THREE.AdditiveBlending,
-    });
-    
-    // Create the particles mesh
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particlesMesh);
-    
-    // Position camera
-    camera.position.z = 2;
-    
-    // Mouse movement effect
-    let mouseX = 0;
-    let mouseY = 0;
-    
-    function onDocumentMouseMove(event) {
-      mouseX = (event.clientX - window.innerWidth / 2) / 100;
-      mouseY = (event.clientY - window.innerHeight / 2) / 100;
-    }
-    
-    document.addEventListener('mousemove', onDocumentMouseMove);
-    
+    // Set initial size (will be updated in resize handler)
+    const modelContainer = modelCanvasRef.current.parentElement;
+    const width = modelContainer.clientWidth;
+    const height = modelContainer.clientHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    // Add lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(directionalLight);
+
+    // Load the GLB model
+    const loader = new GLTFLoader();
+    loader.load(
+      '/models/chatbot_v011.glb',
+      (gltf) => {
+        const model = gltf.scene;
+        modelRef.current = model;
+        
+        // Center the model
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.x = -center.x;
+        model.position.y = -center.y;
+        model.position.z = -center.z;
+        
+        // Adjust scale: multiply the computed scale by 5 for a larger model
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = (4.5/ maxDim) * 1;
+        model.scale.set(scale, scale, scale);
+        
+        scene.add(model);
+        
+        // Position camera to see the model
+        camera.position.z = 5;
+      },
+      (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+      },
+      (error) => {
+        console.error('An error happened while loading the model:', error);
+      }
+    );
+
+    // Add orbit controls for interaction
+    const controls = new OrbitControls(camera, modelCanvasRef.current);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = true;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1;
+
     // Handle window resize
     function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      if (modelCanvasRef.current) {
+        const container = modelCanvasRef.current.parentElement;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+      }
     }
     
     window.addEventListener('resize', onWindowResize);
@@ -114,37 +145,96 @@ export default function MineBot() {
     // Animation loop
     const animate = () => {
       requestAnimationFrame(animate);
-      
-      particlesMesh.rotation.x += 0.0005;
-      particlesMesh.rotation.y += 0.0005;
-      
-      // Respond to mouse movement
-      particlesMesh.rotation.x += mouseY * 0.0005;
-      particlesMesh.rotation.y += mouseX * 0.0005;
-      
+      controls.update();
       renderer.render(scene, camera);
     };
     
+    animate();
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', onWindowResize);
+      if (modelRef.current) {
+        scene.remove(modelRef.current);
+        modelRef.current = null;
+      }
+      renderer.dispose();
+      controls.dispose();
+    };
+  }, []);
+
+  // Initialize 3D sand effect
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvasRef.current,
+      alpha: true,
+    });
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Create sand particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 5000;
+    const posArray = new Float32Array(particlesCount * 3);
+    for (let i = 0; i < particlesCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 5;
+    }
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+    // Sand material - color adjusts based on theme
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.005,
+      color: isDarkMode ? 0xD2B48C : 0xFFD700,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+    });
+    
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    
+    camera.position.z = 2;
+    
+    let mouseX = 0;
+    let mouseY = 0;
+    function onDocumentMouseMove(event) {
+      mouseX = (event.clientX - window.innerWidth / 2) / 100;
+      mouseY = (event.clientY - window.innerHeight / 2) / 100;
+    }
+    document.addEventListener('mousemove', onDocumentMouseMove);
+    
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onWindowResize);
+    
+    const animate = () => {
+      requestAnimationFrame(animate);
+      particlesMesh.rotation.x += 0.0005 + mouseY * 0.0005;
+      particlesMesh.rotation.y += 0.0005 + mouseX * 0.0005;
+      renderer.render(scene, camera);
+    };
     animate();
     
     // Update particle color when theme changes
     const updateParticleColor = () => {
       particlesMaterial.color.set(isDarkMode ? 0xD2B48C : 0xFFD700);
     };
-    
     const themeChangeListener = () => {
       updateParticleColor();
     };
-    
     window.addEventListener('themeChange', themeChangeListener);
     
-    // Cleanup
     return () => {
       document.removeEventListener('mousemove', onDocumentMouseMove);
       window.removeEventListener('resize', onWindowResize);
       window.removeEventListener('themeChange', themeChangeListener);
-      
-      // Dispose of resources
       particlesGeometry.dispose();
       particlesMaterial.dispose();
       renderer.dispose();
@@ -159,8 +249,6 @@ export default function MineBot() {
   // Bot response logic
   const generateBotResponse = (userMessage) => {
     setIsTyping(true);
-    
-    // Mining-related responses
     const responses = {
       'gold': 'Our sustainable gold mining operations use advanced extraction techniques that minimize environmental impact while maximizing yield. We currently have projects in development that require investments starting from $1.2M.',
       'gemstone': 'Ceylon Mine specializes in ethical gemstone mining across Sri Lanka. Our operations focus on responsible sourcing of sapphires, rubies, and other precious gems with minimal ecological footprint.',
@@ -173,7 +261,6 @@ export default function MineBot() {
       'location': 'We currently operate mining sites across various regions in Sri Lanka, specializing in areas known for rich mineral deposits while maintaining strict environmental standards.',
     };
     
-    // Determine which topic the user is asking about
     const userMessageLower = userMessage.toLowerCase();
     let botResponse = "I'm not sure I understand your query about mining. Could you please ask about our gold mining, gemstone operations, industrial minerals, investment opportunities, environmental practices, community engagement, technology, or contact information?";
     
@@ -183,7 +270,6 @@ export default function MineBot() {
       }
     });
     
-    // Simulate typing delay
     setTimeout(() => {
       setMessages(prev => [...prev, { id: Date.now(), text: botResponse, isBot: true }]);
       setIsTyping(false);
@@ -193,13 +279,9 @@ export default function MineBot() {
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
-    
-    // Add user message
     const userMessage = inputValue;
     setMessages(prev => [...prev, { id: Date.now(), text: userMessage, isBot: false }]);
     setInputValue("");
-    
-    // Generate bot response
     generateBotResponse(userMessage);
   };
 
@@ -213,20 +295,31 @@ export default function MineBot() {
         className="fixed inset-0 w-full h-full z-0"
       />
       
-      {/* MineBot Header */}
-      <div className="relative z-10 pt-28 pb-6">
+      {/* Chatbot Header with 3D Model */}
+      <div className="relative z-10 pt-20 pb-6">
         <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">MINEBOT</h1>
-            <p className={`text-lg md:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Your intelligent assistant for sustainable mining inquiries. Ask about our operations, investment opportunities, environmental practices, and more.
-            </p>
-          </motion.div>
+          <div className="flex flex-col items-center justify-center">
+            {/* 3D Model Container */}
+            <div className="w-80 h-80 md:w-96 md:h-96 lg:w-112 lg:h-112 relative mb-8">
+              <canvas 
+                ref={modelCanvasRef} 
+                className="w-full h-full"
+              />
+            </div>
+            
+            {/* Title and description below the model */}
+            <motion.div 
+              className="text-center w-full"
+              initial={{ y: 20 }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">MINEBOT</h1>
+              <p className={`text-lg md:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+                Your intelligent assistant for sustainable mining inquiries. Ask about our operations, investment opportunities, environmental practices, and more.
+              </p>
+            </motion.div>
+          </div>
         </div>
       </div>
       
@@ -235,8 +328,8 @@ export default function MineBot() {
         <div className="container mx-auto px-4">
           <motion.div 
             className={`max-w-4xl mx-auto rounded-lg overflow-hidden shadow-xl ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ y: 20 }}
+            animate={{ y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             {/* Messages Display */}

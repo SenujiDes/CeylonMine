@@ -200,7 +200,17 @@ export default function Complaints() {
           <h3 className="text-xl font-bold text-amber-400 mb-2">Our Commitment To You</h3>
           <p className="opacity-90">We review all complaints within 24 hours and are committed to addressing your concerns promptly and thoroughly.</p>
         </div>
+        
       </main>
+
+      {/* Footer */}
+      <footer className={`relative z-10 py-8 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-800'}`}>
+        <div className="container mx-auto px-4 text-center">
+          <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`}>
+            &copy; {new Date().getFullYear()} Ceylon Mine. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

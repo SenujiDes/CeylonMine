@@ -68,7 +68,7 @@ export default function AboutUs() {
       id: 3,
       name: "Nisil Liyanage",
       position: "Software Architect & Backend Specialist ",
-      image: "/images/nisil2.PNG",
+      image: "/images/nisil2.jpg",
       bio: "Nisil specializes in developing scalable and secure infrastructures for enterprise applications. At Ceylon Mine, he focuses on building a reliable, data-driven platform that enhances efficiency in mining operations.",
       socialLinks: {
         linkedin: "#",
@@ -79,7 +79,7 @@ export default function AboutUs() {
       id: 4,
       name: "Thisal Induwara",
       position: "Frontend Engineer & UI/UX Developer",
-      image: "/images/thisal2.jpg",
+      image: "/images/thisal2.png",
       bio: "With expertise in regulatory frameworks and environmental sustainability, Thisal ensures Ceylon Mine aligns with industry best practices. He integrates compliance tracking and environmental safeguards into the platform’s core functionality.",
       socialLinks: {
         linkedin: "#",
@@ -534,57 +534,7 @@ const milestones = [
       </section>
 
       {/* Awards & Recognition Section */}
-      <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-gray-100'}`}>
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">AWARDS & RECOGNITION</h2>
-            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-            <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Our commitment to              Our commitment to excellence has been recognized by industry leaders and outdoor enthusiasts alike.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: "🏆",
-                title: "Best Off-Road Camper 2022",
-                description: "Awarded by Australian Outdoor Adventure Magazine for our innovative design and durability."
-              },
-              {
-                icon: "🌟",
-                title: "Eco-Friendly Innovation Award",
-                description: "Recognized for our sustainable manufacturing practices and eco-friendly materials."
-              },
-              {
-                icon: "🏅",
-                title: "Customer Choice Award",
-                description: "Voted by our customers as the most reliable and user-friendly camper trailer."
-              }
-            ].map((award, index) => (
-              <motion.div 
-                key={index}
-                className={`rounded-lg p-8 text-center ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -10, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)" }}
-              >
-                <div className="text-4xl mb-4">{award.icon}</div>
-                <h3 className="text-xl font-bold mb-4">{award.title}</h3>
-                <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{award.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
       {/* Call to Action Section */}
       <section className="relative z-10 py-16">
@@ -596,17 +546,17 @@ const milestones = [
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">READY FOR YOUR NEXT ADVENTURE?</h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">READY TO REVOLUTIONIZE MINING?</h2>
             <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
             <p className={`text-lg max-w-3xl mx-auto mb-12 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              Explore our range of camper trailers and start planning your next outback adventure today.
+            Discover how CeylonMine’s cutting-edge digital platform streamlines licensing, automates royalty calculations, and promotes sustainable mining practices.
             </p>
             <motion.button 
               className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-md font-medium transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              View Our Products
+             Discover CeylonMine
             </motion.button>
           </motion.div>
         </div>
@@ -616,7 +566,7 @@ const milestones = [
       <footer className={`relative z-10 py-8 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-800'}`}>
         <div className="container mx-auto px-4 text-center">
           <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`}>
-            &copy; {new Date().getFullYear()} Mars Campers. All rights reserved.
+            &copy; {new Date().getFullYear()} Ceylon Mine. All rights reserved.
           </p>
         </div>
       </footer>

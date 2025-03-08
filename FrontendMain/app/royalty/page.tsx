@@ -1266,27 +1266,14 @@ export default function Royalty() {
       </main>
 
       {/* Animated Footer with 3D parallax effect */}
-      <motion.footer 
-        className={`mt-16 py-8 border-t ${isDarkMode ? 'border-orange-900/30' : 'border-gray-200'}`}
-        style={{
-          transform: useTransform(
-            smoothScrollY,
-            [0, 1],
-            ['translateY(0px)', 'translateY(-20px)']
-          )
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.p 
-            className={`${isDarkMode ? 'text-orange-200/70' : 'text-gray-600'} ${fontStyles.body}`}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            © {new Date().getFullYear()} Ceylon Mine. All rights reserved.
-          </motion.p>
+      {/* Footer */}
+      <footer className={`relative z-10 py-8 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-800'}`}>
+        <div className="container mx-auto px-4 text-center">
+          <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`}>
+            &copy; {new Date().getFullYear()} Ceylon Mine. All rights reserved.
+          </p>
         </div>
-      </motion.footer>
+      </footer>
     </div>
   );
 }
