@@ -233,3 +233,17 @@ a.secondary {
   text-align: center;
   margin-top: 1rem;
 }
+
+.linkText {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.linkText a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.linkText a:hover {
+  text-decoration: underline;
+}

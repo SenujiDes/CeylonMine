@@ -88,6 +88,10 @@ function Page() {
         {message && <p className={message.includes('successful') ? styles.success : styles.error}>
           {message}
         </p>}
+        
+        <p className={styles.linkText}>
+          Already have an account? <a href="/login">Login here</a>
+        </p>
       </form>
     </div>
   )
