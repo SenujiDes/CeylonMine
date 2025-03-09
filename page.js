@@ -1,27 +1,43 @@
 'use client'
 
 import React, { useState } from 'react'
-import styles from '../page.module.css'
+import { useParams } from 'next/navigation'
+import styles from '../../page.module.css'
 
-function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
+function ResetPasswordPage() {
+  const params = useParams()
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (password !== confirmPassword) {
+      setMessage('Passwords do not match');
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:8080/api/request-reset', {
+      const response = await fetch('http://localhost:8080/api/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          token: params.token,
+          password: password
+        }),
       });
       
       const data = await response.json();
-      setMessage(data.message);
+      
       if (response.ok) {
-        setEmail('');
+        setMessage('Password updated successfully!');
+        setPassword('');
+        setConfirmPassword('');
+      } else {
+        setMessage(data.error || 'Password reset failed');
       }
     } catch (error) {
       setMessage('Error connecting to server');
@@ -31,22 +47,35 @@ function ForgotPasswordPage() {
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
-        <h1>Reset Password</h1>
+        <h1>Set New Password</h1>
         
         <div className={styles.formGroup}>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="password">New Password:</label>
           <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
 
-        <button type="submit">Send Reset Link</button>
+        <div className={styles.formGroup}>
+          <label htmlFor="confirmPassword">Confirm Password:</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button type="submit">Update Password</button>
         
-        {message && <p className={styles.message}>{message}</p>}
+        {message && <p className={message.includes('successfully') ? styles.success : styles.error}>
+          {message}
+        </p>}
         
         <p className={styles.linkText}>
           <a href="/login">Back to Login</a>
@@ -56,4 +85,4 @@ function ForgotPasswordPage() {
   )
 }
 
-export default ForgotPasswordPage 
+export default ResetPasswordPage 
