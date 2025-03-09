@@ -1,11 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import styles from './page.module.css'
+import styles from '../page.module.css'  
 
-function Page() {
+function LoginPage() {
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
     password: ''
   });
@@ -14,7 +13,7 @@ function Page() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/api/signup', {
+      const response = await fetch('http://localhost:8080/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,10 +24,13 @@ function Page() {
       const data = await response.json();
       
       if (response.ok) {
-        setMessage('Signup successful!');
-        setFormData({ name: '', email: '', password: '' });
+        setMessage('Login successful!');
+        // Here you might want to:
+        // 1. Store the user data in state management (like Redux or Context)
+        // 2. Store a token in localStorage
+        // 3. Redirect to a dashboard page
       } else {
-        setMessage(data.error || 'Signup failed');
+        setMessage(data.error || 'Login failed');
       }
     } catch (error) {
       setMessage('Error connecting to server');
@@ -45,20 +47,8 @@ function Page() {
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
-        <h1>Sign Up</h1>
+        <h1>Login</h1>
         
-        <div className={styles.formGroup}>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
         <div className={styles.formGroup}>
           <label htmlFor="email">Email:</label>
           <input
@@ -83,18 +73,18 @@ function Page() {
           />
         </div>
 
-        <button type="submit">Sign Up</button>
+        <button type="submit">Login</button>
         
         {message && <p className={message.includes('successful') ? styles.success : styles.error}>
           {message}
         </p>}
-        
+
         <p className={styles.linkText}>
-          Already have an account? <a href="/login">Login here</a>
+          <a href="/forgot-password">Forgot Password?</a>
         </p>
       </form>
     </div>
   )
 }
 
-export default Page
+export default LoginPage 
