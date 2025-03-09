@@ -26,7 +26,6 @@ export default function RoyaltyPage() {
               <div>
                 <label className="block text-sm font-medium mb-2">Mining Type</label>
                 <select className="w-full p-2 rounded-lg border border-[var(--foreground)] bg-transparent">
-                  <option>Gem Mining</option>
                   <option>Industrial Minerals</option>
                   <option>Construction Materials</option>
                 </select>
