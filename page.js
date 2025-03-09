@@ -1,90 +1,59 @@
 'use client'
 
 import React, { useState } from 'react'
-import styles from '../page.module.css'  
+import styles from '../page.module.css'
 
-function LoginPage() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+function ForgotPasswordPage() {
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/api/login', {
+      const response = await fetch('http://localhost:8080/api/request-reset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ email }),
       });
       
       const data = await response.json();
-      
+      setMessage(data.message);
       if (response.ok) {
-        setMessage('Login successful!');
-        // Here you might want to:
-        // 1. Store the user data in state management (like Redux or Context)
-        // 2. Store a token in localStorage
-        // 3. Redirect to a dashboard page
-      } else {
-        setMessage(data.error || 'Login failed');
+        setEmail('');
       }
     } catch (error) {
       setMessage('Error connecting to server');
     }
   };
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
-        <h1>Login</h1>
+        <h1>Reset Password</h1>
         
         <div className={styles.formGroup}>
           <label htmlFor="email">Email:</label>
           <input
             type="email"
             id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit">Login</button>
+        <button type="submit">Send Reset Link</button>
         
-        {message && <p className={message.includes('successful') ? styles.success : styles.error}>
-          {message}
-        </p>}
-
+        {message && <p className={styles.message}>{message}</p>}
+        
         <p className={styles.linkText}>
-          <a href="/forgot-password">Forgot Password?</a>
+          <a href="/login">Back to Login</a>
         </p>
       </form>
     </div>
   )
 }
 
-export default LoginPage 
+export default ForgotPasswordPage 
