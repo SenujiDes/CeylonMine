@@ -48,6 +48,18 @@ export default function AdminDashboard() {
               <p className="text-center opacity-90">Modify application statuses and notify applicants</p>
             </div>
           </Link>
+
+          <Link href="/complaints" className="group">
+            <div className="bg-[var(--foreground)] text-[var(--background)] p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="mb-4">
+                <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-center mb-3">Complaints</h2>
+              <p className="text-center opacity-90">Manage and resolve user complaints</p>
+            </div>
+          </Link>
         </div>
       </div>
     </Layout>

@@ -28,6 +28,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link href="/status" className="hover:opacity-80 transition-opacity">
               Status
             </Link>
+            <Link href="/complaints" className="hover:opacity-80 transition-opacity">
+              Complaints
+            </Link>
           </nav>
         </div>
       </header>
