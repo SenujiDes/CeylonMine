@@ -1,29 +1,80 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Layout from '../../components/Layout';
 
-export default function ApplicationDetails({ params }: { params: { id: string } }) {
-  // This would typically fetch data based on the ID
-  const application = {
-    id: params.id,
-    applicantName: "Thisal Induwara",
-    location: "Colombo District",
-    status: "Pending",
-    submissionDate: "2024-03-19",
-    miningType: "IML",
-    area: "2.5 hectares",
-    description: "Blah blah blah",
-    documents: [
-      { name: "Environmental Impact Assessment", status: "Submitted" },
-      { name: "Land Ownership Proof", status: "Submitted" },
-      { name: "Mining Plan", status: "Pending" }
-    ],
-    comments: [
-      {
-        date: "2024-03-20",
-        text: "Application received and under initial review",
-        author: "System"
+interface Document {
+  id: string;
+  name: string;
+  status: string;
+}
+
+interface Comment {
+  id: string;
+  text: string;
+  author: string;
+  created_at: string;
+}
+
+interface Application {
+  id: string;
+  applicant_name: string;
+  location: string;
+  status: string;
+  mining_type: string;
+  area: string;
+  description: string;
+  submission_date: string;
+  documents: Document[];
+  comments: Comment[];
+}
+
+export default function ApplicationDetails() {
+  const params = useParams();
+  const [application, setApplication] = useState<Application | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchApplication() {
+      try {
+        const response = await fetch(`/api/applications/${params.id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch application');
+        }
+        const data = await response.json();
+        setApplication(data);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
       }
-    ]
-  };
+    }
+
+    if (params.id) {
+      fetchApplication();
+    }
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--foreground)]"></div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!application) {
+    return (
+      <Layout>
+        <div className="text-center py-12">
+          <h1 className="text-2xl font-bold text-[var(--foreground)]">Application not found</h1>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -43,7 +94,7 @@ export default function ApplicationDetails({ params }: { params: { id: string } 
             <div className="space-y-3">
               <div>
                 <span className="text-sm opacity-70">Applicant Name</span>
-                <p className="font-medium">{application.applicantName}</p>
+                <p className="font-medium">{application.applicant_name}</p>
               </div>
               <div>
                 <span className="text-sm opacity-70">Location</span>
@@ -51,7 +102,7 @@ export default function ApplicationDetails({ params }: { params: { id: string } 
               </div>
               <div>
                 <span className="text-sm opacity-70">Mining Type</span>
-                <p className="font-medium">{application.miningType}</p>
+                <p className="font-medium">{application.mining_type}</p>
               </div>
               <div>
                 <span className="text-sm opacity-70">Area</span>
@@ -66,14 +117,20 @@ export default function ApplicationDetails({ params }: { params: { id: string } 
               <div>
                 <span className="text-sm opacity-70">Current Status</span>
                 <p className="font-medium">
-                  <span className="px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800">
+                  <span className={`px-3 py-1 rounded-full text-sm ${
+                    application.status === 'pending'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : application.status === 'approved'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}>
                     {application.status}
                   </span>
                 </p>
               </div>
               <div>
                 <span className="text-sm opacity-70">Submission Date</span>
-                <p className="font-medium">{application.submissionDate}</p>
+                <p className="font-medium">{new Date(application.submission_date).toLocaleDateString()}</p>
               </div>
             </div>
           </div>
@@ -88,11 +145,11 @@ export default function ApplicationDetails({ params }: { params: { id: string } 
           <div className="bg-[var(--card-background)] p-6 rounded-xl shadow-lg">
             <h2 className="text-xl font-semibold mb-4">Required Documents</h2>
             <div className="space-y-3">
-              {application.documents.map((doc, index) => (
-                <div key={index} className="flex justify-between items-center">
+              {application.documents.map((doc) => (
+                <div key={doc.id} className="flex justify-between items-center">
                   <span>{doc.name}</span>
                   <span className={`px-3 py-1 rounded-full text-sm ${
-                    doc.status === 'Submitted' 
+                    doc.status === 'submitted' 
                       ? 'bg-green-100 text-green-800' 
                       : 'bg-yellow-100 text-yellow-800'
                   }`}>
@@ -106,14 +163,16 @@ export default function ApplicationDetails({ params }: { params: { id: string } 
           <div className="bg-[var(--card-background)] p-6 rounded-xl shadow-lg">
             <h2 className="text-xl font-semibold mb-4">Comments & Updates</h2>
             <div className="space-y-4">
-              {application.comments.map((comment, index) => (
-                <div key={index} className="border-l-4 border-[var(--foreground)] pl-4">
+              {application.comments.map((comment) => (
+                <div key={comment.id} className="border-l-4 border-[var(--foreground)] pl-4">
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-medium">{comment.text}</p>
                       <p className="text-sm opacity-70">{comment.author}</p>
                     </div>
-                    <span className="text-sm opacity-70">{comment.date}</span>
+                    <span className="text-sm opacity-70">
+                      {new Date(comment.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               ))}
