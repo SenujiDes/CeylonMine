@@ -1,6 +1,15 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const [currentYear, setCurrentYear] = useState('');
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear().toString());
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col" suppressHydrationWarning>
       {/* Header */}
@@ -31,7 +40,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Footer */}
       <footer className="bg-[var(--foreground)] text-[var(--background)] p-4 mt-auto">
         <div className="container mx-auto text-center text-sm opacity-80">
-          © {new Date().getFullYear()} CeylonMine. All rights reserved.
+          © {currentYear || ''} CeylonMine. All rights reserved.
         </div>
       </footer>
     </div>

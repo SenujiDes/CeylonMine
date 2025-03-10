@@ -3,12 +3,16 @@ import { supabase } from '../../../utility/supabase';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  // Await the params
+  const { id } = await context.params;
+
+  // First query
   const { data: application, error } = await supabase
     .from('applications')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   if (error) {
@@ -19,13 +23,13 @@ export async function GET(
   const { data: documents } = await supabase
     .from('documents')
     .select('*')
-    .eq('application_id', params.id);
+    .eq('application_id', id);
 
   // Fetch related comments
   const { data: comments } = await supabase
     .from('comments')
     .select('*')
-    .eq('application_id', params.id)
+    .eq('application_id', id)
     .order('created_at', { ascending: false });
 
   return NextResponse.json({

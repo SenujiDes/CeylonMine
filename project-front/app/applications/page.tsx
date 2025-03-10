@@ -20,20 +20,26 @@ export default function ApplicationsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchApplications() {
-      try {
-        const response = await fetch('/api/applications');
-        const data = await response.json();
-        setApplications(data);
-      } catch (error) {
-        console.error('Error fetching applications:', error);
-      } finally {
-        setLoading(false);
-      }
+  const fetchApplications = async () => {
+    try {
+      const response = await fetch('/api/applications');
+      const data = await response.json();
+      setApplications(data);
+    } catch (error) {
+      console.error('Error fetching applications:', error);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchApplications();
+
+    // Set up polling to refresh data every 3 seconds
+    const interval = setInterval(fetchApplications, 3000);
+    
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -45,6 +51,23 @@ export default function ApplicationsPage() {
       </Layout>
     );
   }
+
+  // Update the status color logic to handle all possible statuses
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      case 'under_review':
+        return 'bg-blue-100 text-blue-800';
+      case 'additional_info':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'pending':
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <Layout>
@@ -77,14 +100,8 @@ export default function ApplicationsPage() {
                     <td className="py-4 px-6">{app.location}</td>
                     <td className="py-4 px-6">{app.mining_type}</td>
                     <td className="py-4 px-6">
-                      <span className={`px-3 py-1 rounded-full text-sm ${
-                        app.status === 'pending' 
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : app.status === 'approved'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {app.status}
+                      <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(app.status)}`}>
+                        {app.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </span>
                     </td>
                     <td className="py-4 px-6">
