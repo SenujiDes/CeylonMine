@@ -43,7 +43,30 @@ export async function POST(request: Request) {
       { expiresIn: '24h' }
     );
 
-    return NextResponse.json({ token });
+    // Create response
+    const response = NextResponse.json({
+      success: true,
+      token // Include token in response for debugging
+    });
+    
+    // Set HTTP-only cookie with token
+    response.cookies.set({
+      name: 'adminToken',
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 // 24 hours
+    });
+
+    console.log('Login successful:', {
+      email: user.email,
+      tokenSet: !!token,
+      cookieSet: true
+    });
+
+    return response;
   } catch (error) {
     console.error('Server error:', error);
     return NextResponse.json(

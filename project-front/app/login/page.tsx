@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Layout from '../components/Layout';
 import Swal from 'sweetalert2';
@@ -10,6 +10,19 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      const response = await fetch('/api/auth/check', {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        router.push('/');
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +35,7 @@ export default function LoginPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include', // Important: This ensures cookies are sent/received
       });
 
       const data = await response.json();
@@ -30,9 +44,6 @@ export default function LoginPage() {
         throw new Error(data.error || 'Login failed');
       }
 
-      // Store the token in localStorage
-      localStorage.setItem('adminToken', data.token);
-      
       // Show success message
       await Swal.fire({
         title: 'Success!',
@@ -42,8 +53,11 @@ export default function LoginPage() {
         showConfirmButton: false
       });
 
+      // Wait for the success message before redirecting
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
       // Redirect to dashboard
-      router.push('/');
+      window.location.href = '/'; // Use window.location for a full page refresh
     } catch (error) {
       console.error('Login error:', error);
       Swal.fire({
@@ -62,7 +76,7 @@ export default function LoginPage() {
         <div className="max-w-md w-full space-y-8 bg-[var(--background)] p-8 rounded-xl shadow-lg">
           <div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-[var(--foreground)]">
-              Admin Login
+              Sign in
             </h2>
             <p className="mt-2 text-center text-sm text-[var(--foreground)] opacity-80">
               Sign in to access the admin dashboard
@@ -85,6 +99,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
+              <br></br>
               <div>
                 <label htmlFor="password" className="sr-only">
                   Password

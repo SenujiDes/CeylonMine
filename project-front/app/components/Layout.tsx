@@ -9,7 +9,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [currentYear, setCurrentYear] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -17,29 +16,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     setCurrentYear(new Date().getFullYear().toString());
     setMounted(true);
 
-    // Check authentication
-    const token = localStorage.getItem('adminToken');
-    setIsAuthenticated(!!token);
-
-    // Redirect to login if not authenticated and not on login page
-    if (!token && pathname !== '/login') {
-      router.push('/login');
-    }
-
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathname, router]);
+  }, []);
 
   const handleLogout = async () => {
     try {
-      localStorage.removeItem('adminToken');
-      setIsAuthenticated(false);
-      router.push('/login');
-      
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
+
+      // Show success message
       await Swal.fire({
         title: 'Success!',
         text: 'Logged out successfully',
@@ -47,8 +43,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         timer: 1500,
         showConfirmButton: false
       });
+
+      // Wait for the success message before redirecting
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Use window.location for a full page refresh
+      window.location.href = '/login';
     } catch (error) {
       console.error('Logout error:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to logout',
+        icon: 'error'
+      });
     }
   };
 
