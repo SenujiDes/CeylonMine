@@ -38,14 +38,18 @@ export default function ApplicationDetails() {
   useEffect(() => {
     async function fetchApplication() {
       try {
+        console.log('Fetching application with ID:', params.id);
         const response = await fetch(`/api/applications/${params.id}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch application');
+          const errorData = await response.json();
+          console.error('API Error:', errorData);
+          throw new Error(errorData.error || 'Failed to fetch application');
         }
         const data = await response.json();
+        console.log('Received application data:', data);
         setApplication(data);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching application:', error);
       } finally {
         setLoading(false);
       }

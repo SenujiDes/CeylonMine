@@ -11,6 +11,7 @@ export default function StatusPage() {
   const [comments, setComments] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +50,17 @@ export default function StatusPage() {
       setError(err instanceof Error ? err.message : 'Failed to update status');
     }
   };
+
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--foreground)]"></div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
