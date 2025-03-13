@@ -1,0 +1,35 @@
+# Core Next.js and React
+npm install next@latest react@latest react-dom@latest
+
+# TypeScript and types
+npm install typescript @types/node @types/react @types/react-dom
+
+# UI and Styling
+npm install tailwindcss postcss autoprefixer
+npm install @radix-ui/react-dropdown-menu
+npm install @radix-ui/react-slot
+npm install class-variance-authority
+npm install clsx
+npm install lucide-react
+npm install tailwind-merge
+npm install tailwindcss-animate
+
+# Authentication and Database
+npm install @supabase/supabase-js
+npm install jsonwebtoken
+npm install @types/jsonwebtoken
+
+# Utilities and Helpers
+npm install sweetalert2
+npm install date-fns
+
+# Development Dependencies
+npm install -D eslint eslint-config-next
+
+#Initialize Tailwind CSS (if not already done):
+npx tailwindcss init -p
+
+#Create a .env.local file in the project root with:
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url (In README.md)
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key (In README.md) 
+JWT_SECRET=your_jwt_secret (In README.md)

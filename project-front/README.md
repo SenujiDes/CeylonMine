@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CeylonMine Project Admin Portal
 
-## Getting Started
+This is the Admin Portal for the CeylonMine project, built with Next.js and integrated with Supabase for backend services.
 
-First, run the development server:
+## Prerequisites
 
+Before you begin, ensure you have met the following requirements:
+- **Node.js**: Version 18.x or later
+- **npm**: Comes with Node.js, used to install dependencies
+
+## Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Thisal03/project-front.git
+   cd project-front
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**:
+   Create a `.env.local` file in the root directory and add your Supabase credentials:
+   ```plaintext
+   NEXT_PUBLIC_SUPABASE_URL=https://qcjvyvipblxqjqlfmict.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjanZ5dmlwYmx4cWpxbGZtaWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzMzc4NDAsImV4cCI6MjA1NjkxMzg0MH0.4hmGPxAONFwokBqhMVI_vuZQzD_WkiYpmtbT0V3uHps
+   JWT_SECRET=ceylonmine-admin-secret-key-2024
+   ```
+
+## Running the Application
+
+To start the development server, run:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+The application will be available at `http://localhost:3000`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **/app**: Contains the main application components and pages
+- **/components**: Reusable UI components
+- **/api**: API routes for handling authentication and data operations
+- **/styles**: Global styles and Tailwind CSS configuration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Key Features
 
-## Learn More
+- **Authentication**: Secure login and logout using JWT and Supabase
+- **Role Management**: Admins can manage user roles
+- **Complaints Management**: View and manage complaints submitted by users
+- **Responsive Design**: Built with Tailwind CSS for mobile-first design
 
-To learn more about Next.js, take a look at the following resources:
+## Troubleshooting
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Node Module Errors**: Delete `node_modules` and run `npm install` again
+- **Build Errors**: Delete the `.next` folder and restart the server
+- **Environment Variables**: Ensure `.env.local` is correctly configured
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Contributions are welcome! Please fork the repository and submit a pull request.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
+
+## Contact
+
+For any inquiries, please contact [thisalinduwara0379@gmail.com].
