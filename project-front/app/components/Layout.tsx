@@ -44,10 +44,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         showConfirmButton: false
       });
 
+      // Clear any client-side state
+      localStorage.removeItem('adminToken');
+      
       // Wait for the success message before redirecting
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Use window.location for a full page refresh
+      // Use window.location for a full page refresh and redirect
       window.location.href = '/login';
     } catch (error) {
       console.error('Logout error:', error);

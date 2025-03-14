@@ -35,24 +35,10 @@ export default function middleware(request: NextRequest) {
 
   // Allow the request to proceed
   console.log('Allowing request to proceed');
-  const response = NextResponse.next();
-  
-  // Ensure token is preserved
-  if (token) {
-    response.cookies.set({
-      name: 'adminToken',
-      value: token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-    });
-  }
-
-  return response;
+  return NextResponse.next();
 }
 
-// Add the paths that should be protected
+// Configure middleware to run on all routes
 export const config = {
   matcher: [
     /*

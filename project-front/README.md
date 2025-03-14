@@ -24,9 +24,9 @@ Before you begin, ensure you have met the following requirements:
 3. **Environment Setup**:
    Create a `.env.local` file in the root directory and add your Supabase credentials:
    ```plaintext
-   NEXT_PUBLIC_SUPABASE_URL=https://qcjvyvipblxqjqlfmict.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjanZ5dmlwYmx4cWpxbGZtaWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzMzc4NDAsImV4cCI6MjA1NjkxMzg0MH0.4hmGPxAONFwokBqhMVI_vuZQzD_WkiYpmtbT0V3uHps
-   JWT_SECRET=ceylonmine-admin-secret-key-2024
+   NEXT_PUBLIC_SUPABASE_URL=
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=
+   JWT_SECRET=
    ```
 
 ## Running the Application

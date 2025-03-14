@@ -9,8 +9,11 @@ export async function POST() {
     response.cookies.set({
       name: 'adminToken',
       value: '',
-      expires: new Date(0), // Set expiration to past date to ensure deletion
+      expires: new Date(0),
       path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
     });
 
     return response;
