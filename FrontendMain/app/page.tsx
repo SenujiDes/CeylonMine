@@ -1056,48 +1056,114 @@
 // }
 
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
-import Head from 'next/head';
-import Navbar from "./navbar/page"; // <-- Import your updated Navbar here
-import { motion, useScroll, useTransform } from 'framer-motion';
-import * as THREE from 'three';
 
-/**
- * Main Home Page Component
- */
-export default function Home() {
+import React, { useEffect, useRef, useState } from "react";
+import Head from "next/head";
+import Navbar from "./navbar/page";
+import { motion, useScroll, useTransform } from "framer-motion";
+import * as THREE from "three";
+import Image from "next/image";
+import Link from "next/link";
+
+export default function Page() {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [isDarkMode, setIsDarkMode] = useState(true); // Local state for theme
-  const [language, setLanguage] = useState<'en' | 'si'>('en'); // Local state for language
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [language, setLanguage] = useState<"en" | "si">("en");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState({});
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  // Features data based on the CeylonMine project report – no pricing info
+  // Hero slider images
+  const heroImages = [
+    {
+      src: "/images/1.jpg",
+      alt: "Hero Slide 1",
+    },
+    {
+      src: "/images/8.jpg",
+      alt: "Hero Slide 2",
+    },
+    {
+      src: "/images/9.jpg",
+      alt: "Hero Slide 3",
+    },
+  ];
+
+  // Features array (feature slider)
   const features = [
     {
       id: 1,
       title: "DIGITAL LICENSING",
       subtitle: "Streamlined Applications",
-      description: "Centralize your mining license applications with CeylonMine for efficient processing and transparent oversight.",
+      description:
+        "Centralize your mining license applications with CeylonMine for efficient processing and transparent oversight.",
       image: "/images/13.jpg",
     },
     {
       id: 2,
       title: "AUTOMATED ROYALTY CALCULATION",
       subtitle: "Transparent & Fair",
-      description: "Leverage real-time data to ensure accurate and fair royalty computations, reducing manual errors and administrative burdens.",
+      description:
+        "Leverage real-time data to ensure accurate and fair royalty computations, reducing manual errors and administrative burdens.",
       image: "/images/8.jpg",
     },
     {
       id: 3,
       title: "SUSTAINABLE MINING OVERSIGHT",
       subtitle: "Environmental Stewardship",
-      description: "Monitor mining activities with integrated GIS mapping, educational resources, and AI-powered support to promote sustainable practices.",
+      description:
+        "Monitor mining activities with integrated GIS mapping, educational resources, and AI-powered support to promote sustainable practices.",
       image: "/images/9.jpg",
     },
   ];
 
-  // Listen for theme changes from Navbar
+  // Language translations
+  const translations = {
+    en: {
+      heroSubtitle:
+        "Streamlining mining licensing and royalty calculation to promote transparency and sustainability in Sri Lanka.",
+      discoverMore: "Discover More",
+      explorePlatform: "Explore Platform",
+      ourCommitment: "OUR COMMITMENT",
+      commitmentText:
+        "CeylonMine is dedicated to transforming mining processes through digital innovation, ensuring transparency, efficiency, and sustainable practices.",
+      transparency: "TRANSPARENCY",
+      efficiency: "EFFICIENCY",
+      sustainability: "SUSTAINABILITY",
+      featuresHeading: "OUR PLATFORM IN ACTION",
+      featuresText:
+        "Experience the seamless integration of digital licensing, automated royalty calculation, and sustainable mining oversight with CeylonMine.",
+      testimonialsHeading: "WHAT OUR USERS SAY",
+      testimonialsText:
+        "Hear from industry professionals and stakeholders who have embraced the digital revolution with CeylonMine.",
+      userFooter: "All rights reserved.",
+    },
+    si: {
+      heroSubtitle:
+        "ශ්‍රී ලංකාවේ läbima නීතිකරණ සහ සිදුරු ගණනය කිරීම ක්‍රියාත්මක කිරීමට විනිවිද පෙනෙනභාවය හා ස්ථාවරතාවය ඉහළ නංවා ගැනීම.",
+      discoverMore: "තව දුරටත් සොයා බලන්න",
+      explorePlatform: "වේදිකාව සොයා බලන්න",
+      ourCommitment: "අපගේ කැපවීම",
+      commitmentText:
+        "CeylonMine නවීන දීප්තිමත් තාක්ෂණය ඔස්සේ පතල් ක්‍රියාකාරකම් පරිවර්තනය කරමින් විනිවිද පෙනෙනභාවය, දක්ෂතාවය, හා ස්ථාවරතාවය තහවුරු කරයි.",
+      transparency: "විනිවිද පෙනෙනභාවය",
+      efficiency: "දක්ෂතාවය",
+      sustainability: "ස්ථාවරතාවය",
+      featuresHeading: "අපගේ වේදිකාව ක්‍රියාකාරීව",
+      featuresText:
+        "ඉතා ස්ථාවර දත්ත හා ස්වයංක්‍රීය රෝයල්ටි ගණනයක් සමඟ නීතිකරණ ක්‍රියාවලිය ස්වයංක්‍රීය කිරීමෙන් ඔබට අත්දැකීම් ලබා දෙන්න.",
+      testimonialsHeading: "අපගේ පරිශීලකයින්ගේ අදහස්",
+      testimonialsText:
+        "CeylonMine සමඟ ඩිජිටල් විප්ලවය පිළිගෙන ඇති සංවිධානාත්මක වෘත්තිකයින්ගේ අදහස්.",
+      userFooter: "සියලු හිමිකම් ඇවිරිණි.",
+    },
+  };
+
+  const t = translations[language];
+
+  // Theme & language effects
   useEffect(() => {
     const handleThemeChange = (event: any) => {
       setIsDarkMode(event.detail.isDarkMode);
@@ -1107,33 +1173,33 @@ export default function Home() {
       setLanguage(event.detail.language);
     };
 
-    window.addEventListener('themeChange', handleThemeChange);
-    window.addEventListener('languageChange', handleLanguageChange);
+    window.addEventListener("themeChange", handleThemeChange);
+    window.addEventListener("languageChange", handleLanguageChange);
 
-    // Initial theme check
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+    const savedTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
       setIsDarkMode(true);
     } else {
       setIsDarkMode(false);
     }
 
-    // Initial language check
-    const savedLang = localStorage.getItem('language');
-    if (savedLang === 'si') {
-      setLanguage('si');
+    const savedLang = localStorage.getItem("language");
+    if (savedLang === "si") {
+      setLanguage("si");
     } else {
-      setLanguage('en');
+      setLanguage("en");
     }
 
     return () => {
-      window.removeEventListener('themeChange', handleThemeChange);
-      window.removeEventListener('languageChange', handleLanguageChange);
+      window.removeEventListener("themeChange", handleThemeChange);
+      window.removeEventListener("languageChange", handleLanguageChange);
     };
   }, []);
 
-  // Scroll-based animations (Framer Motion)
+  // Framer Motion scroll
   const { scrollYProgress } = useScroll({
     target: scrollRef,
     offset: ["start start", "end end"],
@@ -1142,7 +1208,7 @@ export default function Home() {
   const rotateY = useTransform(scrollYProgress, [0, 1], [0, 360]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
 
-  // Initialize 3D sand effect using Three.js
+  // Three.js "sand" effect
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -1162,20 +1228,21 @@ export default function Home() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 5000;
+    // Adjust particle count to your preference
+    const particlesCount = 3000;
     const posArray = new Float32Array(particlesCount * 3);
 
     for (let i = 0; i < particlesCount * 3; i++) {
       posArray[i] = (Math.random() - 0.5) * 5;
     }
     particlesGeometry.setAttribute(
-      'position',
+      "position",
       new THREE.BufferAttribute(posArray, 3)
     );
 
     const particlesMaterial = new THREE.PointsMaterial({
       size: 0.005,
-      color: isDarkMode ? 0xD2B48C : 0xFFD700, // Switch color based on dark mode
+      color: isDarkMode ? 0xd2b48c : 0xffd700,
       transparent: true,
       blending: THREE.AdditiveBlending,
     });
@@ -1192,43 +1259,44 @@ export default function Home() {
       mouseX = (event.clientX - window.innerWidth / 2) / 100;
       mouseY = (event.clientY - window.innerHeight / 2) / 100;
     }
-    document.addEventListener('mousemove', onDocumentMouseMove);
+    document.addEventListener("mousemove", onDocumentMouseMove);
 
     function onWindowResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
-    window.addEventListener('resize', onWindowResize);
+    window.addEventListener("resize", onWindowResize);
 
     const animate = () => {
       requestAnimationFrame(animate);
-      particlesMesh.rotation.x += 0.0005 + mouseY * 0.0005;
-      particlesMesh.rotation.y += 0.0005 + mouseX * 0.0005;
+      // Slowed rotation speed
+      particlesMesh.rotation.x += 0.0002 + mouseY * 0.0002;
+      particlesMesh.rotation.y += 0.0002 + mouseX * 0.0002;
       renderer.render(scene, camera);
     };
     animate();
 
     const updateParticleColor = () => {
-      particlesMaterial.color.set(isDarkMode ? 0xD2B48C : 0xFFD700);
+      particlesMaterial.color.set(isDarkMode ? 0xd2b48c : 0xffd700);
     };
 
     const themeChangeListener = () => {
       updateParticleColor();
     };
-    window.addEventListener('themeChange', themeChangeListener);
+    window.addEventListener("themeChange", themeChangeListener);
 
     return () => {
-      document.removeEventListener('mousemove', onDocumentMouseMove);
-      window.removeEventListener('resize', onWindowResize);
-      window.removeEventListener('themeChange', themeChangeListener);
+      document.removeEventListener("mousemove", onDocumentMouseMove);
+      window.removeEventListener("resize", onWindowResize);
+      window.removeEventListener("themeChange", themeChangeListener);
       particlesGeometry.dispose();
       particlesMaterial.dispose();
       renderer.dispose();
     };
   }, [isDarkMode]);
 
-  // Slide navigation
+  // Feature slider controls
   const nextSlide = () => {
     setActiveSlide((prev) => (prev === features.length - 1 ? 0 : prev + 1));
   };
@@ -1237,46 +1305,26 @@ export default function Home() {
     setActiveSlide((prev) => (prev === 0 ? features.length - 1 : prev - 1));
   };
 
-  // Translations for text examples
-  const translations = {
-    en: {
-      heroSubtitle: "Streamlining mining licensing and royalty calculation to promote transparency and sustainability in Sri Lanka.",
-      discoverMore: "Discover More",
-      explorePlatform: "Explore Platform",
-      ourCommitment: "OUR COMMITMENT",
-      commitmentText: "CeylonMine is dedicated to transforming mining processes through digital innovation, ensuring transparency, efficiency, and sustainable practices.",
-      transparency: "TRANSPARENCY",
-      efficiency: "EFFICIENCY",
-      sustainability: "SUSTAINABILITY",
-      featuresHeading: "OUR PLATFORM IN ACTION",
-      featuresText: "Experience the seamless integration of digital licensing, automated royalty calculation, and sustainable mining oversight with CeylonMine.",
-      testimonialsHeading: "WHAT OUR USERS SAY",
-      testimonialsText: "Hear from industry professionals and stakeholders who have embraced the digital revolution with CeylonMine.",
-      userFooter: "All rights reserved."
-    },
-    si: {
-      heroSubtitle: "ශ්‍රී ලංකාවේ läbima නීතිකරණ සහ සිදුරු ගණනය කිරීම ක්‍රියාත්මක කිරීමට විනිවිද පෙනෙනභාවය හා ස්ථාවරතාවය ඉහළ නංවා ගැනීම.",
-      discoverMore: "තව දුරටත් සොයා බලන්න",
-      explorePlatform: "වේදිකාව සොයා බලන්න",
-      ourCommitment: "අපගේ කැපවීම",
-      commitmentText: "CeylonMine නවීන දීප්තිමත් තාක්ෂණය ඔස්සේ පතල් ක්‍රියාකාරකම් පරිවර්තනය කරමින් විනිවිද පෙනෙනභාවය, දක්ෂතාවය, හා ස්ථාවරතාවය තහවුරු කරයි.",
-      transparency: "විනිවිද පෙනෙනභාවය",
-      efficiency: "දක්ෂතාවය",
-      sustainability: "ස්ථාවරතාවය",
-      featuresHeading: "අපගේ වේදිකාව ක්‍රියාකාරීව",
-      featuresText: "ඉතා ස්ථාවර දත්ත හා ස්වයංක්‍රීය රෝයල්ටි ගණනයක් සමඟ නීතිකරණ ක්‍රියාවලිය ස්වයංක්‍රීය කිරීමෙන් ඔබට අත්දැකීම් ලබා දෙන්න.",
-      testimonialsHeading: "අපගේ පරිශීලකයින්ගේ අදහස්",
-      testimonialsText: "CeylonMine සමඟ ඩිජිටල් විප්ලවය පිළිගෙන ඇති සංවිධානාත්මක වෘත්තිකයින්ගේ අදහස්.",
-      userFooter: "සියලු හිමිකම් ඇවිරිණි."
-    }
+  // Hero slider controls
+  const nextHeroSlide = () => {
+    setActiveHeroSlide((prev) =>
+      prev === heroImages.length - 1 ? 0 : prev + 1
+    );
   };
 
-  const t = translations[language];
+  const prevHeroSlide = () => {
+    setActiveHeroSlide((prev) =>
+      prev === 0 ? heroImages.length - 1 : prev - 1
+    );
+  };
 
   return (
     <div
       className={`relative min-h-screen ${
-        isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'
+        isDarkMode
+          ? "bg-black text-white"
+          : // Updated light theme color for a warmer tone
+            "bg-[#fdf4eb] text-gray-900"
       } overflow-hidden`}
       ref={scrollRef}
     >
@@ -1289,16 +1337,35 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Navbar with dark/light & language switch */}
+      {/* Navbar */}
       <Navbar />
 
-      {/* 3D Sand Background */}
+      {/* Three.js background canvas */}
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-0" />
 
-      {/* Hero Section */}
-      <main className="relative z-10 pt-28 pb-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+      {/* HERO SLIDER */}
+      <section className="relative z-10 pt-20">
+        <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
+          {heroImages.map((image, index) => (
+            <motion.div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-700 ${
+                index === activeHeroSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+              }`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: index === activeHeroSlide ? 1 : 0 }}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover"
+              />
+            </motion.div>
+          ))}
+
+          {/* Overlay text */}
+          <div className="absolute inset-0 bg-black bg-opacity-20 flex flex-col justify-center items-center text-center p-4">
             <motion.h1
               className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4"
               initial={{ opacity: 0, y: 20 }}
@@ -1309,7 +1376,7 @@ export default function Home() {
             </motion.h1>
             <motion.p
               className={`text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto ${
-                isDarkMode ? 'opacity-80' : 'opacity-90'
+                isDarkMode ? "opacity-80" : "opacity-90"
               }`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1319,28 +1386,101 @@ export default function Home() {
             </motion.p>
           </div>
 
-          {/* Feature Slider */}
+          {/* Hero Slider Buttons */}
+          <button
+            onClick={prevHeroSlide}
+            className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${
+              isDarkMode
+                ? "bg-black bg-opacity-50"
+                : "bg-white bg-opacity-50"
+            } rounded-full p-2 z-20 hover:bg-opacity-70 transition-all`}
+            aria-label="Previous hero slide"
+          >
+            <svg
+              className="w-6 h-6 text-gray-800 dark:text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              ></path>
+            </svg>
+          </button>
+          <button
+            onClick={nextHeroSlide}
+            className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${
+              isDarkMode
+                ? "bg-black bg-opacity-50"
+                : "bg-white bg-opacity-50"
+            } rounded-full p-2 z-20 hover:bg-opacity-70 transition-all`}
+            aria-label="Next hero slide"
+          >
+            <svg
+              className="w-6 h-6 text-gray-800 dark:text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </button>
+
+          {/* Hero Slide Indicators */}
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+            {heroImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setActiveHeroSlide(index)}
+                className={`w-3 h-3 rounded-full ${
+                  index === activeHeroSlide
+                    ? "bg-orange-500"
+                    : isDarkMode
+                    ? "bg-white bg-opacity-50"
+                    : "bg-gray-800 bg-opacity-50"
+                }`}
+                aria-label={`Go to hero slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURE SLIDER */}
+      <section className="relative z-10 py-16">
+        <div className="container mx-auto px-4">
           <div className="relative overflow-hidden rounded-lg">
             <div
               className={`feature-slider relative h-96 md:h-[600px] ${
-                isDarkMode ? 'bg-gray-900' : 'bg-gray-200'
+                isDarkMode ? "bg-gray-900" : "bg-gray-100"
               } rounded-lg overflow-hidden`}
             >
               {features.map((feature, index) => (
                 <motion.div
                   key={feature.id}
                   className={`absolute inset-0 flex items-center ${
-                    index === activeSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                    index === activeSlide ? "opacity-100 z-10" : "opacity-0 z-0"
                   }`}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{
                     opacity: index === activeSlide ? 1 : 0,
                     scale: index === activeSlide ? 1 : 0.9,
-                    x: index === activeSlide
-                      ? 0
-                      : index < activeSlide
-                      ? -100
-                      : 100
+                    x:
+                      index === activeSlide
+                        ? 0
+                        : index < activeSlide
+                        ? -100
+                        : 100,
                   }}
                   transition={{ duration: 0.6 }}
                 >
@@ -1354,7 +1494,7 @@ export default function Home() {
                       </p>
                       <p
                         className={`text-base md:text-lg lg:text-xl mb-6 ${
-                          isDarkMode ? 'opacity-80' : 'opacity-90'
+                          isDarkMode ? "opacity-80" : "opacity-90"
                         }`}
                       >
                         {feature.description}
@@ -1365,7 +1505,7 @@ export default function Home() {
                         </button>
                         <button
                           className={`border ${
-                            isDarkMode ? 'border-white' : 'border-gray-900'
+                            isDarkMode ? "border-white" : "border-gray-900"
                           } hover:border-orange-500 hover:text-orange-500 py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors`}
                         >
                           {t.explorePlatform}
@@ -1389,14 +1529,13 @@ export default function Home() {
                 </motion.div>
               ))}
 
-              {/* Navigation Arrows */}
               <button
                 onClick={prevSlide}
                 className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${
                   isDarkMode
-                    ? 'bg-black bg-opacity-50'
-                    : 'bg-white bg-opacity-50'
-                } rounded-full p-2 z-20 hover:bg-opacity-70 transition-all`}
+                    ? "bg-black bg-opacity-50"
+                    : "bg-white bg-opacity-70"
+                } rounded-full p-2 z-20 hover:bg-opacity-80 transition-all`}
                 aria-label="Previous slide"
               >
                 <svg
@@ -1418,9 +1557,9 @@ export default function Home() {
                 onClick={nextSlide}
                 className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${
                   isDarkMode
-                    ? 'bg-black bg-opacity-50'
-                    : 'bg-white bg-opacity-50'
-                } rounded-full p-2 z-20 hover:bg-opacity-70 transition-all`}
+                    ? "bg-black bg-opacity-50"
+                    : "bg-white bg-opacity-70"
+                } rounded-full p-2 z-20 hover:bg-opacity-80 transition-all`}
                 aria-label="Next slide"
               >
                 <svg
@@ -1439,7 +1578,6 @@ export default function Home() {
                 </svg>
               </button>
 
-              {/* Dots Indicator */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
                 {features.map((_, index) => (
                   <button
@@ -1447,10 +1585,10 @@ export default function Home() {
                     onClick={() => setActiveSlide(index)}
                     className={`w-3 h-3 rounded-full ${
                       index === activeSlide
-                        ? 'bg-orange-500'
+                        ? "bg-orange-500"
                         : isDarkMode
-                        ? 'bg-white bg-opacity-50'
-                        : 'bg-gray-900 bg-opacity-50'
+                        ? "bg-white bg-opacity-50"
+                        : "bg-gray-900 bg-opacity-50"
                     }`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
@@ -1459,12 +1597,12 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </main>
+      </section>
 
-      {/* Features Section */}
+      {/* OUR COMMITMENT */}
       <section
         className={`relative z-10 py-16 ${
-          isDarkMode ? 'bg-gray-900 bg-opacity-50' : 'bg-gray-100'
+          isDarkMode ? "bg-gray-900 bg-opacity-50" : "bg-[#f8f4ee]"
         }`}
       >
         <div className="container mx-auto px-4">
@@ -1474,7 +1612,7 @@ export default function Home() {
             </h2>
             <p
               className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${
-                isDarkMode ? 'opacity-80' : 'opacity-90'
+                isDarkMode ? "opacity-80" : "opacity-90"
               }`}
             >
               {t.commitmentText}
@@ -1487,25 +1625,25 @@ export default function Home() {
                 title: t.transparency,
                 icon: "🔍",
                 description:
-                  "Real-time data and centralized systems ensure clear visibility across all operations."
+                  "Real-time data and centralized systems ensure clear visibility across all operations.",
               },
               {
                 title: t.efficiency,
                 icon: "⚙️",
                 description:
-                  "Streamlined processes reduce administrative burdens and improve regulatory compliance."
+                  "Streamlined processes reduce administrative burdens and improve regulatory compliance.",
               },
               {
                 title: t.sustainability,
                 icon: "🌱",
                 description:
-                  "Empowering sustainable mining practices through innovative digital solutions."
+                  "Empowering sustainable mining practices through innovative digital solutions.",
               },
             ].map((feature, index) => (
               <motion.div
                 key={index}
                 className={`rounded-lg p-8 text-center ${
-                  isDarkMode ? 'bg-gray-900' : 'bg-white'
+                  isDarkMode ? "bg-gray-900" : "bg-white"
                 } shadow-lg`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1513,12 +1651,16 @@ export default function Home() {
                 viewport={{ once: true }}
                 whileHover={{
                   scale: 1.05,
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)"
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
                 }}
               >
                 <div className="text-4xl mb-4">{feature.icon}</div>
                 <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+                <p
+                  className={`${
+                    isDarkMode ? "opacity-80" : "opacity-90"
+                  }`}
+                >
                   {feature.description}
                 </p>
               </motion.div>
@@ -1527,7 +1669,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Gallery Section */}
+      {/* OUR PLATFORM IN ACTION */}
       <section className="relative z-10 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -1536,36 +1678,172 @@ export default function Home() {
             </h2>
             <p
               className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${
-                isDarkMode ? 'opacity-80' : 'opacity-90'
+                isDarkMode ? "opacity-80" : "opacity-90"
               }`}
             >
               {t.featuresText}
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((item, index) => (
-              <motion.div
-                key={index}
-                className="relative aspect-square overflow-hidden rounded-lg bg-gray-700"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+
+          {/* Example: Two simpler blocks */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="rounded-lg overflow-hidden relative">
+              <Image
+                src="/images/1.jpg"
+                alt="Platform Snapshot 1"
+                width={800}
+                height={600}
+                className="object-cover w-full h-full"
+              />
+            </div>
+            <div className="flex flex-col justify-center space-y-4">
+              <h3 className="text-2xl md:text-3xl font-bold">
+                Digital Licensing
+              </h3>
+              <p
+                className={`text-base md:text-lg ${
+                  isDarkMode ? "opacity-80" : "opacity-90"
+                }`}
               >
-                <img
-                  src={`/images/${index + 1}.jpg`}
-                  alt={`Platform Snapshot ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300" />
-              </motion.div>
-            ))}
+                Simplify your licensing process with our centralized system,
+                offering real-time status updates and streamlined applications.
+              </p>
+              <Link
+                href="#"
+                className="inline-block bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-md text-base md:text-lg font-medium transition-colors"
+              >
+                {t.discoverMore}
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+            <div className="flex flex-col justify-center order-2 md:order-1 space-y-4">
+              <h3 className="text-2xl md:text-3xl font-bold">
+                Automated Royalty Calculation
+              </h3>
+              <p
+                className={`text-base md:text-lg ${
+                  isDarkMode ? "opacity-80" : "opacity-90"
+                }`}
+              >
+                Harness real-time data for accurate and fair royalty
+                computations, reducing errors and administrative overhead.
+              </p>
+              <Link
+                href="#"
+                className="inline-block bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-md text-base md:text-lg font-medium transition-colors"
+              >
+                {t.discoverMore}
+              </Link>
+            </div>
+            <div className="rounded-lg overflow-hidden relative order-1 md:order-2">
+              <Image
+                src="/images/9.jpg"
+                alt="Platform Snapshot 2"
+                width={800}
+                height={600}
+                className="object-cover w-full h-full"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* ADDITIONAL SECTION (Inspired by your screenshot) */}
       <section
         className={`relative z-10 py-16 ${
-          isDarkMode ? 'bg-gray-900 bg-opacity-50' : 'bg-gray-100'
+          isDarkMode ? "bg-gray-800" : "bg-[#fff4ec]"
+        }`}
+      >
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            {/* Left side image or collage */}
+            <div className="relative h-80 md:h-auto rounded-lg overflow-hidden">
+              <Image
+                src="/images/monks.jpg"
+                alt="Local Tradition"
+                fill
+                className="object-cover"
+              />
+            </div>
+            {/* Right side text */}
+            <div className="flex flex-col justify-center space-y-6">
+              <h2 className="text-2xl md:text-4xl font-bold">
+                Sand between Your Toes
+              </h2>
+              <p
+                className={`text-base md:text-lg ${
+                  isDarkMode ? "opacity-80" : "opacity-90"
+                }`}
+              >
+                Immerse yourself in a world of cultural richness, natural
+                beauty, and sustainable progress. Explore how our platform
+                integrates local traditions with modern solutions.
+              </p>
+              <Link
+                href="#"
+                className="inline-block bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-md text-base md:text-lg font-medium transition-colors"
+              >
+                Learn More
+              </Link>
+            </div>
+          </div>
+
+          {/* Another row of images/features */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="rounded-lg overflow-hidden relative">
+              <Image
+                src="/images/wellness.jpg"
+                alt="Wellness"
+                width={400}
+                height={300}
+                className="object-cover w-full h-full"
+              />
+              <div
+                className={`absolute inset-0 bg-black bg-opacity-30 flex items-end p-4`}
+              >
+                <h3 className="text-white text-xl font-semibold">Wellness</h3>
+              </div>
+            </div>
+            <div className="rounded-lg overflow-hidden relative">
+              <Image
+                src="/images/golf.jpg"
+                alt="Golf"
+                width={400}
+                height={300}
+                className="object-cover w-full h-full"
+              />
+              <div
+                className={`absolute inset-0 bg-black bg-opacity-30 flex items-end p-4`}
+              >
+                <h3 className="text-white text-xl font-semibold">Golf</h3>
+              </div>
+            </div>
+            <div className="rounded-lg overflow-hidden relative">
+              <Image
+                src="/images/fisherman.jpg"
+                alt="Local Fisherman"
+                width={400}
+                height={300}
+                className="object-cover w-full h-full"
+              />
+              <div
+                className={`absolute inset-0 bg-black bg-opacity-30 flex items-end p-4`}
+              >
+                <h3 className="text-white text-xl font-semibold">
+                  Local Heritage
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section
+        className={`relative z-10 py-16 ${
+          isDarkMode ? "bg-gray-900 bg-opacity-50" : "bg-[#f8f4ee]"
         }`}
       >
         <div className="container mx-auto px-4">
@@ -1575,7 +1853,7 @@ export default function Home() {
             </h2>
             <p
               className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${
-                isDarkMode ? 'opacity-80' : 'opacity-90'
+                isDarkMode ? "opacity-80" : "opacity-90"
               }`}
             >
               {t.testimonialsText}
@@ -1587,25 +1865,25 @@ export default function Home() {
                 name: "Industry Expert",
                 role: "Mining Regulator",
                 testimonial:
-                  "CeylonMine has streamlined our licensing process, making monitoring and compliance more efficient than ever."
+                  "CeylonMine has streamlined our licensing process, making monitoring and compliance more efficient than ever.",
               },
               {
                 name: "Tech Innovator",
                 role: "Digital Transformation Lead",
                 testimonial:
-                  "The platform's automated royalty calculations ensure fairness and transparency, setting new industry standards."
+                  "The platform's automated royalty calculations ensure fairness and transparency, setting new industry standards.",
               },
               {
                 name: "Environmental Advocate",
                 role: "Sustainability Consultant",
                 testimonial:
-                  "By integrating real-time data and GIS mapping, CeylonMine empowers sustainable mining practices that protect our environment."
+                  "By integrating real-time data and GIS mapping, CeylonMine empowers sustainable mining practices that protect our environment.",
               },
             ].map((testimonial, index) => (
               <motion.div
                 key={index}
                 className={`rounded-lg p-8 text-center ${
-                  isDarkMode ? 'bg-gray-900' : 'bg-white'
+                  isDarkMode ? "bg-gray-900" : "bg-white"
                 } shadow-lg`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1613,21 +1891,21 @@ export default function Home() {
                 viewport={{ once: true }}
                 whileHover={{
                   scale: 1.05,
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)"
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
                 }}
               >
                 <div className="text-4xl mb-4">🌟</div>
                 <h3 className="text-xl font-bold mb-2">{testimonial.name}</h3>
                 <p
                   className={`text-sm ${
-                    isDarkMode ? 'opacity-80' : 'opacity-90'
+                    isDarkMode ? "opacity-80" : "opacity-90"
                   }`}
                 >
                   {testimonial.role}
                 </p>
                 <p
                   className={`mt-4 ${
-                    isDarkMode ? 'opacity-80' : 'opacity-90'
+                    isDarkMode ? "opacity-80" : "opacity-90"
                   }`}
                 >
                   {testimonial.testimonial}
@@ -1638,16 +1916,44 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer Section */}
+      {/* FINAL CALL TO ACTION */}
+      <section
+        className={`relative z-10 py-16 ${
+          isDarkMode ? "bg-gray-800" : "bg-orange-100"
+        }`}
+      >
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+            Ready to Take the Next Step?
+          </h2>
+          <p
+            className={`text-base md:text-lg lg:text-xl max-w-2xl mx-auto mb-8 ${
+              isDarkMode ? "opacity-80" : "opacity-90"
+            }`}
+          >
+            Join us on our mission to revolutionize the mining industry through
+            transparency, efficiency, and sustainability. Let’s build a brighter
+            future together.
+          </p>
+          <Link
+            href="#"
+            className="inline-block bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-md text-base md:text-lg font-medium transition-colors"
+          >
+            Get Started
+          </Link>
+        </div>
+      </section>
+
+      {/* FOOTER */}
       <footer
         className={`relative z-10 py-8 ${
-          isDarkMode ? 'bg-gray-900' : 'bg-gray-800'
+          isDarkMode ? "bg-gray-900" : "bg-gray-800"
         }`}
       >
         <div className="container mx-auto px-4 text-center">
           <p
             className={`text-sm ${
-              isDarkMode ? 'text-gray-400' : 'text-gray-300'
+              isDarkMode ? "text-gray-400" : "text-gray-200"
             }`}
           >
             &copy; {new Date().getFullYear()} CeylonMine. {t.userFooter}
