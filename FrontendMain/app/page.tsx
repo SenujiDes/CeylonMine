@@ -1060,7 +1060,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import Navbar from "./navbar/page";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import Image from "next/image";
 import Link from "next/link";
@@ -1069,29 +1069,49 @@ export default function Page() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeHeroSlide, setActiveHeroSlide] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [language, setLanguage] = useState<"en" | "si">("en");
+  const [language, setLanguage] = useState("en");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState({});
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef(null);
+  const scrollRef = useRef(null);
+  const modelRef = useRef(null);
+  const [autoplay, setAutoplay] = useState(true);
 
-  // Hero slider images
+  // Hero slider images with enhanced content
   const heroImages = [
     {
       src: "/images/1.jpg",
       alt: "Hero Slide 1",
+      title: "Digital Transformation",
+      subtitle: "Revolutionizing mining licensing in Sri Lanka",
     },
     {
       src: "/images/8.jpg",
       alt: "Hero Slide 2",
+      title: "Sustainable Mining",
+      subtitle: "Promoting environmental responsibility through technology",
     },
     {
       src: "/images/9.jpg",
       alt: "Hero Slide 3",
+      title: "Regulatory Excellence",
+      subtitle: "Setting new standards for compliance and efficiency",
+    },
+    {
+      src: "/images/miners.jpg",
+      alt: "Hero Slide 4",
+      title: "Community Empowerment",
+      subtitle: "Supporting local communities through responsible mining practices",
+    },
+    {
+      src: "/images/tech-mining.jpg",
+      alt: "Hero Slide 5",
+      title: "Advanced Analytics",
+      subtitle: "Data-driven insights for better decision making",
     },
   ];
 
-  // Features array (feature slider)
+  // Enhanced features array (feature slider)
   const features = [
     {
       id: 1,
@@ -1100,6 +1120,7 @@ export default function Page() {
       description:
         "Centralize your mining license applications with CeylonMine for efficient processing and transparent oversight.",
       image: "/images/13.jpg",
+      icon: "📱",
     },
     {
       id: 2,
@@ -1108,6 +1129,7 @@ export default function Page() {
       description:
         "Leverage real-time data to ensure accurate and fair royalty computations, reducing manual errors and administrative burdens.",
       image: "/images/8.jpg",
+      icon: "💰",
     },
     {
       id: 3,
@@ -1116,6 +1138,87 @@ export default function Page() {
       description:
         "Monitor mining activities with integrated GIS mapping, educational resources, and AI-powered support to promote sustainable practices.",
       image: "/images/9.jpg",
+      icon: "🌿",
+    },
+    {
+      id: 4,
+      title: "COMMUNITY ENGAGEMENT",
+      subtitle: "Local Empowerment",
+      description:
+        "Foster transparent communication between mining operations and local communities through our integrated feedback and reporting system.",
+      image: "/images/community.jpg",
+      icon: "👥",
+    },
+    {
+      id: 5,
+      title: "DATA ANALYTICS DASHBOARD",
+      subtitle: "Actionable Insights",
+      description:
+        "Access comprehensive analytics on mining activities, environmental impact, and regulatory compliance through our intuitive dashboard.",
+      image: "/images/analytics.jpg",
+      icon: "📊",
+    },
+  ];
+
+  // New 3D Features
+  const newFeatures = [
+    {
+      id: 6,
+      title: "REAL-TIME ANALYTICS",
+      subtitle: "Data-Driven Decisions",
+      description:
+        "Get real-time insights into mining operations, environmental impact, and compliance metrics with our advanced analytics dashboard.",
+      icon: "📈",
+      color: "#FF6B6B",
+    },
+    {
+      id: 7,
+      title: "ENVIRONMENTAL MONITORING",
+      subtitle: "Sustainable Practices",
+      description:
+        "Track environmental metrics in real-time, including air quality, water usage, and carbon emissions, to ensure sustainable mining practices.",
+      icon: "🌍",
+      color: "#4ECDC4",
+    },
+    {
+      id: 8,
+      title: "COMMUNITY ENGAGEMENT",
+      subtitle: "Empowering Local Communities",
+      description:
+        "Engage with local communities through transparent communication, feedback systems, and community development programs.",
+      icon: "👥",
+      color: "#FFE66D",
+    },
+  ];
+
+  // Additional Features
+  const additionalFeatures = [
+    {
+      id: 9,
+      title: "AUTOMATED REPORTING",
+      subtitle: "Efficient Documentation",
+      description:
+        "Generate automated reports for compliance, environmental impact, and operational efficiency with just a few clicks.",
+      icon: "📄",
+      color: "#6B5B95",
+    },
+    {
+      id: 10,
+      title: "MOBILE ACCESS",
+      subtitle: "On-the-Go Management",
+      description:
+        "Access all platform features from your mobile device, ensuring you stay connected and in control wherever you are.",
+      icon: "📱",
+      color: "#F7CAC9",
+    },
+    {
+      id: 11,
+      title: "AI-POWERED INSIGHTS",
+      subtitle: "Smart Decision Making",
+      description:
+        "Leverage AI-driven insights to optimize mining operations, reduce costs, and improve sustainability.",
+      icon: "🤖",
+      color: "#92A8D1",
     },
   ];
 
@@ -1129,9 +1232,6 @@ export default function Page() {
       ourCommitment: "OUR COMMITMENT",
       commitmentText:
         "CeylonMine is dedicated to transforming mining processes through digital innovation, ensuring transparency, efficiency, and sustainable practices.",
-      transparency: "TRANSPARENCY",
-      efficiency: "EFFICIENCY",
-      sustainability: "SUSTAINABILITY",
       featuresHeading: "OUR PLATFORM IN ACTION",
       featuresText:
         "Experience the seamless integration of digital licensing, automated royalty calculation, and sustainable mining oversight with CeylonMine.",
@@ -1139,25 +1239,64 @@ export default function Page() {
       testimonialsText:
         "Hear from industry professionals and stakeholders who have embraced the digital revolution with CeylonMine.",
       userFooter: "All rights reserved.",
+      digitalLicensing: "Digital Licensing",
+      licensingDescription:
+        "Simplify your licensing process with our centralized system, offering real-time status updates and streamlined applications.",
+      automatedRoyalty: "Automated Royalty Calculation",
+      royaltyDescription:
+        "Harness real-time data for accurate and fair royalty computations, reducing errors and administrative overhead.",
+      additionalFeatures: "Key Features",
+      readyNextStep: "Ready to Take the Next Step?",
+      joinMission:
+        "Join us on our mission to revolutionize the mining industry through transparency, efficiency, and sustainability. Let's build a brighter future together.",
+      getStarted: "Get Started",
+      learnMore: "Learn More",
+      caseStudies: "Case Studies",
+      exploreAll: "Explore All Features",
+      supportCenter: "Support Center",
+      sustainabilityHeading: "Sustainability",
+      sustainabilityText:
+        "Our commitment to sustainable mining practices ensures a greener future for all.",
+      communityImpactHeading: "Community Impact",
+      communityImpactText:
+        "We empower local communities through education, employment, and health initiatives.",
     },
     si: {
       heroSubtitle:
-        "ශ්‍රී ලංකාවේ läbima නීතිකරණ සහ සිදුරු ගණනය කිරීම ක්‍රියාත්මක කිරීමට විනිවිද පෙනෙනභාවය හා ස්ථාවරතාවය ඉහළ නංවා ගැනීම.",
+        "ශ්‍රී ලංකාවේ පතල් කැණීම් බලපත්‍ර ක්‍රියාවලිය සහ රාජකීය ගණනය කිරීම් ක්‍රමවත් කිරීම.",
       discoverMore: "තව දුරටත් සොයා බලන්න",
       explorePlatform: "වේදිකාව සොයා බලන්න",
       ourCommitment: "අපගේ කැපවීම",
       commitmentText:
-        "CeylonMine නවීන දීප්තිමත් තාක්ෂණය ඔස්සේ පතල් ක්‍රියාකාරකම් පරිවර්තනය කරමින් විනිවිද පෙනෙනභාවය, දක්ෂතාවය, හා ස්ථාවරතාවය තහවුරු කරයි.",
-      transparency: "විනිවිද පෙනෙනභාවය",
-      efficiency: "දක්ෂතාවය",
-      sustainability: "ස්ථාවරතාවය",
+        "CeylonMine ඩිජිටල් නවෝත්පාදන හරහා පතල් ක්‍රියාවලිය පරිවර්තනය කරයි, විනිවිදභාවය, කාර්යක්ෂමතාව සහ තිරසාර භාවය තහවුරු කරයි.",
       featuresHeading: "අපගේ වේදිකාව ක්‍රියාකාරීව",
       featuresText:
-        "ඉතා ස්ථාවර දත්ත හා ස්වයංක්‍රීය රෝයල්ටි ගණනයක් සමඟ නීතිකරණ ක්‍රියාවලිය ස්වයංක්‍රීය කිරීමෙන් ඔබට අත්දැකීම් ලබා දෙන්න.",
+        "CeylonMine සමඟ ඩිජිටල් බලපත්‍ර ක්‍රියාවලිය, ස්වයංක්‍රීය රාජකීය ගණනය කිරීම් සහ තිරසාර පතල් කැණීම් අධීක්ෂණය අත්දැකීම් කරන්න.",
       testimonialsHeading: "අපගේ පරිශීලකයින්ගේ අදහස්",
       testimonialsText:
-        "CeylonMine සමඟ ඩිජිටල් විප්ලවය පිළිගෙන ඇති සංවිධානාත්මක වෘත්තිකයින්ගේ අදහස්.",
+        "CeylonMine සමඟ ඩිජිටල් විප්ලවය පිළිගෙන ඇති කර්මාන්ත වෘත්තිකයින්ගේ අදහස්.",
       userFooter: "සියලු හිමිකම් ඇවිරිණි.",
+      digitalLicensing: "ඩිජිටල් බලපත්‍ර නිකුත් කිරීම",
+      licensingDescription:
+        "අපගේ මධ්‍යගත පද්ධතිය සමඟ ඔබේ බලපත්‍ර ක්‍රියාවලිය සරල කරන්න, සත්‍ය කාලීන තත්ත්ව යාවත්කාලීන කිරීම් සහ ක්‍රමවත් අයදුම්පත් ලබා දෙයි.",
+      automatedRoyalty: "ස්වයංක්‍රීය රාජකීය ගණනය කිරීම",
+      royaltyDescription:
+        "නිවැරදි සහ සාධාරණ රාජකීය ගණනය කිරීම් සඳහා සත්‍ය-කාලීන දත්ත භාවිතා කරන්න, දෝෂ සහ පරිපාලන අධික වියදම් අඩු කරන්න.",
+      additionalFeatures: "ප්‍රධාන විශේෂාංග",
+      readyNextStep: "ඊළඟ පියවර ගැනීමට සූදානම්ද?",
+      joinMission:
+        "විනිවිදභාවය, කාර්යක්ෂමතාව සහ තිරසාරභාවය හරහා පතල් කර්මාන්තය විප්ලවකරණය කිරීමේ අපගේ මෙහෙවරට එක්වන්න. අපි එකට වඩාත් දීප්තිමත් අනාගතයක් ගොඩනගමු.",
+      getStarted: "ආරම්භ කරන්න",
+      learnMore: "තව දැනගන්න",
+      caseStudies: "සිද්ධි අධ්‍යයන",
+      exploreAll: "සියලු විශේෂාංග ගවේෂණය කරන්න",
+      supportCenter: "සහාය මධ්‍යස්ථානය",
+      sustainabilityHeading: "තිරසාරභාවය",
+      sustainabilityText:
+        "අපගේ තිරසාර පතල් කැණීම් පිළිවෙත් සියලු දෙනාටම හිතකර අනාගතයක් සහතික කරයි.",
+      communityImpactHeading: "ප්‍රජා බලපෑම",
+      communityImpactText:
+        "අපි දේශීය ප්‍රජාවන් අධ්‍යාපනය, රැකියා සහ සෞඛ්‍ය උපක්‍රම හරහා බලගන්වමු.",
     },
   };
 
@@ -1165,11 +1304,11 @@ export default function Page() {
 
   // Theme & language effects
   useEffect(() => {
-    const handleThemeChange = (event: any) => {
+    const handleThemeChange = (event) => {
       setIsDarkMode(event.detail.isDarkMode);
     };
 
-    const handleLanguageChange = (event: any) => {
+    const handleLanguageChange = (event) => {
       setLanguage(event.detail.language);
     };
 
@@ -1199,7 +1338,18 @@ export default function Page() {
     };
   }, []);
 
-  // Framer Motion scroll
+  // Autoplay for hero slider
+  useEffect(() => {
+    let interval;
+    if (autoplay) {
+      interval = setInterval(() => {
+        setActiveHeroSlide((prev) => (prev === heroImages.length - 1 ? 0 : prev + 1));
+      }, 5000);
+    }
+    return () => clearInterval(interval);
+  }, [autoplay, heroImages.length]);
+
+  // Framer Motion scroll effects
   const { scrollYProgress } = useScroll({
     target: scrollRef,
     offset: ["start start", "end end"],
@@ -1207,8 +1357,9 @@ export default function Page() {
   const rotateX = useTransform(scrollYProgress, [0, 1], [0, 360]);
   const rotateY = useTransform(scrollYProgress, [0, 1], [0, 360]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.3, 0.8, 1], [0, 1, 1, 1, 0]);
 
-  // Three.js "sand" effect
+  // Reduced Three.js "sand" effect
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -1222,42 +1373,79 @@ export default function Page() {
     const renderer = new THREE.WebGLRenderer({
       canvas: canvasRef.current,
       alpha: true,
+      antialias: true,
     });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+    // Reduced sand particles
     const particlesGeometry = new THREE.BufferGeometry();
-    // Adjust particle count to your preference
-    const particlesCount = 3000;
+    const particlesCount = 1000; // Reduced from 5000
     const posArray = new Float32Array(particlesCount * 3);
+    const colorArray = new Float32Array(particlesCount * 3);
 
-    for (let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 5;
+    // Create colors array with golden/amber shades
+    for (let i = 0; i < particlesCount; i++) {
+      // Position
+      posArray[i * 3] = (Math.random() - 0.5) * 5;
+      posArray[i * 3 + 1] = (Math.random() - 0.5) * 5;
+      posArray[i * 3 + 2] = (Math.random() - 0.5) * 5;
+
+      // Colors - variations of gold/amber
+      const goldTone = Math.random() * 0.2 + 0.8; // Range between 0.8 and 1.0
+      colorArray[i * 3] = isDarkMode ? 0.82 * goldTone : 1.0 * goldTone; // R
+      colorArray[i * 3 + 1] = isDarkMode ? 0.71 * goldTone : 0.84 * goldTone; // G
+      colorArray[i * 3 + 2] = isDarkMode ? 0.55 * goldTone : 0.0; // B
     }
+
     particlesGeometry.setAttribute(
       "position",
       new THREE.BufferAttribute(posArray, 3)
     );
+    particlesGeometry.setAttribute(
+      "color",
+      new THREE.BufferAttribute(colorArray, 3)
+    );
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.005,
-      color: isDarkMode ? 0xd2b48c : 0xffd700,
+      size: 0.008,
+      vertexColors: true,
       transparent: true,
+      opacity: 0.5, // Reduced opacity
       blending: THREE.AdditiveBlending,
+      sizeAttenuation: true,
     });
 
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
+    // Add ambient light to better illuminate the scene
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    // Add directional light with shadows
+    const directionalLight = new THREE.DirectionalLight(0xffd700, 1);
+    directionalLight.position.set(5, 5, 5);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 1024;
+    directionalLight.shadow.mapSize.height = 1024;
+    scene.add(directionalLight);
+
     camera.position.z = 2;
 
     let mouseX = 0;
     let mouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    const windowHalfX = window.innerWidth / 2;
+    const windowHalfY = window.innerHeight / 2;
 
-    function onDocumentMouseMove(event: MouseEvent) {
-      mouseX = (event.clientX - window.innerWidth / 2) / 100;
-      mouseY = (event.clientY - window.innerHeight / 2) / 100;
+    function onDocumentMouseMove(event) {
+      mouseX = (event.clientX - windowHalfX) / windowHalfX;
+      mouseY = (event.clientY - windowHalfY) / windowHalfY;
     }
     document.addEventListener("mousemove", onDocumentMouseMove);
 
@@ -1268,17 +1456,41 @@ export default function Page() {
     }
     window.addEventListener("resize", onWindowResize);
 
+    // Animate with more complex movement
+    const clock = new THREE.Clock();
     const animate = () => {
-      requestAnimationFrame(animate);
-      // Slowed rotation speed
-      particlesMesh.rotation.x += 0.0002 + mouseY * 0.0002;
-      particlesMesh.rotation.y += 0.0002 + mouseX * 0.0002;
+      const elapsedTime = clock.getElapsedTime();
+
+      // Smooth follow for mouse movement
+      targetX = mouseX * 0.001;
+      targetY = mouseY * 0.001;
+
+      // Add some gentle wave motion
+      particlesMesh.rotation.x += 0.0005 + targetY * 0.02;
+      particlesMesh.rotation.y += 0.0005 + targetX * 0.02;
+
+      // Add subtle pulsing
+      const pulseFactor = Math.sin(elapsedTime * 0.5) * 0.05 + 1;
+      particlesMesh.scale.set(pulseFactor, pulseFactor, pulseFactor);
+
       renderer.render(scene, camera);
+      requestAnimationFrame(animate);
     };
     animate();
 
     const updateParticleColor = () => {
-      particlesMaterial.color.set(isDarkMode ? 0xd2b48c : 0xffd700);
+      const newColors = new Float32Array(particlesCount * 3);
+      for (let i = 0; i < particlesCount; i++) {
+        const goldTone = Math.random() * 0.2 + 0.8; // Range between 0.8 and 1.0
+        newColors[i * 3] = isDarkMode ? 0.82 * goldTone : 1.0 * goldTone; // R
+        newColors[i * 3 + 1] = isDarkMode ? 0.71 * goldTone : 0.84 * goldTone; // G
+        newColors[i * 3 + 2] = isDarkMode ? 0.55 * goldTone : 0.0; // B
+      }
+      particlesGeometry.setAttribute(
+        "color",
+        new THREE.BufferAttribute(newColors, 3)
+      );
+      particlesGeometry.attributes.color.needsUpdate = true;
     };
 
     const themeChangeListener = () => {
@@ -1293,10 +1505,19 @@ export default function Page() {
       particlesGeometry.dispose();
       particlesMaterial.dispose();
       renderer.dispose();
+      scene.clear();
     };
   }, [isDarkMode]);
 
-  // Feature slider controls
+  // Feature slider controls with autoplay
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev === features.length - 1 ? 0 : prev + 1));
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, [features.length]);
+
   const nextSlide = () => {
     setActiveSlide((prev) => (prev === features.length - 1 ? 0 : prev + 1));
   };
@@ -1318,13 +1539,14 @@ export default function Page() {
     );
   };
 
+  // Pause autoplay on hover
+  const pauseAutoplay = () => setAutoplay(false);
+  const resumeAutoplay = () => setAutoplay(true);
+
   return (
     <div
       className={`relative min-h-screen ${
-        isDarkMode
-          ? "bg-black text-white"
-          : // Updated light theme color for a warmer tone
-            "bg-[#fdf4eb] text-gray-900"
+        isDarkMode ? "bg-black text-white" : "bg-[#fdf4eb] text-gray-900"
       } overflow-hidden`}
       ref={scrollRef}
     >
@@ -1343,622 +1565,437 @@ export default function Page() {
       {/* Three.js background canvas */}
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-0" />
 
-      {/* HERO SLIDER */}
+      {/* HERO SLIDER with enhanced transitions */}
       <section className="relative z-10 pt-20">
-        <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
-          {heroImages.map((image, index) => (
-            <motion.div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-700 ${
-                index === activeHeroSlide ? "opacity-100 z-10" : "opacity-0 z-0"
-              }`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: index === activeHeroSlide ? 1 : 0 }}
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                className="object-cover"
-              />
-            </motion.div>
-          ))}
+        <div
+          className="w-full h-[85vh] md:h-[90vh] overflow-hidden relative"
+          onMouseEnter={pauseAutoplay}
+          onMouseLeave={resumeAutoplay}
+        >
+          <AnimatePresence>
+            {heroImages.map((image, index) => (
+              <motion.div
+                key={index}
+                className={`absolute inset-0 ${
+                  index === activeHeroSlide ? "z-10" : "z-0"
+                }`}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{
+                  opacity: index === activeHeroSlide ? 1 : 0,
+                  scale: index === activeHeroSlide ? 1 : 1.1,
+                }}
+                exit={{ opacity: 0, scale: 1.1 }}
+                transition={{ duration: 1, ease: "easeInOut" }}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  className="object-cover"
+                  priority={index === 0}
+                />
 
-          {/* Overlay text */}
-          <div className="absolute inset-0 bg-black bg-opacity-20 flex flex-col justify-center items-center text-center p-4">
+                {/* Enhanced gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {/* Enhanced overlay text with motion effects */}
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 z-20">
             <motion.h1
-              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4"
+              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 text-white drop-shadow-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
               CeylonMine
             </motion.h1>
-            <motion.p
-              className={`text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto ${
-                isDarkMode ? "opacity-80" : "opacity-90"
-              }`}
+            <motion.div
+              key={activeHeroSlide}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.8 }}
+              className="text-center"
             >
-              {t.heroSubtitle}
-            </motion.p>
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-orange-400">
+                {heroImages[activeHeroSlide].title}
+              </h2>
+              <p className="text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto text-white/90">
+                {heroImages[activeHeroSlide].subtitle}
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="mt-8 flex flex-wrap gap-4 justify-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <button className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-md text-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                {t.explorePlatform}
+              </button>
+              <button className="border-2 border-white hover:border-orange-400 hover:bg-white/10 text-white py-3 px-8 rounded-md text-lg font-medium transition-all duration-300 transform hover:scale-105">
+                {t.discoverMore}
+              </button>
+            </motion.div>
           </div>
 
-          {/* Hero Slider Buttons */}
-          <button
-            onClick={prevHeroSlide}
-            className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${
-              isDarkMode
-                ? "bg-black bg-opacity-50"
-                : "bg-white bg-opacity-50"
-            } rounded-full p-2 z-20 hover:bg-opacity-70 transition-all`}
-            aria-label="Previous hero slide"
-          >
-            <svg
-              className="w-6 h-6 text-gray-800 dark:text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+          {/* Enhanced Hero Slider Controls */}
+          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex items-center space-x-3 z-20">
+            <button
+              onClick={prevHeroSlide}
+              className="bg-white/20 backdrop-blur-md hover:bg-orange-500 text-white p-2 rounded-full transition-all duration-300"
+              aria-label="Previous hero slide"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              ></path>
-            </svg>
-          </button>
-          <button
-            onClick={nextHeroSlide}
-            className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${
-              isDarkMode
-                ? "bg-black bg-opacity-50"
-                : "bg-white bg-opacity-50"
-            } rounded-full p-2 z-20 hover:bg-opacity-70 transition-all`}
-            aria-label="Next hero slide"
-          >
-            <svg
-              className="w-6 h-6 text-gray-800 dark:text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              ></path>
-            </svg>
-          </button>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+            </button>
 
-          {/* Hero Slide Indicators */}
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
-            {heroImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveHeroSlide(index)}
-                className={`w-3 h-3 rounded-full ${
-                  index === activeHeroSlide
-                    ? "bg-orange-500"
-                    : isDarkMode
-                    ? "bg-white bg-opacity-50"
-                    : "bg-gray-800 bg-opacity-50"
-                }`}
-                aria-label={`Go to hero slide ${index + 1}`}
-              />
-            ))}
+            {/* Slide indicators */}
+            <div className="flex space-x-2">
+              {heroImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveHeroSlide(index)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    index === activeHeroSlide
+                      ? "bg-orange-500 w-8"
+                      : "bg-white/50 hover:bg-white/70"
+                  }`}
+                  aria-label={`Go to hero slide ${index + 1}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={nextHeroSlide}
+              className="bg-white/20 backdrop-blur-md hover:bg-orange-500 text-white p-2 rounded-full transition-all duration-300"
+              aria-label="Next hero slide"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </button>
           </div>
         </div>
       </section>
 
-      {/* FEATURE SLIDER */}
-      <section className="relative z-10 py-16">
+      {/* Floating 3D cube section */}
+      <section className="relative z-10 py-16 overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="relative overflow-hidden rounded-lg">
-            <div
-              className={`feature-slider relative h-96 md:h-[600px] ${
-                isDarkMode ? "bg-gray-900" : "bg-gray-100"
-              } rounded-lg overflow-hidden`}
-            >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="relative">
+              <motion.div
+                className="w-64 h-64 md:w-80 md:h-80 mx-auto relative"
+                style={{
+                  rotateX,
+                  rotateY,
+                  scale,
+                  opacity,
+                }}
+              >
+                {/* 3D Cube faces */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative w-full h-full transform-style-3d">
+                    {/* Front face */}
+                    <div
+                      className={`absolute inset-0 transform translate-z-32 ${
+                        isDarkMode ? "bg-orange-600/80" : "bg-orange-500/80"
+                      } rounded-lg flex items-center justify-center`}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        transform: "translateZ(8rem)",
+                      }}
+                    >
+                      <span className="text-6xl">📱</span>
+                    </div>
+                    {/* Back face */}
+                    <div
+                      className={`absolute inset-0 transform -translate-z-32 rotate-y-180 ${
+                        isDarkMode ? "bg-blue-600/80" : "bg-blue-500/80"
+                      } rounded-lg flex items-center justify-center`}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        transform: "translateZ(-8rem) rotateY(180deg)",
+                      }}
+                    >
+                      <span className="text-6xl">💰</span>
+                    </div>
+                    {/* Left face */}
+                    <div
+                      className={`absolute inset-0 transform -translate-x-32 rotate-y-90 ${
+                        isDarkMode ? "bg-green-600/80" : "bg-green-500/80"
+                      } rounded-lg flex items-center justify-center`}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        transform: "translateX(-8rem) rotateY(-90deg)",
+                      }}
+                    >
+                      <span className="text-6xl">🌿</span>
+                    </div>
+                    {/* Right face */}
+                    <div
+                      className={`absolute inset-0 transform translate-x-32 rotate-y-90 ${
+                        isDarkMode ? "bg-purple-600/80" : "bg-purple-500/80"
+                      } rounded-lg flex items-center justify-center`}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        transform: "translateX(8rem) rotateY(90deg)",
+                      }}
+                    >
+                      <span className="text-6xl">📊</span>
+                    </div>
+                    {/* Top face */}
+                    <div
+                      className={`absolute inset-0 transform translate-y-32 rotate-x-90 ${
+                        isDarkMode ? "bg-yellow-600/80" : "bg-yellow-500/80"
+                      } rounded-lg flex items-center justify-center`}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        transform: "translateY(-8rem) rotateX(90deg)",
+                      }}
+                    >
+                      <span className="text-6xl">👥</span>
+                    </div>
+                    {/* Bottom face */}
+                    <div
+                      className={`absolute inset-0 transform -translate-y-32 rotate-x-90 ${
+                        isDarkMode ? "bg-pink-600/80" : "bg-pink-500/80"
+                      } rounded-lg flex items-center justify-center`}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        transform: "translateY(8rem) rotateX(-90deg)",
+                      }}
+                    >
+                      <span className="text-6xl">✅</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Content section */}
+            <div className="text-center md:text-left">
+              <motion.h2
+                className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                {t.ourCommitment}
+              </motion.h2>
+              <motion.p
+                className="text-lg md:text-xl mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                {t.commitmentText}
+              </motion.p>
+              <motion.div
+                className="flex flex-wrap gap-4 justify-center md:justify-start"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <button className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-md text-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                  {t.getStarted}
+                </button>
+                <button className="border-2 border-white hover:border-orange-400 hover:bg-white/10 text-white py-3 px-8 rounded-md text-lg font-medium transition-all duration-300 transform hover:scale-105">
+                  {t.learnMore}
+                </button>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Feature Slider Section */}
+      <section className="relative z-10 py-16 bg-black/10">
+        <div className="container mx-auto px-4">
+          <motion.h2
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            {t.featuresHeading}
+          </motion.h2>
+          <div className="relative">
+            <AnimatePresence>
               {features.map((feature, index) => (
                 <motion.div
                   key={feature.id}
-                  className={`absolute inset-0 flex items-center ${
-                    index === activeSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+                  className={`absolute inset-0 ${
+                    index === activeSlide ? "z-10" : "z-0"
                   }`}
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, x: index > activeSlide ? 100 : -100 }}
                   animate={{
                     opacity: index === activeSlide ? 1 : 0,
-                    scale: index === activeSlide ? 1 : 0.9,
-                    x:
-                      index === activeSlide
-                        ? 0
-                        : index < activeSlide
-                        ? -100
-                        : 100,
+                    x: index === activeSlide ? 0 : index > activeSlide ? 100 : -100,
                   }}
-                  transition={{ duration: 0.6 }}
+                  exit={{ opacity: 0, x: index > activeSlide ? 100 : -100 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-                    <div className="flex flex-col justify-center">
-                      <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-2">
-                        {feature.title}
-                      </h2>
-                      <p className="text-lg md:text-xl lg:text-2xl text-orange-500 mb-4">
-                        {feature.subtitle}
-                      </p>
-                      <p
-                        className={`text-base md:text-lg lg:text-xl mb-6 ${
-                          isDarkMode ? "opacity-80" : "opacity-90"
-                        }`}
-                      >
-                        {feature.description}
-                      </p>
-                      <div>
-                        <button className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors mr-4">
-                          {t.discoverMore}
-                        </button>
-                        <button
-                          className={`border ${
-                            isDarkMode ? "border-white" : "border-gray-900"
-                          } hover:border-orange-500 hover:text-orange-500 py-2 px-6 md:py-3 md:px-8 rounded-md text-base md:text-lg font-medium transition-colors`}
-                        >
-                          {t.explorePlatform}
-                        </button>
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div className="relative h-96">
+                      <Image
+                        src={feature.image}
+                        alt={feature.title}
+                        fill
+                        className="object-cover rounded-lg"
+                      />
                     </div>
-                    <div className="relative h-full flex items-center justify-center">
-                      <motion.div
-                        className="w-full h-64 md:h-96 rounded-lg overflow-hidden bg-gray-700"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <img
-                          src={feature.image}
-                          alt={feature.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </motion.div>
+                    <div className="text-center md:text-left">
+                      <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                        {feature.title}
+                      </h3>
+                      <p className="text-lg mb-4">{feature.subtitle}</p>
+                      <p className="text-lg mb-8">{feature.description}</p>
+                      <button className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-md text-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                        {t.learnMore}
+                      </button>
                     </div>
                   </div>
                 </motion.div>
               ))}
-
-              <button
-                onClick={prevSlide}
-                className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${
-                  isDarkMode
-                    ? "bg-black bg-opacity-50"
-                    : "bg-white bg-opacity-70"
-                } rounded-full p-2 z-20 hover:bg-opacity-80 transition-all`}
-                aria-label="Previous slide"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  ></path>
-                </svg>
-              </button>
-              <button
-                onClick={nextSlide}
-                className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${
-                  isDarkMode
-                    ? "bg-black bg-opacity-50"
-                    : "bg-white bg-opacity-70"
-                } rounded-full p-2 z-20 hover:bg-opacity-80 transition-all`}
-                aria-label="Next slide"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  ></path>
-                </svg>
-              </button>
-
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
-                {features.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setActiveSlide(index)}
-                    className={`w-3 h-3 rounded-full ${
-                      index === activeSlide
-                        ? "bg-orange-500"
-                        : isDarkMode
-                        ? "bg-white bg-opacity-50"
-                        : "bg-gray-900 bg-opacity-50"
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
+            </AnimatePresence>
           </div>
-        </div>
-      </section>
 
-      {/* OUR COMMITMENT */}
-      <section
-        className={`relative z-10 py-16 ${
-          isDarkMode ? "bg-gray-900 bg-opacity-50" : "bg-[#f8f4ee]"
-        }`}
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              {t.ourCommitment}
-            </h2>
-            <p
-              className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${
-                isDarkMode ? "opacity-80" : "opacity-90"
-              }`}
+          {/* Feature Slider Controls */}
+          <div className="flex justify-center mt-8 space-x-4">
+            <button
+              onClick={prevSlide}
+              className="bg-white/20 backdrop-blur-md hover:bg-orange-500 text-white p-2 rounded-full transition-all duration-300"
+              aria-label="Previous feature slide"
             >
-              {t.commitmentText}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: t.transparency,
-                icon: "🔍",
-                description:
-                  "Real-time data and centralized systems ensure clear visibility across all operations.",
-              },
-              {
-                title: t.efficiency,
-                icon: "⚙️",
-                description:
-                  "Streamlined processes reduce administrative burdens and improve regulatory compliance.",
-              },
-              {
-                title: t.sustainability,
-                icon: "🌱",
-                description:
-                  "Empowering sustainable mining practices through innovative digital solutions.",
-              },
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                className={`rounded-lg p-8 text-center ${
-                  isDarkMode ? "bg-gray-900" : "bg-white"
-                } shadow-lg`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
-                }}
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p
-                  className={`${
-                    isDarkMode ? "opacity-80" : "opacity-90"
-                  }`}
-                >
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+            </button>
+            <button
+              onClick={nextSlide}
+              className="bg-white/20 backdrop-blur-md hover:bg-orange-500 text-white p-2 rounded-full transition-all duration-300"
+              aria-label="Next feature slide"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </button>
           </div>
         </div>
       </section>
 
-      {/* OUR PLATFORM IN ACTION */}
+      {/* New 3D Features Section */}
       <section className="relative z-10 py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              {t.featuresHeading}
-            </h2>
-            <p
-              className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${
-                isDarkMode ? "opacity-80" : "opacity-90"
-              }`}
-            >
-              {t.featuresText}
-            </p>
-          </div>
-
-          {/* Example: Two simpler blocks */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="rounded-lg overflow-hidden relative">
-              <Image
-                src="/images/1.jpg"
-                alt="Platform Snapshot 1"
-                width={800}
-                height={600}
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <div className="flex flex-col justify-center space-y-4">
-              <h3 className="text-2xl md:text-3xl font-bold">
-                Digital Licensing
-              </h3>
-              <p
-                className={`text-base md:text-lg ${
-                  isDarkMode ? "opacity-80" : "opacity-90"
-                }`}
-              >
-                Simplify your licensing process with our centralized system,
-                offering real-time status updates and streamlined applications.
-              </p>
-              <Link
-                href="#"
-                className="inline-block bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-md text-base md:text-lg font-medium transition-colors"
-              >
-                {t.discoverMore}
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            <div className="flex flex-col justify-center order-2 md:order-1 space-y-4">
-              <h3 className="text-2xl md:text-3xl font-bold">
-                Automated Royalty Calculation
-              </h3>
-              <p
-                className={`text-base md:text-lg ${
-                  isDarkMode ? "opacity-80" : "opacity-90"
-                }`}
-              >
-                Harness real-time data for accurate and fair royalty
-                computations, reducing errors and administrative overhead.
-              </p>
-              <Link
-                href="#"
-                className="inline-block bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-md text-base md:text-lg font-medium transition-colors"
-              >
-                {t.discoverMore}
-              </Link>
-            </div>
-            <div className="rounded-lg overflow-hidden relative order-1 md:order-2">
-              <Image
-                src="/images/9.jpg"
-                alt="Platform Snapshot 2"
-                width={800}
-                height={600}
-                className="object-cover w-full h-full"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ADDITIONAL SECTION (Inspired by your screenshot) */}
-      <section
-        className={`relative z-10 py-16 ${
-          isDarkMode ? "bg-gray-800" : "bg-[#fff4ec]"
-        }`}
-      >
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            {/* Left side image or collage */}
-            <div className="relative h-80 md:h-auto rounded-lg overflow-hidden">
-              <Image
-                src="/images/monks.jpg"
-                alt="Local Tradition"
-                fill
-                className="object-cover"
-              />
-            </div>
-            {/* Right side text */}
-            <div className="flex flex-col justify-center space-y-6">
-              <h2 className="text-2xl md:text-4xl font-bold">
-                Sand between Your Toes
-              </h2>
-              <p
-                className={`text-base md:text-lg ${
-                  isDarkMode ? "opacity-80" : "opacity-90"
-                }`}
-              >
-                Immerse yourself in a world of cultural richness, natural
-                beauty, and sustainable progress. Explore how our platform
-                integrates local traditions with modern solutions.
-              </p>
-              <Link
-                href="#"
-                className="inline-block bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-md text-base md:text-lg font-medium transition-colors"
-              >
-                Learn More
-              </Link>
-            </div>
-          </div>
-
-          {/* Another row of images/features */}
+          <motion.h2
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            Advanced Features
+          </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="rounded-lg overflow-hidden relative">
-              <Image
-                src="/images/wellness.jpg"
-                alt="Wellness"
-                width={400}
-                height={300}
-                className="object-cover w-full h-full"
-              />
-              <div
-                className={`absolute inset-0 bg-black bg-opacity-30 flex items-end p-4`}
-              >
-                <h3 className="text-white text-xl font-semibold">Wellness</h3>
-              </div>
-            </div>
-            <div className="rounded-lg overflow-hidden relative">
-              <Image
-                src="/images/golf.jpg"
-                alt="Golf"
-                width={400}
-                height={300}
-                className="object-cover w-full h-full"
-              />
-              <div
-                className={`absolute inset-0 bg-black bg-opacity-30 flex items-end p-4`}
-              >
-                <h3 className="text-white text-xl font-semibold">Golf</h3>
-              </div>
-            </div>
-            <div className="rounded-lg overflow-hidden relative">
-              <Image
-                src="/images/fisherman.jpg"
-                alt="Local Fisherman"
-                width={400}
-                height={300}
-                className="object-cover w-full h-full"
-              />
-              <div
-                className={`absolute inset-0 bg-black bg-opacity-30 flex items-end p-4`}
-              >
-                <h3 className="text-white text-xl font-semibold">
-                  Local Heritage
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* TESTIMONIALS */}
-      <section
-        className={`relative z-10 py-16 ${
-          isDarkMode ? "bg-gray-900 bg-opacity-50" : "bg-[#f8f4ee]"
-        }`}
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              {t.testimonialsHeading}
-            </h2>
-            <p
-              className={`text-base md:text-lg lg:text-xl max-w-3xl mx-auto ${
-                isDarkMode ? "opacity-80" : "opacity-90"
-              }`}
-            >
-              {t.testimonialsText}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Industry Expert",
-                role: "Mining Regulator",
-                testimonial:
-                  "CeylonMine has streamlined our licensing process, making monitoring and compliance more efficient than ever.",
-              },
-              {
-                name: "Tech Innovator",
-                role: "Digital Transformation Lead",
-                testimonial:
-                  "The platform's automated royalty calculations ensure fairness and transparency, setting new industry standards.",
-              },
-              {
-                name: "Environmental Advocate",
-                role: "Sustainability Consultant",
-                testimonial:
-                  "By integrating real-time data and GIS mapping, CeylonMine empowers sustainable mining practices that protect our environment.",
-              },
-            ].map((testimonial, index) => (
+            {newFeatures.map((feature) => (
               <motion.div
-                key={index}
-                className={`rounded-lg p-8 text-center ${
-                  isDarkMode ? "bg-gray-900" : "bg-white"
-                } shadow-lg`}
+                key={feature.id}
+                className="bg-white/10 p-6 rounded-lg shadow-lg"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
-                }}
+                transition={{ duration: 0.8 }}
               >
-                <div className="text-4xl mb-4">🌟</div>
-                <h3 className="text-xl font-bold mb-2">{testimonial.name}</h3>
-                <p
-                  className={`text-sm ${
-                    isDarkMode ? "opacity-80" : "opacity-90"
-                  }`}
-                >
-                  {testimonial.role}
-                </p>
-                <p
-                  className={`mt-4 ${
-                    isDarkMode ? "opacity-80" : "opacity-90"
-                  }`}
-                >
-                  {testimonial.testimonial}
-                </p>
+                <div className="text-6xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className="text-lg mb-4">{feature.subtitle}</p>
+                <p className="text-lg">{feature.description}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FINAL CALL TO ACTION */}
-      <section
-        className={`relative z-10 py-16 ${
-          isDarkMode ? "bg-gray-800" : "bg-orange-100"
-        }`}
-      >
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Ready to Take the Next Step?
-          </h2>
-          <p
-            className={`text-base md:text-lg lg:text-xl max-w-2xl mx-auto mb-8 ${
-              isDarkMode ? "opacity-80" : "opacity-90"
-            }`}
+      {/* Additional Features Section */}
+      <section className="relative z-10 py-16 bg-black/10">
+        <div className="container mx-auto px-4">
+          <motion.h2
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            Join us on our mission to revolutionize the mining industry through
-            transparency, efficiency, and sustainability. Let’s build a brighter
-            future together.
-          </p>
-          <Link
-            href="#"
-            className="inline-block bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-md text-base md:text-lg font-medium transition-colors"
-          >
-            Get Started
-          </Link>
+            More Features
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {additionalFeatures.map((feature) => (
+              <motion.div
+                key={feature.id}
+                className="bg-white/10 p-6 rounded-lg shadow-lg"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <div className="text-6xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className="text-lg mb-4">{feature.subtitle}</p>
+                <p className="text-lg">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer
-        className={`relative z-10 py-8 ${
-          isDarkMode ? "bg-gray-900" : "bg-gray-800"
-        }`}
-      >
-        <div className="container mx-auto px-4 text-center">
-          <p
-            className={`text-sm ${
-              isDarkMode ? "text-gray-400" : "text-gray-200"
-            }`}
-          >
-            &copy; {new Date().getFullYear()} CeylonMine. {t.userFooter}
-          </p>
-        </div>
+      {/* Footer */}
+      <footer className="relative z-10 py-8 bg-black/20 text-center">
+        <p className="text-sm">{t.userFooter}</p>
       </footer>
     </div>
   );
