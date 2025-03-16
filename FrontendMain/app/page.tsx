@@ -256,7 +256,7 @@ export default function Home() {
     );
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.005,
+      size: 0.004,
       color: isDarkMode ? 0xD2B48C : 0xFFD700,
       transparent: true,
       blending: THREE.AdditiveBlending,
