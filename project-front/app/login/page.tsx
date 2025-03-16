@@ -76,10 +76,10 @@ export default function LoginPage() {
         <div className="max-w-md w-full space-y-8 bg-[var(--background)] p-8 rounded-xl shadow-lg">
           <div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-[var(--foreground)]">
-              Sign in
+              Login
             </h2>
             <p className="mt-2 text-center text-sm text-[var(--foreground)] opacity-80">
-              Sign in to access the admin dashboard
+              Login to access the admin dashboard
             </p>
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -126,7 +126,7 @@ export default function LoginPage() {
                 {loading ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
                 ) : (
-                  'Sign in'
+                  'Login'
                 )}
               </button>
             </div>
