@@ -1,14 +1,3 @@
-// import React from 'react'
-// import Navbar from '../navbar/page'
-
-// export default function contact() {
-//   return (
-//     <main>
-//       <Navbar/>
-//       <div>contact</div>
-//     </main>
-//   )
-// }
 
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
@@ -90,19 +79,19 @@ export default function Contact() {
 
     // Create sand particles
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 5000;
+    const particlesCount = 1000;
     
     const posArray = new Float32Array(particlesCount * 3);
     
-    for (let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 5;
-    }
+    // for (let i = 0; i < particlesCount * 0.1; i++) {
+    //   posArray[i] = (Math.random() - 0.5) * 5;
+    // }
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     
     // Create sand material
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.005,
+      size: 0.002,
       color: 0xD2B48C, // Sand color
       transparent: true,
       blending: THREE.AdditiveBlending,
@@ -113,11 +102,11 @@ export default function Contact() {
     scene.add(particlesMesh);
     
     // Position camera
-    camera.position.z = 2;
+    // camera.position.z = 2;
     
     // Mouse movement effect
-    let mouseX = 0;
-    let mouseY = 0;
+    // let mouseX = 0;
+    // let mouseY = 0;
     
     function onDocumentMouseMove(event) {
       mouseX = (event.clientX - window.innerWidth / 2) / 100;
@@ -139,12 +128,12 @@ export default function Contact() {
     const animate = () => {
       requestAnimationFrame(animate);
       
-      particlesMesh.rotation.x += 0.0005;
-      particlesMesh.rotation.y += 0.0005;
+      // particlesMesh.rotation.x += 0.00005;
+      // particlesMesh.rotation.y += 0.00005;
       
       // Respond to mouse movement
-      particlesMesh.rotation.x += mouseY * 0.0005;
-      particlesMesh.rotation.y += mouseX * 0.0005;
+      // particlesMesh.rotation.x += mouseY * 0.0005;
+      // particlesMesh.rotation.y += mouseX * 0.0005;
       
       renderer.render(scene, camera);
     };
