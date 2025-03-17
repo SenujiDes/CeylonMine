@@ -11,6 +11,7 @@ interface User {
   last_name: string;
   email: string;
   role: string;
+  license_status: string;
   created_at: string;
 }
 
@@ -82,6 +83,45 @@ export default function UsersPage() {
     }
   };
 
+  const handleActiveChange = async (userId: string, newActive: string) => {
+    try {
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ license_status: newActive }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update status');
+      }
+
+      // Update local state
+      setUsers(users.map(user => 
+        user.id === userId ? { ...user, license_status: newActive } : user
+      ));
+
+      // Show success message
+      Swal.fire({
+        title: 'Success!',
+        text: 'license status updated successfully',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } catch (error) {
+      console.error('Error updating license status:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: error instanceof Error ? error.message : 'Failed to update license status',
+        icon: 'error'
+      });
+    }
+  };
+
   const getRoleColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'miner':
@@ -89,6 +129,16 @@ export default function UsersPage() {
       case 'public':
       default:
         return 'bg-green-100 text-green-800';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'active':
+        return 'bg-purple-100 text-purple-800';
+      case 'expired':
+      default:
+        return 'bg-red-100 text-red-800';
     }
   };
 
@@ -117,18 +167,18 @@ export default function UsersPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-[var(--foreground)]">
-                  <th className="text-left py-4 px-6">User ID</th>
                   <th className="text-left py-4 px-6">First Name</th>
                   <th className="text-left py-4 px-6">Last Name</th>
                   <th className="text-left py-4 px-6">Email</th>
                   <th className="text-left py-4 px-6">Role</th>
+                  <th className="text-left py-4 px-6">Actions</th>
+                  <th className="text-left py-4 px-6">License Status</th>
                   <th className="text-left py-4 px-6">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
                   <tr key={user.id} className="border-b border-[var(--foreground)] opacity-70">
-                    <td className="py-4 px-6">#{user.id.slice(0, 8)}</td>
                     <td className="py-4 px-6">{user.first_name}</td>
                     <td className="py-4 px-6">{user.last_name}</td>
                     <td className="py-4 px-6">{user.email}</td>
@@ -146,6 +196,27 @@ export default function UsersPage() {
                         <option value="public">Public</option>
                         <option value="miner">Miner</option>
                       </select>
+                    </td>
+                    <td className="py-4 px-6">
+                      <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(user.license_status)}`}>
+                        {user.license_status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6">
+                      {user.role == 'miner' ? (
+                        <select
+                          value={user.license_status}
+                          onChange={(e) => handleActiveChange(user.id, e.target.value)}
+                        className="bg-[var(--input-background)] border border-[var(--border)] rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                      >
+                        <option value="active">Active</option>
+                        <option value="expired">Expired</option>
+                      </select>
+                      ) : (
+                        <span className="px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800">
+                          {user.license_status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
