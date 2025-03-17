@@ -219,10 +219,21 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-gray-700 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-400 mb-2">Explosive Quantities</h3>
-                <p className="flex justify-between">
-                  <span>Total Explosive Quantity:</span>
-                  <span>{royaltyData.calculations.total_explosive_quantity.toFixed(2)} kg</span>
-                </p>
+                <div className="space-y-2">
+                  <p className="flex justify-between">
+                    <span>Total Explosive Quantity:</span>
+                    <span>{royaltyData.calculations.total_explosive_quantity.toFixed(2)} kg</span>
+                  </p>
+                  <div className="border-t border-gray-600 my-2" />
+                  <p className="flex justify-between text-sm">
+                    <span>Water Gel:</span>
+                    <span>{royaltyData.inputs.water_gel_kg.toFixed(2)} kg</span>
+                  </p>
+                  <p className="flex justify-between text-sm">
+                    <span>NH4NO3:</span>
+                    <span>{royaltyData.inputs.nh4no3_kg.toFixed(2)} kg</span>
+                  </p>
+                </div>
               </div>
               
               <div className="p-4 bg-gray-700 rounded-lg">
