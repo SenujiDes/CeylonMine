@@ -226,11 +226,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
               </div>
               
               <div className="p-4 bg-gray-700 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-400 mb-2">Rock Volumes</h3>
-                <p className="flex justify-between">
-                  <span>Basic Volume:</span>
-                  <span>{royaltyData.calculations.basic_volume.toFixed(2)} m³</span>
-                </p>
+                <h3 className="text-sm font-medium text-gray-400 mb-2">Rock Volume</h3>
                 <p className="flex justify-between">
                   <span>Blasted Rock Volume:</span>
                   <span>{royaltyData.calculations.blasted_rock_volume.toFixed(2)} m³</span>

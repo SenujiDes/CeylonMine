@@ -76,8 +76,6 @@ export default function MiningStats({
     }
   }, [lastCalculated]);
 
-  const latestCalculation = savedCalculations[savedCalculations.length - 1];
-
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
     onDueDateChange(date);
@@ -165,7 +163,7 @@ export default function MiningStats({
             </span>
           </div>
           <div className="flex items-baseline">
-            <span className="text-2xl font-bold text-white">{totals.totalVolume.toFixed(2)}</span>
+            <span className="text-2xl font-bold text-white">{blastedVolume.toFixed(2)}</span>
             <span className="ml-2 text-gray-400">m³</span>
           </div>
         </div>
