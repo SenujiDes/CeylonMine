@@ -46,23 +46,36 @@ export default function UsersPage() {
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
+      // If changing to miner role, include license_status in the update
+      const updateData = newRole === 'miner' 
+        ? { role: newRole, license_status: 'active' }
+        : { role: newRole, license_status: 'not_started' }; // Always include license_status
+
+      console.log('Sending update data:', updateData); // Debug log
+
       const response = await fetch(`/api/users/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ role: newRole }),
+        body: JSON.stringify(updateData),
       });
 
       const data = await response.json();
+      console.log('Received response:', data); // Debug log
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update role');
       }
 
-      // Update local state
+      // Update local state using the returned data from the server
       setUsers(users.map(user => 
-        user.id === userId ? { ...user, role: newRole } : user
+        user.id === userId 
+          ? { 
+              ...user,
+              ...data // Use the actual updated data from the server
+            } 
+          : user
       ));
 
       // Show success message
@@ -134,11 +147,13 @@ export default function UsersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'active':
-        return 'bg-purple-100 text-purple-800';
       case 'expired':
-      default:
         return 'bg-red-100 text-red-800';
+      case 'active':
+        return 'bg-orange-100 text-orange-800';
+      case 'not_started':
+      default:
+        return 'bg-purple-100 text-purple-800';
     }
   };
 
