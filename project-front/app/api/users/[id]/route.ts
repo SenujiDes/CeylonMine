@@ -7,46 +7,39 @@ export async function PUT(
 ) {
   try {
     const { id } = await context.params;
-    const { role, license_status } = await request.json();
+    const body = await request.json();
+    const { role, license_status } = body;
 
     // First check if user exists
     const { data: existingUser, error: checkError } = await supabase
       .from('users')
-      .select('*')
+      .select('id')
       .eq('id', id)
-      .maybeSingle();
+      .single();
 
-    if (checkError) {
-      console.error('Database error:', checkError);
-      return NextResponse.json({ error: checkError.message }, { status: 500 });
-    }
-
-    if (!existingUser) {
-      console.error('User not found with ID:', id);
+    if (checkError || !existingUser) {
+      console.error('User not found:', checkError);
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Update both role and license_status in a single query
-    const { data: updatedUser, error: updateError } = await supabase
+    const updateData: any = {};
+    if (role) updateData.role = role;
+    if (license_status) updateData.license_status = license_status;
+
+    const { data, error } = await supabase
       .from('users')
-      .update({
-        role: role || existingUser.role,
-        license_status: license_status || existingUser.license_status
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
-      .maybeSingle();
+      .single();
 
-    if (updateError) {
-      console.error('Update error:', updateError);
-      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    if (error) {
+      console.error('Update error:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    if (!updatedUser) {
-      return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
-    }
-
-    return NextResponse.json(updatedUser);
+    return NextResponse.json(data);
 
   } catch (error) {
     console.error('Server error:', error);
