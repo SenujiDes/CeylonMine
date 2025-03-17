@@ -15,11 +15,48 @@
 //   const [searchQuery, setSearchQuery] = useState("");
 //   const canvasRef = useRef(null);
 //   const scrollRef = useRef(null);
+//   const sceneRef = useRef(null);
 
-//   // Toggle dark/light mode
+//   // Get initial theme from localStorage on component mount
+//   useEffect(() => {
+//     const savedTheme = localStorage.getItem('theme');
+//     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+//     const initialIsDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+//     setIsDarkMode(initialIsDark);
+//   }, []);
+
+//   // Listen for themeChange events from the Navbar component
+//   useEffect(() => {
+//     const handleThemeChange = (event) => {
+//       setIsDarkMode(event.detail.isDarkMode);
+//       updateThree(event.detail.isDarkMode);
+//     };
+
+//     window.addEventListener('themeChange', handleThemeChange);
+//     return () => {
+//       window.removeEventListener('themeChange', handleThemeChange);
+//     };
+//   }, []);
+
+//   // Update THREE.js scene when theme changes
+//   const updateThree = (isDark) => {
+//     if (sceneRef.current) {
+//       // Update THREE.js particle color based on theme
+//       sceneRef.current.traverse((obj) => {
+//         if (obj.type === 'Points' && obj.material) {
+//           obj.material.color.set(isDark ? 0xD2B48C : 0x555555);
+//         }
+//       });
+//     }
+//   };
+
+//   // Toggle dark/light mode (local function, but using Navbar is preferred)
 //   const toggleTheme = () => {
-//     setIsDarkMode(!isDarkMode);
+//     const newTheme = !isDarkMode;
+//     setIsDarkMode(newTheme);
 //     document.documentElement.classList.toggle('dark');
+//     updateThree(newTheme);
+//     localStorage.setItem('theme', newTheme ? 'dark' : 'light');
 //   };
 
 //   // Scroll-based animations
@@ -177,6 +214,7 @@
 
 //     // Set up Three.js scene
 //     const scene = new THREE.Scene();
+//     sceneRef.current = scene;
 //     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 //     const renderer = new THREE.WebGLRenderer({
 //       canvas: canvasRef.current,
@@ -196,7 +234,7 @@
 
 //     const particlesMaterial = new THREE.PointsMaterial({
 //       size: 0.005,
-//       color: 0xD2B48C,
+//       color: isDarkMode ? 0xD2B48C : 0x555555,
 //       transparent: true,
 //       blending: THREE.AdditiveBlending,
 //     });
@@ -259,7 +297,7 @@
 //       {/* 3D Sand Background */}
 //       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-0" />
 
-//       {/* Dark/Light Mode Toggle */}
+//       {/* Dark/Light Mode Toggle (This is a backup toggle, primarily use the one in Navbar) */}
 //       <motion.button
 //         onClick={toggleTheme}
 //         whileHover={{ scale: 1.1 }}
@@ -300,7 +338,9 @@
 //               value={searchQuery}
 //               onChange={(e) => setSearchQuery(e.target.value)}
 //               placeholder="Search topics..."
-//               className="w-full max-w-md px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+//               className={`w-full max-w-md px-4 py-2 rounded-lg border ${
+//                 isDarkMode ? 'border-gray-700 bg-gray-800 text-white' : 'border-gray-300 bg-white text-gray-900'
+//               } focus:outline-none focus:ring-2 focus:ring-orange-500`}
 //             />
 //           </div>
 
@@ -442,15 +482,15 @@
 //             Discover how digital platforms streamline mining licensing and automate royalty calculations for transparency and efficiency.
 //           </p>
 //           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-//             <div className="p-6 bg-gray-800 text-white rounded-lg shadow-lg">
+//             <div className={`p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} rounded-lg shadow-lg`}>
 //               <h3 className="text-xl font-bold mb-2">Digital Licensing Process</h3>
-//               <p className="text-gray-300">
+//               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
 //                 Replace manual paperwork with a seamless online application system that lets miners submit and track their licenses in real time.
 //               </p>
 //             </div>
-//             <div className="p-6 bg-gray-800 text-white rounded-lg shadow-lg">
+//             <div className={`p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} rounded-lg shadow-lg`}>
 //               <h3 className="text-xl font-bold mb-2">Automated Royalty Calculation</h3>
-//               <p className="text-gray-300">
+//               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
 //                 Advanced algorithms compute royalties based on extraction volumes and mineral types, minimizing errors and ensuring fairness.
 //               </p>
 //             </div>
@@ -459,38 +499,36 @@
 //       </section>
 
 //       {/* Digital Transformation in Mining Section */}
-//       {/* Digital Transformation in Mining Section */}
-// <section className="relative z-10 py-16 bg-gray-200">
-//   <div className="container mx-auto px-4">
-//     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 text-gray-900">
-//       Digital Transformation in Mining
-//     </h2>
-//     <p className="text-center text-lg md:text-xl lg:text-2xl mb-8 text-gray-700">
-//       Discover how advanced digital technologies are reshaping mining operations for enhanced safety, increased efficiency, and greater sustainability.
-//     </p>
-//     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-//       <div className="p-6 bg-white rounded-lg shadow-lg">
-//         <h3 className="text-xl font-bold mb-2 text-gray-900">Centralized Data Systems</h3>
-//         <p className="text-gray-700">
-//           Consolidate diverse data streams to streamline operations and enable real-time analytics.
-//         </p>
-//       </div>
-//       <div className="p-6 bg-white rounded-lg shadow-lg">
-//         <h3 className="text-xl font-bold mb-2 text-gray-900">GIS Mapping</h3>
-//         <p className="text-gray-700">
-//           Utilize geospatial technologies to monitor sites and accurately assess environmental impacts.
-//         </p>
-//       </div>
-//       <div className="p-6 bg-white rounded-lg shadow-lg">
-//         <h3 className="text-xl font-bold mb-2 text-gray-900">AI &amp; Automation</h3>
-//         <p className="text-gray-700">
-//           Leverage AI-powered tools to optimize operations, predict maintenance needs, and support strategic decision-making.
-//         </p>
-//       </div>
-//     </div>
-//   </div>
-// </section>
-
+//       <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-200'}`}>
+//         <div className="container mx-auto px-4">
+//           <h2 className={`text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+//             Digital Transformation in Mining
+//           </h2>
+//           <p className={`text-center text-lg md:text-xl lg:text-2xl mb-8 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+//             Discover how advanced digital technologies are reshaping mining operations for enhanced safety, increased efficiency, and greater sustainability.
+//           </p>
+//           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+//             <div className={`p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg`}>
+//               <h3 className="text-xl font-bold mb-2">Centralized Data Systems</h3>
+//               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+//                 Consolidate diverse data streams to streamline operations and enable real-time analytics.
+//               </p>
+//             </div>
+//             <div className={`p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg`}>
+//               <h3 className="text-xl font-bold mb-2">GIS Mapping</h3>
+//               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+//                 Utilize geospatial technologies to monitor sites and accurately assess environmental impacts.
+//               </p>
+//             </div>
+//             <div className={`p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg`}>
+//               <h3 className="text-xl font-bold mb-2">AI & Automation</h3>
+//               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+//                 Leverage AI-powered tools to optimize operations, predict maintenance needs, and support strategic decision-making.
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
 
 //       {/* Case Studies & Success Stories Section */}
 //       <section className="relative z-10 py-16">
@@ -500,15 +538,15 @@
 //             Real-world examples showcasing how digital transformation has revolutionized mining practices.
 //           </p>
 //           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-//             <div className="p-6 bg-gray-800 text-white rounded-lg shadow-lg">
+//             <div className={`p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} rounded-lg shadow-lg`}>
 //               <h3 className="text-xl font-bold mb-2">Digital Licensing Success</h3>
-//               <p className="text-gray-300">
+//               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
 //                 A mining firm cut processing times by 50% by adopting an online licensing system, resulting in greater transparency and efficiency.
 //               </p>
 //             </div>
-//             <div className="p-6 bg-gray-800 text-white rounded-lg shadow-lg">
+//             <div className={`p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} rounded-lg shadow-lg`}>
 //               <h3 className="text-xl font-bold mb-2">Automated Royalty Efficiency</h3>
-//               <p className="text-gray-300">
+//               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
 //                 Automation in royalty calculation has minimized errors and disputes, ensuring regulatory compliance and timely revenue collection.
 //               </p>
 //             </div>
@@ -562,67 +600,74 @@
 //       </section>
 
 //       {/* Footer Section */}
-//       <footer className={`relative z-10 py-12 ${isDarkMode ? 'bg-black' : 'bg-gray-900'} text-white`}>
+//       <footer className={`relative z-10 py-8 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-200'}`}>
 //         <div className="container mx-auto px-4">
-//           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+//           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+//             {/* About Section */}
 //             <div>
-//               <h3 className="text-xl font-bold mb-4">MINING EDUCATION CENTER</h3>
-//               <p className="opacity-70 mb-4">
-//                 Comprehensive resources to expand your knowledge and skills in modern mining practices.
+//               <h3 className="text-xl font-bold mb-4">About Us</h3>
+//               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+//                 The Mining Education Center is dedicated to providing comprehensive resources and knowledge to advance modern mining practices. Our mission is to empower professionals with the skills and insights needed to drive innovation and sustainability in the mining industry.
 //               </p>
-//               <div className="flex space-x-4">
-//                 <a href="#" className="text-white hover:text-orange-500 transition-colors">
-//                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-//                     <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12z"></path>
-//                   </svg>
-//                 </a>
-//                 <a href="#" className="text-white hover:text-orange-500 transition-colors">
-//                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-//                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5.15 11.65L12 17.78l-5.15-4.13c-.26-.21-.42-.53-.42-.87 0-.34.16-.66.42-.87l4.82-3.86c.2-.16.48-.16.68 0l4.82 3.86c.26.21.42.53.42.87s-.16.66-.42.87z"></path>
-//                   </svg>
-//                 </a>
-//                 <a href="#" className="text-white hover:text-orange-500 transition-colors">
-//                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-//                     <path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"></path>
-//                   </svg>
-//                 </a>
-//               </div>
 //             </div>
+
+//             {/* Quick Links Section */}
 //             <div>
-//               <h3 className="text-xl font-bold mb-4">COURSES</h3>
-//               <ul className="space-y-2">
-//                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Introduction to Mining Engineering</a></li>
-//                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Advanced Mining Techniques</a></li>
-//                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Mining Safety and Regulations</a></li>
+//               <h3 className="text-xl font-bold mb-4">Quick Links</h3>
+//               <ul className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+//                 <li className="mb-2"><a href="#" className="hover:text-orange-500 transition-colors">Home</a></li>
+//                 <li className="mb-2"><a href="#" className="hover:text-orange-500 transition-colors">Courses</a></li>
+//                 <li className="mb-2"><a href="#" className="hover:text-orange-500 transition-colors">Resources</a></li>
+//                 <li className="mb-2"><a href="#" className="hover:text-orange-500 transition-colors">Contact Us</a></li>
 //               </ul>
 //             </div>
+
+//             {/* Contact Section */}
 //             <div>
-//               <h3 className="text-xl font-bold mb-4">COMPANY</h3>
-//               <ul className="space-y-2">
-//                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">About Us</a></li>
-//                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Our Story</a></li>
-//                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Careers</a></li>
-//               </ul>
-//             </div>
-//             <div>
-//               <h3 className="text-xl font-bold mb-4">CONTACT</h3>
-//               <ul className="space-y-2">
-//                 <li className="opacity-70">123 Mining Way, Melbourne, VIC 3000</li>
-//                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">1800 MINING</a></li>
-//                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">info@miningeducation.com.au</a></li>
-//                 <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Support</a></li>
+//               <h3 className="text-xl font-bold mb-4">Contact Us</h3>
+//               <ul className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+//                 <li className="mb-2">Email: <a href="mailto:info@miningeducation.com" className="hover:text-orange-500 transition-colors">info@miningeducation.com</a></li>
+//                 <li className="mb-2">Phone: <a href="tel:+1234567890" className="hover:text-orange-500 transition-colors">+1 (234) 567-890</a></li>
+//                 <li className="mb-2">Address: 123 Mining St, Mineral City, MC 12345</li>
 //               </ul>
 //             </div>
 //           </div>
-//           <div className="mt-12 pt-8 border-t border-gray-800 text-center opacity-70">
-//             <p>© 2025 Mining Education Center. All rights reserved.</p>
+
+//           {/* Social Media Links */}
+//           <div className="flex justify-center mt-8 space-x-4">
+//             <a href="#" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} hover:text-orange-500 transition-colors`}>
+//               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+//                 <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+//               </svg>
+//             </a>
+//             <a href="#" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} hover:text-orange-500 transition-colors`}>
+//               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+//                 <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+//               </svg>
+//             </a>
+//             <a href="#" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} hover:text-orange-500 transition-colors`}>
+//               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+//                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+//               </svg>
+//             </a>
+//             <a href="#" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} hover:text-orange-500 transition-colors`}>
+//               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+//                 <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
+//               </svg>
+//             </a>
+//           </div>
+
+//           {/* Copyright Section */}
+//           <div className="text-center mt-8">
+//             <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+//               &copy; {new Date().getFullYear()} Mining Education Center. All rights reserved.
+//             </p>
 //           </div>
 //         </div>
 //       </footer>
 //     </div>
 //   );
 // }
-
 
 'use client';
 
@@ -639,11 +684,48 @@ export default function MiningEducation() {
   const [searchQuery, setSearchQuery] = useState("");
   const canvasRef = useRef(null);
   const scrollRef = useRef(null);
+  const sceneRef = useRef(null);
 
-  // Toggle dark/light mode
+  // Get initial theme from localStorage on component mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialIsDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+    setIsDarkMode(initialIsDark);
+  }, []);
+
+  // Listen for themeChange events from the Navbar component
+  useEffect(() => {
+    const handleThemeChange = (event) => {
+      setIsDarkMode(event.detail.isDarkMode);
+      updateThree(event.detail.isDarkMode);
+    };
+
+    window.addEventListener('themeChange', handleThemeChange);
+    return () => {
+      window.removeEventListener('themeChange', handleThemeChange);
+    };
+  }, []);
+
+  // Update THREE.js scene when theme changes
+  const updateThree = (isDark) => {
+    if (sceneRef.current) {
+      // Update THREE.js particle color based on theme
+      sceneRef.current.traverse((obj) => {
+        if (obj.type === 'Points' && obj.material) {
+          obj.material.color.set(isDark ? 0xD2B48C : 0x555555);
+        }
+      });
+    }
+  };
+
+  // Toggle dark/light mode (local function, but using Navbar is preferred)
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
     document.documentElement.classList.toggle('dark');
+    updateThree(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
   };
 
   // Scroll-based animations
@@ -801,6 +883,7 @@ export default function MiningEducation() {
 
     // Set up Three.js scene
     const scene = new THREE.Scene();
+    sceneRef.current = scene;
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({
       canvas: canvasRef.current,
@@ -860,7 +943,7 @@ export default function MiningEducation() {
       particlesMaterial.dispose();
       renderer.dispose();
     };
-  }, [isDarkMode]);
+  }, []);
 
   // Course slider navigation
   const nextSlide = () => {
@@ -883,7 +966,7 @@ export default function MiningEducation() {
       {/* 3D Sand Background */}
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-0" />
 
-      {/* Dark/Light Mode Toggle */}
+      {/* Dark/Light Mode Toggle (This is a backup toggle, primarily use the one in Navbar) */}
       <motion.button
         onClick={toggleTheme}
         whileHover={{ scale: 1.1 }}
@@ -1186,60 +1269,68 @@ export default function MiningEducation() {
       </section>
 
       {/* Footer Section */}
-      <footer className={`relative z-10 py-12 ${isDarkMode ? 'bg-black' : 'bg-gray-900'} text-white`}>
+      <footer className={`relative z-10 py-8 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-200'}`}>
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* About Section */}
             <div>
-              <h3 className="text-xl font-bold mb-4">MINING EDUCATION CENTER</h3>
-              <p className="opacity-70 mb-4">
-                Comprehensive resources to expand your knowledge and skills in modern mining practices.
+              <h3 className="text-xl font-bold mb-4">About Us</h3>
+              <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                The Mining Education Center is dedicated to providing comprehensive resources and knowledge to advance modern mining practices. Our mission is to empower professionals with the skills and insights needed to drive innovation and sustainability in the mining industry.
               </p>
-              <div className="flex space-x-4">
-                <a href="#" className="text-white hover:text-orange-500 transition-colors">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12z"></path>
-                  </svg>
-                </a>
-                <a href="#" className="text-white hover:text-orange-500 transition-colors">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5.15 11.65L12 17.78l-5.15-4.13c-.26-.21-.42-.53-.42-.87 0-.34.16-.66.42-.87l4.82-3.86c.2-.16.48-.16.68 0l4.82 3.86c.26.21.42.53.42.87s-.16.66-.42.87z"></path>
-                  </svg>
-                </a>
-                <a href="#" className="text-white hover:text-orange-500 transition-colors">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"></path>
-                  </svg>
-                </a>
-              </div>
             </div>
+
+            {/* Quick Links Section */}
             <div>
-              <h3 className="text-xl font-bold mb-4">COURSES</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Introduction to Mining Engineering</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Advanced Mining Techniques</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Mining Safety and Regulations</a></li>
+              <h3 className="text-xl font-bold mb-4">Quick Links</h3>
+              <ul className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                <li className="mb-2"><a href="#" className="hover:text-orange-500 transition-colors">Home</a></li>
+                <li className="mb-2"><a href="#" className="hover:text-orange-500 transition-colors">Courses</a></li>
+                <li className="mb-2"><a href="#" className="hover:text-orange-500 transition-colors">Resources</a></li>
+                <li className="mb-2"><a href="#" className="hover:text-orange-500 transition-colors">Contact Us</a></li>
               </ul>
             </div>
+
+            {/* Contact Section */}
             <div>
-              <h3 className="text-xl font-bold mb-4">COMPANY</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">About Us</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Our Story</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Careers</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">CONTACT</h3>
-              <ul className="space-y-2">
-                <li className="opacity-70">123 Mining Way, Melbourne, VIC 3000</li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">1800 MINING</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">info@miningeducation.com.au</a></li>
-                <li><a href="#" className="opacity-70 hover:opacity-100 hover:text-orange-500 transition-colors">Support</a></li>
+              <h3 className="text-xl font-bold mb-4">Contact Us</h3>
+              <ul className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                <li className="mb-2">Email: <a href="mailto:info@miningeducation.com" className="hover:text-orange-500 transition-colors">info@miningeducation.com</a></li>
+                <li className="mb-2">Phone: <a href="tel:+1234567890" className="hover:text-orange-500 transition-colors">+1 (234) 567-890</a></li>
+                <li className="mb-2">Address: 123 Mining St, Mineral City, MC 12345</li>
               </ul>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-gray-800 text-center opacity-70">
-            <p>© 2025 Mining Education Center. All rights reserved.</p>
+
+          {/* Social Media Links */}
+          <div className="flex justify-center mt-8 space-x-4">
+            <a href="#" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} hover:text-orange-500 transition-colors`}>
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+              </svg>
+            </a>
+            <a href="#" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} hover:text-orange-500 transition-colors`}>
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+              </svg>
+            </a>
+            <a href="#" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} hover:text-orange-500 transition-colors`}>
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </a>
+            <a href="#" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} hover:text-orange-500 transition-colors`}>
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
+              </svg>
+            </a>
+          </div>
+
+          {/* Copyright Section */}
+          <div className="text-center mt-8">
+            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              &copy; {new Date().getFullYear()} Mining Education Center. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
