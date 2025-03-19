@@ -13,29 +13,54 @@ export async function POST(request: Request) {
 
     let image_url = '';
 
-    // Upload image to Supabase Storage if image is provided
     if (image) {
+      // Convert File to ArrayBuffer
+      const arrayBuffer = await image.arrayBuffer();
+      const buffer = new Uint8Array(arrayBuffer);
+
       const fileExt = image.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+      console.log('Attempting to upload file:', {
+        fileName,
+        fileSize: image.size,
+        fileType: image.type
+      });
+
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('map-locations')
-        .upload(fileName, image);
+        .upload(fileName, buffer, {
+          contentType: image.type,
+          cacheControl: '3600',
+          upsert: false
+        });
 
       if (uploadError) {
-        throw new Error('Failed to upload image');
+        console.error('Upload error details:', uploadError);
+        throw new Error(`Failed to upload image: ${uploadError.message}`);
       }
 
-      // Get the public URL of the uploaded image
+      console.log('File uploaded successfully:', uploadData);
+
       const { data: { publicUrl } } = supabase.storage
         .from('map-locations')
         .getPublicUrl(fileName);
 
       image_url = publicUrl;
+      console.log('Generated public URL:', image_url);
     }
 
-    // Save location data to database
+    console.log('Inserting into database with data:', {
+      name,
+      latitude,
+      longitude,
+      short_description,
+      image_url,
+      long_description
+    });
+
     const { data, error } = await supabase
-      .from('map_locations')
+      .from('locations')
       .insert([
         {
           name,
@@ -58,7 +83,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Server error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     );
   }
