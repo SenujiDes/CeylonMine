@@ -27,4 +27,3 @@ def init_routes(bp):
             return jsonify(locations_list)
         except Exception as e:
             return jsonify({"error": str(e)}), 500
-
