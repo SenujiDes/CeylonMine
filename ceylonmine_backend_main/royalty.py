@@ -31,6 +31,7 @@ def init_routes(bp):
                 'water_gel', 'nh4no3', 'powder_factor', 'total_explosive_quantity',
                 'blasted_rock_volume', 'base_royalty', 'royalty_with_sscl', 'total_amount'
             ]
+            
             logging.debug("Checking for required fields")
 
             for field in required_fields:
@@ -54,11 +55,11 @@ def init_routes(bp):
                 'water_gel': data['water_gel'],
                 'nh4no3': data['nh4no3'],
                 'powder_factor': data['powder_factor'],
-                'total_explosive_quantity': data['total_explosive_quantity'],
-                'blasted_rock_volume': data['blasted_rock_volume'],
-                'base_royalty': data['base_royalty'],
-                'royalty_with_sscl': data['royalty_with_sscl'],
-                'total_amount': data['total_amount']
+                # 'total_explosive_quantity': data['total_explosive_quantity'],
+                # 'blasted_rock_volume': data['blasted_rock_volume'],
+                # 'base_royalty': data['base_royalty'],
+                # 'royalty_with_sscl': data['royalty_with_sscl'],
+                # 'total_amount': data['total_amount']
             }).execute()
 
             # Log the Supabase response

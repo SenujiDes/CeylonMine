@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 interface RoyaltyCalculationRequest {
   water_gel: number;
@@ -30,7 +30,7 @@ interface RoyaltyCalculationResponse {
 
 export const calculateRoyalty = async (data: RoyaltyCalculationRequest): Promise<RoyaltyCalculationResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/calculate-royalty`, {
+    const response = await fetch(`http://127.0.0.1:5000/api/royalty/calculate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

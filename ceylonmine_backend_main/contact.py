@@ -8,9 +8,11 @@ def init_routes(bp):
             supabase = current_app.supabase
 
             # Insert data into Supabase
-            response = supabase.table('contacts').insert({
-                'name': data['name'],
+            response = supabase.table('contact_data').insert({
+                'name': data['fullName'],
                 'email': data['email'],
+                'phone': data['phoneNumber'],
+                'subject': data['subject'],
                 'message': data['message']
             }).execute()
 
