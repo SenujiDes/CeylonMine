@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 
 interface RoyaltyData {
   calculation_date: string;
+  payment_due_date: string;
   inputs: {
     water_gel_kg: number;
     nh4no3_kg: number;
@@ -50,6 +51,7 @@ interface CalculationConstants {
   royaltyRatePerCubicMeter: number;
   ssclPercentage: number;
   vatPercentage: number;
+  paymentDueDays: number;
 }
 
 export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorProps) {
@@ -69,6 +71,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     royaltyRatePerCubicMeter: 240,
     ssclPercentage: 2.56,
     vatPercentage: 18,
+    paymentDueDays: 14,
   };
   
   // State for editable constants
@@ -113,6 +116,13 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     toast.success('Constants reset to default values');
   };
 
+  // Calculate the payment due date
+  const calculateDueDate = (calculationDate: string): string => {
+    const date = new Date(calculationDate);
+    date.setDate(date.getDate() + constants.paymentDueDays);
+    return date.toISOString();
+  };
+
   // Implement local royalty calculation function
   const calculateRoyaltyLocal = (inputs: {
     water_gel: number;
@@ -147,8 +157,12 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     // Step 4 (continued): Apply VAT
     const totalAmountWithVat = royaltyWithSscl * VAT_MULTIPLIER;
 
+    const calculationDate = new Date().toISOString();
+    const dueDate = calculateDueDate(calculationDate);
+
     return {
-      calculation_date: new Date().toISOString(),
+      calculation_date: calculationDate,
+      payment_due_date: dueDate,
       inputs: {
         water_gel_kg: inputs.water_gel,
         nh4no3_kg: inputs.nh4no3,
@@ -221,7 +235,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
       totalAmount: royaltyData.calculations.total_amount_with_vat,
       explosiveQuantity: royaltyData.calculations.total_explosive_quantity,
       blastedVolume: royaltyData.calculations.blasted_rock_volume,
-      dueDate: royaltyData.calculation_date
+      dueDate: royaltyData.payment_due_date
     };
 
     // Check if this exact calculation already exists
@@ -351,6 +365,19 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
                 step="0.01"
                 value={constants.vatPercentage}
                 onChange={(e) => handleConstantChange('vatPercentage', e.target.value)}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Payment Due (Days)
+              </label>
+              <input
+                type="number"
+                step="1"
+                value={constants.paymentDueDays}
+                onChange={(e) => handleConstantChange('paymentDueDays', e.target.value)}
                 className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
@@ -498,9 +525,22 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
               </div>
             </div>
 
-            <p className="text-sm text-gray-400">
-              Calculation Date: {new Date(royaltyData.calculation_date).toLocaleString()}
-            </p>
+            <div className="p-4 bg-gray-700 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-400 mb-2">Payment Information</h3>
+              <div className="space-y-2">
+                <p className="flex justify-between">
+                  <span>Calculation Date:</span>
+                  <span>{new Date(royaltyData.calculation_date).toLocaleDateString()}</span>
+                </p>
+                <p className="flex justify-between text-amber-400">
+                  <span>Payment Due Date:</span>
+                  <span>{new Date(royaltyData.payment_due_date).toLocaleDateString()}</span>
+                </p>
+                <p className="text-xs text-gray-400">
+                  Payment is due within {constants.paymentDueDays} days of calculation
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}
