@@ -179,7 +179,7 @@ export default function MapLocationsPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[var(--primary)] text-white py-2 px-4 rounded-md hover:opacity-90 disabled:opacity-50"
+              className="w-full bg-[var(--foreground)] text-white py-2 px-4 rounded-md hover:opacity-90 disabled:opacity-50"
             >
               {loading ? 'Saving...' : 'Save Location'}
             </button>
