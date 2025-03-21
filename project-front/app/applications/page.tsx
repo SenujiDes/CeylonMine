@@ -5,14 +5,14 @@ import Layout from '../components/Layout';
 import Link from 'next/link';
 
 interface Application {
-  id: string;
+  id: number;
   created_at: string;
   applicant_name: string;
-  location: string;
+  village_name: string;
   status: string;
-  mining_type: string;
-  area: string;
-  description: string;
+  category: string;
+  production_volume: string;
+  period_of_validity: string;
   submission_date: string;
 }
 
@@ -87,7 +87,8 @@ export default function ApplicationsPage() {
                   <th className="text-left py-4 px-6">Application ID</th>
                   <th className="text-left py-4 px-6">Applicant Name</th>
                   <th className="text-left py-4 px-6">Location</th>
-                  <th className="text-left py-4 px-6">Mining Type</th>
+                  <th className="text-left py-4 px-6">Category</th>
+                  <th className="text-left py-4 px-6">Period of Validity</th>
                   <th className="text-left py-4 px-6">Status</th>
                   <th className="text-left py-4 px-6">Actions</th>
                 </tr>
@@ -95,10 +96,11 @@ export default function ApplicationsPage() {
               <tbody>
                 {applications.map((app) => (
                   <tr key={app.id} className="border-b border-[var(--foreground)] opacity-70">
-                    <td className="py-4 px-6">#{app.id.slice(0, 8)}</td>
+                    <td className="py-4 px-6">{app.id}</td>
                     <td className="py-4 px-6">{app.applicant_name}</td>
-                    <td className="py-4 px-6">{app.location}</td>
-                    <td className="py-4 px-6">{app.mining_type}</td>
+                    <td className="py-4 px-6">{app.village_name}</td>
+                    <td className="py-4 px-6">{app.category}</td>
+                    <td className="py-4 px-6">{app.period_of_validity}</td>
                     <td className="py-4 px-6">
                       <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(app.status)}`}>
                         {app.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
