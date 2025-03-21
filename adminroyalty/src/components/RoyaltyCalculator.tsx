@@ -42,6 +42,16 @@ interface SavedCalculation {
   dueDate: string;
 }
 
+// Add new interface for constant values
+interface CalculationConstants {
+  waterGelMultiplier: number;
+  expansionFactor: number;
+  powderFactorMultiplier: number;
+  royaltyRatePerCubicMeter: number;
+  ssclPercentage: number;
+  vatPercentage: number;
+}
+
 export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorProps) {
   const [waterGel, setWaterGel] = useState('');
   const [nh4no3, setNh4no3] = useState('');
@@ -49,14 +59,59 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
   const [loading, setLoading] = useState(false);
   const [royaltyData, setRoyaltyData] = useState<RoyaltyData | null>(null);
   const [savedCalculations, setSavedCalculations] = useState<SavedCalculation[]>([]);
+  const [showConstantsEditor, setShowConstantsEditor] = useState(false);
+  
+  // Default values for constants
+  const defaultConstants: CalculationConstants = {
+    waterGelMultiplier: 1.2,
+    expansionFactor: 1.6,
+    powderFactorMultiplier: 2.83,
+    royaltyRatePerCubicMeter: 240,
+    ssclPercentage: 2.56,
+    vatPercentage: 18,
+  };
+  
+  // State for editable constants
+  const [constants, setConstants] = useState<CalculationConstants>(defaultConstants);
 
-  // Load saved calculations from localStorage on component mount
+  // Load saved calculations and constants from localStorage on component mount
   useEffect(() => {
     const saved = localStorage.getItem('royaltyCalculations');
     if (saved) {
       setSavedCalculations(JSON.parse(saved));
     }
+    
+    // Load saved constants if available
+    const savedConstants = localStorage.getItem('royaltyConstants');
+    if (savedConstants) {
+      setConstants(JSON.parse(savedConstants));
+    }
   }, []);
+  
+  // Handle constant value changes
+  const handleConstantChange = (field: keyof CalculationConstants, value: string) => {
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue)) {
+      setConstants(prev => ({
+        ...prev,
+        [field]: numValue
+      }));
+    }
+  };
+  
+  // Save constants to localStorage
+  const saveConstants = () => {
+    localStorage.setItem('royaltyConstants', JSON.stringify(constants));
+    setShowConstantsEditor(false);
+    toast.success('Calculation constants saved successfully!');
+  };
+  
+  // Reset constants to default values
+  const resetConstants = () => {
+    setConstants(defaultConstants);
+    localStorage.setItem('royaltyConstants', JSON.stringify(defaultConstants));
+    toast.success('Constants reset to default values');
+  };
 
   // Implement local royalty calculation function
   const calculateRoyaltyLocal = (inputs: {
@@ -64,21 +119,24 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     nh4no3: number;
     powder_factor: number;
   }): RoyaltyData => {
-    // Constants for calculation based on the provided formula
-    const ROYALTY_RATE_PER_CUBIC_METER = 240; // LKR per cubic meter
-    const SSCL_RATE = "2.56%";
-    const VAT_RATE = "18%";
-    const SSCL_MULTIPLIER = 1.0256; // 2.56% increase
-    const VAT_MULTIPLIER = 1.18; // 18% increase
+    // Use constants from state
+    const WATER_GEL_MULTIPLIER = constants.waterGelMultiplier;
+    const EXPANSION_FACTOR = constants.expansionFactor;
+    const POWDER_FACTOR_MULTIPLIER = constants.powderFactorMultiplier;
+    const ROYALTY_RATE_PER_CUBIC_METER = constants.royaltyRatePerCubicMeter;
+    const SSCL_RATE = `${constants.ssclPercentage}%`;
+    const VAT_RATE = `${constants.vatPercentage}%`;
+    const SSCL_MULTIPLIER = 1 + (constants.ssclPercentage / 100);
+    const VAT_MULTIPLIER = 1 + (constants.vatPercentage / 100);
 
     // Step 1: Calculate Total Explosive Quantity with the correct formula
-    const totalExplosiveQuantity = (inputs.water_gel * 1.2) + inputs.nh4no3;
+    const totalExplosiveQuantity = (inputs.water_gel * WATER_GEL_MULTIPLIER) + inputs.nh4no3;
     
     // Step 2: Calculate basic blasted rock volume using powder factor
     const basicVolume = totalExplosiveQuantity / inputs.powder_factor;
     
     // Step 2 (continued): Calculate expanded blasted rock volume
-    const blastedRockVolume = (totalExplosiveQuantity * 1.6) / (inputs.powder_factor * 2.83);
+    const blastedRockVolume = (totalExplosiveQuantity * EXPANSION_FACTOR) / (inputs.powder_factor * POWDER_FACTOR_MULTIPLIER);
     
     // Step 3: Calculate base royalty
     const baseRoyalty = blastedRockVolume * ROYALTY_RATE_PER_CUBIC_METER;
@@ -205,6 +263,116 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
 
   return (
     <div className="space-y-8">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Royalty Calculator</h2>
+        <button
+          onClick={() => setShowConstantsEditor(!showConstantsEditor)}
+          className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md text-sm font-medium transition-colors"
+        >
+          {showConstantsEditor ? 'Hide Constants' : 'Edit Constants'}
+        </button>
+      </div>
+      
+      {showConstantsEditor && (
+        <div className="p-6 bg-gray-800 rounded-lg">
+          <h3 className="text-lg font-medium mb-4">Edit Calculation Constants</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Water Gel Multiplier
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={constants.waterGelMultiplier}
+                onChange={(e) => handleConstantChange('waterGelMultiplier', e.target.value)}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Expansion Factor
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={constants.expansionFactor}
+                onChange={(e) => handleConstantChange('expansionFactor', e.target.value)}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Powder Factor Multiplier
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={constants.powderFactorMultiplier}
+                onChange={(e) => handleConstantChange('powderFactorMultiplier', e.target.value)}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Royalty Rate per m³ (LKR)
+              </label>
+              <input
+                type="number"
+                step="1"
+                value={constants.royaltyRatePerCubicMeter}
+                onChange={(e) => handleConstantChange('royaltyRatePerCubicMeter', e.target.value)}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                SSCL Percentage (%)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={constants.ssclPercentage}
+                onChange={(e) => handleConstantChange('ssclPercentage', e.target.value)}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                VAT Percentage (%)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={constants.vatPercentage}
+                onChange={(e) => handleConstantChange('vatPercentage', e.target.value)}
+                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+          
+          <div className="mt-6 flex space-x-4">
+            <button
+              onClick={saveConstants}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md text-sm font-medium transition-colors"
+            >
+              Save Constants
+            </button>
+            <button
+              onClick={resetConstants}
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md text-sm font-medium transition-colors"
+            >
+              Reset to Default
+            </button>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleCalculateRoyalty} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
