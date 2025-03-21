@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { ExplosivesCalculator } from '@/lib/ExplosivesCalculator';
+import { ExplosivesCalculator } from '../../../lib/ExplosivesCalculator';
 import { z } from 'zod';
 
 const prisma = new PrismaClient();
