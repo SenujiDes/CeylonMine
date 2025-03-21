@@ -9,7 +9,7 @@ export async function GET(
   console.log('Fetching application with ID:', id);
 
   const { data: application, error } = await supabase
-    .from('applications')
+    .from('application')
     .select('*')
     .eq('id', id)
     .single();
