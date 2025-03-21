@@ -34,6 +34,10 @@ export default function Home() {
     }));
   };
 
+  const handleCalculated = (data: any) => {
+    console.log('Calculation completed:', data);
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-6">
@@ -49,7 +53,7 @@ export default function Home() {
         <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8">
           <h2 className="text-2xl font-bold mb-8">Mining Royalty Calculator</h2>
           <ErrorBoundary>
-            <RoyaltyCalculator onCalculated={handleRoyaltyCalculated} />
+            <RoyaltyCalculator onCalculated={handleCalculated} />
           </ErrorBoundary>
         </div>
       </main>
