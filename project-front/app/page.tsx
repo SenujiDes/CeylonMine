@@ -37,16 +37,6 @@ export default function AdminDashboard() {
               ),
             },
             {
-              title: 'Update Status',
-              description: 'Modify application statuses and notify applicants',
-              href: '/status',
-              icon: (
-                <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              ),
-            },
-            {
               title: 'Complaints',
               description: 'Manage and resolve user complaints',
               href: '/complaints',
@@ -62,7 +52,7 @@ export default function AdminDashboard() {
               href: '/users',
               icon: (
                 <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-18h18v18zm-2-2H5v-14h10v14zm2-13.328V6h-2v.672a8 8 0 00-4 6.656v.672m4-6.656v6.656a8 8 0 01-4 6.656v.672m8-11.328V6h-2v.672a8 8 0 00-4 6.656v.672m0 0v6.656a8 8 0 01-4-6.656v-.672M16 16v1a4 4 0 11-8 0v-1" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               ),
             },
