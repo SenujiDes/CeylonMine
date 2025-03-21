@@ -60,10 +60,10 @@ export default function RoyaltyCalculator() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
+    <div className="container">
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label className="form-label">
             Water Gel (kg)
           </label>
           <input
@@ -74,12 +74,12 @@ export default function RoyaltyCalculator() {
             required
             min="0"
             step="0.01"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="form-input"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="form-group">
+          <label className="form-label">
             NH₄NO₃ (kg)
           </label>
           <input
@@ -90,12 +90,12 @@ export default function RoyaltyCalculator() {
             required
             min="0"
             step="0.01"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="form-input"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="form-group">
+          <label className="form-label">
             Powder Factor (kg/m³)
           </label>
           <input
@@ -106,28 +106,28 @@ export default function RoyaltyCalculator() {
             required
             min="0.01"
             step="0.01"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="form-input"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+          className="form-button"
         >
           Calculate Royalty
         </button>
       </form>
 
       {result && (
-        <div className="mt-8 p-4 border rounded-lg bg-gray-50">
-          <h2 className="text-xl font-bold mb-4">Calculation Results</h2>
-          <div className="space-y-2">
-            <p>Total Explosive Quantity (TEQ): {result.teq.toFixed(2)} kg</p>
-            <p>Basic Volume: {result.basicVolume.toFixed(2)} m³</p>
-            <p>Expanded Volume: {result.expandedVolume.toFixed(2)} m³</p>
-            <p>Royalty: Rs. {result.royalty.toFixed(2)}</p>
-            <p>Royalty with SSCL: Rs. {result.royaltyWithSSCL.toFixed(2)}</p>
-            <p>Total Amount (with VAT): Rs. {result.totalAmount.toFixed(2)}</p>
+        <div className="result-container">
+          <h2 className="result-title">Calculation Results</h2>
+          <div>
+            <p className="result-item">Total Explosive Quantity (TEQ): {result.teq.toFixed(2)} kg</p>
+            <p className="result-item">Basic Volume: {result.basicVolume.toFixed(2)} m³</p>
+            <p className="result-item">Expanded Volume: {result.expandedVolume.toFixed(2)} m³</p>
+            <p className="result-item">Royalty: Rs. {result.royalty.toFixed(2)}</p>
+            <p className="result-item">Royalty with SSCL: Rs. {result.royaltyWithSSCL.toFixed(2)}</p>
+            <p className="result-item">Total Amount (with VAT): Rs. {result.totalAmount.toFixed(2)}</p>
           </div>
         </div>
       )}
