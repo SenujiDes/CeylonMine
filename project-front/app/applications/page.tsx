@@ -5,7 +5,7 @@ import Layout from '../components/Layout';
 import Link from 'next/link';
 
 interface Application {
-  id: number;
+  id: string;
   created_at: string;
   applicant_name: string;
   village_name: string;
@@ -57,15 +57,15 @@ export default function ApplicationsPage() {
     switch (status.toLowerCase()) {
       case 'approved':
         return 'bg-green-100 text-green-800';
-      case 'rejected':
+      case 'consulting':
         return 'bg-red-100 text-red-800';
-      case 'under_review':
+      case 'verifying':
         return 'bg-blue-100 text-blue-800';
-      case 'additional_info':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'pending':
-      default:
+      case 'reviewing':
         return 'bg-gray-100 text-gray-800';
+      case 'submitted':
+      default:
+        return 'bg-yellow-100 text-yellow-800';
     }
   };
 
@@ -88,7 +88,6 @@ export default function ApplicationsPage() {
                   <th className="text-left py-4 px-6">Applicant Name</th>
                   <th className="text-left py-4 px-6">Location</th>
                   <th className="text-left py-4 px-6">Category</th>
-                  <th className="text-left py-4 px-6">Period of Validity</th>
                   <th className="text-left py-4 px-6">Status</th>
                   <th className="text-left py-4 px-6">Actions</th>
                 </tr>
@@ -96,11 +95,10 @@ export default function ApplicationsPage() {
               <tbody>
                 {applications.map((app) => (
                   <tr key={app.id} className="border-b border-[var(--foreground)] opacity-70">
-                    <td className="py-4 px-6">{app.id}</td>
+                    <td className="py-4 px-6">#{app.id.slice(0, 8)}</td>
                     <td className="py-4 px-6">{app.applicant_name}</td>
                     <td className="py-4 px-6">{app.village_name}</td>
                     <td className="py-4 px-6">{app.category}</td>
-                    <td className="py-4 px-6">{app.period_of_validity}</td>
                     <td className="py-4 px-6">
                       <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(app.status)}`}>
                         {app.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
@@ -109,7 +107,7 @@ export default function ApplicationsPage() {
                     <td className="py-4 px-6">
                       <Link 
                         href={`/applications/${app.id}`}
-                        className="text-[var(--foreground)] hover:opacity-80 transition-opacity"
+                        className= "bg-[var(--foreground)] hover:opacity-80 transition-opacity text-sm text-white px-2 py-2 rounded-md"
                       >
                         View Details
                       </Link>
