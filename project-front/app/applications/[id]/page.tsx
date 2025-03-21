@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Layout from '../../components/Layout';
+import Link from 'next/link';
 
 interface Document {
   id: string;
@@ -18,7 +19,7 @@ interface Comment {
 }
 
 interface Application {
-  id: number;
+  id: string;
   exploration_license_no: string;
   applicant_name: string;
   national_id: string;
@@ -191,11 +192,11 @@ export default function ApplicationDetails() {
               </div>
               <div>
                 <span className="text-sm opacity-70">Articles of Association</span>
-                <p className="font-medium"><a href={application.articles_of_association} target="_blank" rel="noopener noreferrer">{application.articles_of_association}</a></p>
+                <p className="font-medium hover:text-blue-500"><a href={application.articles_of_association} target="_blank" rel="noopener noreferrer">View</a></p>
               </div>
               <div>
                 <span className="text-sm opacity-70">Annual Reports</span>
-                <p className="font-medium"><a href={application.annual_reports} target="_blank" rel="noopener noreferrer">{application.annual_reports}</a></p>
+                <p className="font-medium hover:text-blue-500"><a href={application.annual_reports} target="_blank" rel="noopener noreferrer">View</a></p>
               </div>
             </div>
           </div>
@@ -205,15 +206,15 @@ export default function ApplicationDetails() {
             <div className="space-y-3">
               <div>
                 <span className="text-sm opacity-70">Licensed Boundary Survey</span>
-                <p className="font-medium"><a href={application.licensed_boundary_survey} target="_blank" rel="noopener noreferrer">{application.licensed_boundary_survey}</a></p>
+                <p className="font-medium hover:text-blue-500"><a href={application.licensed_boundary_survey} target="_blank" rel="noopener noreferrer">View</a></p>
               </div>
               <div>
                 <span className="text-sm opacity-70">Project Team Credentials</span>
-                <p className="font-medium"><a href={application.project_team_credentials} target="_blank" rel="noopener noreferrer">{application.project_team_credentials}</a></p>
+                <p className="font-medium hover:text-blue-500"><a href={application.project_team_credentials} target="_blank" rel="noopener noreferrer">View</a></p>
               </div>
               <div>
                 <span className="text-sm opacity-70">Economic Viability Report</span>
-                <p className="font-medium"><a href={application.economic_viability_report} target="_blank" rel="noopener noreferrer">{application.economic_viability_report}</a></p>
+                <p className="font-medium hover:text-blue-500"><a href={application.economic_viability_report} target="_blank" rel="noopener noreferrer">View</a></p>
               </div>
             </div>
           </div>
@@ -279,7 +280,7 @@ export default function ApplicationDetails() {
             <div className="space-y-3">
               <div>
                 <span className="text-sm opacity-70">Mine Restoration Plan</span>
-                <p className="font-medium"><a href={application.mine_restoration_plan} target="_blank" rel="noopener noreferrer">{application.mine_restoration_plan}</a></p>
+                <p className="font-medium hover:text-blue-500"><a href={application.mine_restoration_plan} target="_blank" rel="noopener noreferrer">View</a></p>
               </div>
               <div>
                 <span className="text-sm opacity-70">Minerals to be Mined</span>
@@ -291,15 +292,15 @@ export default function ApplicationDetails() {
               </div>
               <div>
                 <span className="text-sm opacity-70">License Fee Receipt</span>
-                <p className="font-medium"><a href={application.license_fee_receipt} target="_blank" rel="noopener noreferrer">{application.license_fee_receipt}</a></p>
+                <p className="font-medium hover:text-blue-500"><a href={application.license_fee_receipt} target="_blank" rel="noopener noreferrer">View</a></p>
               </div>
               <div>
                 <span className="text-sm opacity-70">Applicant Signature</span>
-                <p className="font-medium hover:text-blue-500"><a href={application.applicant_signature} target="_blank" rel="noopener noreferrer">{application.applicant_signature}</a></p>
+                <p className="font-medium hover:text-blue-500"><a href={application.applicant_signature} target="_blank" rel="noopener noreferrer">View</a></p>
               </div>
               <div>
                 <span className="text-sm opacity-70">Mine Manager Signature</span>
-                <p className="font-medium hover:text-blue-500"><a href={application.mine_manager_signature} target="_blank" rel="noopener noreferrer">{application.mine_manager_signature}</a></p>
+                <p className="font-medium hover:text-blue-500"><a href={application.mine_manager_signature} target="_blank" rel="noopener noreferrer">View</a></p>
               </div>
             </div>
           </div>
@@ -311,13 +312,17 @@ export default function ApplicationDetails() {
                 <span className="text-sm opacity-70">Current Status</span>
                 <p className="font-medium">
                   <span className={`px-3 py-1 rounded-full text-sm ${
-                    application.status === 'pending'
+                    application.status === 'submitted'
                       ? 'bg-yellow-100 text-yellow-800'
-                      : application.status === 'approved'
+                      : application.status === 'reviewing'
+                      ? 'bg-blue-100 text-blue-800'
+                      : application.status === 'verifying'
                       ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
+                      : application.status === 'consulting'
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-gray-100 text-gray-800'
                   }`}>
-                    {application.status}
+                    {application.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </span>
                 </p>
               </div>
@@ -326,7 +331,11 @@ export default function ApplicationDetails() {
                 <p className="font-medium">{new Date(application.submission_date).toLocaleDateString()}</p>
               </div>
               <div className="flex justify-center">
-                <a href="/status" className="bg-[var(--foreground)] hover:opacity-80 transition-opacity text-sm text-white px-4 py-2 rounded-md">Update</a>
+                <Link href={`/status/${application.id}`}
+                className="bg-[var(--foreground)] hover:opacity-80 transition-opacity text-sm text-white px-4 py-2 rounded-md"
+                >
+                  Update
+                </Link>
               </div>
             </div>
           </div>
