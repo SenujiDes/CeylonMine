@@ -89,12 +89,6 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     // Step 4 (continued): Apply VAT
     const totalAmountWithVat = royaltyWithSscl * VAT_MULTIPLIER;
 
-    // Generate warning message for abnormal powder factor
-    let warningMessage;
-    if (inputs.powder_factor < 0.2 || inputs.powder_factor > 0.8) {
-      warningMessage = "The powder factor is outside the normal range (0.2 - 0.8). Please verify your inputs.";
-    }
-
     return {
       calculation_date: new Date().toISOString(),
       inputs: {
@@ -114,8 +108,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
         royalty_rate_per_cubic_meter: ROYALTY_RATE_PER_CUBIC_METER,
         sscl_rate: SSCL_RATE,
         vat_rate: VAT_RATE
-      },
-      warning_message: warningMessage
+      }
     };
   };
 
@@ -144,17 +137,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
       setRoyaltyData(data);
       onCalculated(data);
       
-      if (data.warning_message) {
-        toast(data.warning_message, {
-          icon: '⚠️',
-          style: {
-            backgroundColor: '#FEF3C7',
-            color: '#92400E'
-          }
-        });
-      } else {
-        toast.success('Royalty calculated successfully!');
-      }
+      toast.success('Royalty calculated successfully!');
     } catch (error) {
       console.error('Error calculating royalty:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to calculate royalty. Please try again.');
