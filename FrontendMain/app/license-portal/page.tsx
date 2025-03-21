@@ -8,7 +8,7 @@
 // import { motion } from 'framer-motion';
 // import * as THREE from 'three';
 
-// // New ArrowIcon component for FAQ items
+// // ArrowIcon component
 // const ArrowIcon = ({ rotated }) => (
 //   <svg
 //     className={`w-6 h-6 transform transition-transform duration-200 ${rotated ? 'rotate-180' : ''}`}
@@ -23,7 +23,8 @@
 
 // export default function LicensePortal() {
 //   const [isDarkMode, setIsDarkMode] = useState(true);
-//   const [expandedFaq, setExpandedFaq] = useState(null);
+//   const [expandedCase, setExpandedCase] = useState(null);
+//   const [selectedStory, setSelectedStory] = useState(null);
 //   const canvasRef = useRef(null);
 
 //   // Initialize theme from localStorage on component mount
@@ -39,19 +40,6 @@
 //     } else {
 //       document.documentElement.classList.remove('dark');
 //     }
-//   }, []);
-
-//   // Listen for theme change events from Navbar
-//   useEffect(() => {
-//     const handleThemeChange = (event) => {
-//       setIsDarkMode(event.detail.isDarkMode);
-//     };
-
-//     window.addEventListener('themeChange', handleThemeChange);
-
-//     return () => {
-//       window.removeEventListener('themeChange', handleThemeChange);
-//     };
 //   }, []);
 
 //   // Toggle dark/light mode
@@ -74,7 +62,7 @@
 //     window.dispatchEvent(event);
 //   };
 
-//   // Updated licenses data with refined icons
+//   // Licenses data
 //   const licenses = [
 //     {
 //       id: 1,
@@ -110,51 +98,52 @@
 //     }
 //   ];
 
-//   // FAQ data (unchanged)
-//   const faqs = [
+//   // Success stories data
+//   const successStories = [
 //     {
-//       question: "How long does the application process take?",
-//       answer: "Most applications are processed within 5-10 business days. Complex applications may take longer depending on the scope and scale of your intended mining operations. We recommend applying at least 30 days before your intended start date."
+//       title: "Sierra Gold Mining Corp",
+//       region: "Western Mountains",
+//       license: "Type C License",
+//       description: "Achieved a 40% increase in operational efficiency while reducing environmental impact by 35% through our comprehensive licensing framework.",
+//       fullCaseStudy: "Detailed case study about Sierra Gold Mining Corp's success story..."
 //     },
 //     {
-//       question: "What documents do I need to apply?",
-//       answer: "You'll need proof of identity, proof of mining qualifications, site assessment documents, environmental impact statements, safety protocols documentation, and insurance certificates. All documents should be uploaded in PDF format."
+//       title: "Blue Ocean Minerals",
+//       region: "Coastal Lowlands",
+//       license: "Type B License",
+//       description: "Streamlined their medium-scale operations, reducing approval and compliance time by 60%.",
+//       fullCaseStudy: "Detailed case study about Blue Ocean Minerals' success story..."
 //     },
 //     {
-//       question: "Can I upgrade my license type later?",
-//       answer: "Yes, you can apply for an upgrade at any time through the portal. The upgrade process typically takes 3-5 business days and requires documentation of expanded operations. There may be additional fees associated with license upgrades."
+//       title: "Northern Light Rare Metals",
+//       region: "Arctic Circle",
+//       license: "Type D License",
+//       description: "Secured expedited approval for specialized rare earth mineral extraction.",
+//       fullCaseStudy: "Detailed case study about Northern Light Rare Metals' success story..."
 //     },
 //     {
-//       question: "Are there annual renewal requirements?",
-//       answer: "All licenses require annual renewal with updated documentation and safety certifications. You'll receive automatic notifications 60, 30, and 15 days before your renewal date. Renewal fees vary by license type and operational scale."
-//     },
-//     {
-//       question: "What are the operational restrictions?",
-//       answer: "Each license type has specific operational restrictions regarding area size, depth, extraction methods, and environmental protection requirements. These are detailed in the full license documentation available after application submission."
-//     },
-//     {
-//       question: "How are fees calculated?",
-//       answer: "License fees are calculated based on operation size, mineral type, extraction volume, and environmental impact factors. Our fee calculator is available in the portal to provide estimates before application."
+//       title: "Greenfield Mining Cooperative",
+//       region: "Central Valley",
+//       license: "Type A License",
+//       description: "A small-scale community-based operation that achieved full compliance within 30 days.",
+//       fullCaseStudy: "Detailed case study about Greenfield Mining Cooperative's success story..."
 //     }
 //   ];
 
-//   // Simplified 3D background effect with fewer particle colors
+//   // Enhanced 3D background effect (same as homepage)
 //   useEffect(() => {
 //     if (!canvasRef.current) return;
 
-//     // Set up Three.js scene with background based on theme
 //     const scene = new THREE.Scene();
-//     scene.background = new THREE.Color(isDarkMode ? 0x000000 : 0xf0f0f0);
-
 //     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 //     const renderer = new THREE.WebGLRenderer({
 //       canvas: canvasRef.current,
 //       alpha: true,
+//       antialias: true,
 //     });
 //     renderer.setSize(window.innerWidth, window.innerHeight);
 //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-//     // Create particle system with a single color scheme
 //     const particlesGeometry = new THREE.BufferGeometry();
 //     const particlesCount = 5000;
 //     const posArray = new Float32Array(particlesCount * 3);
@@ -194,8 +183,8 @@
 
 //     const animate = () => {
 //       requestAnimationFrame(animate);
-//       particlesMesh.rotation.x += 0.0002 + mouseY * 0.0002; // Slowed down rotation
-//       particlesMesh.rotation.y += 0.0002 + mouseX * 0.0002; // Slowed down rotation
+//       particlesMesh.rotation.x += 0.0002 + mouseY * 0.0002;
+//       particlesMesh.rotation.y += 0.0002 + mouseX * 0.0002;
 //       renderer.render(scene, camera);
 //     };
 //     animate();
@@ -219,21 +208,12 @@
 //     };
 //   }, [isDarkMode]);
 
-//   // Animation variants
-//   const fadeInUp = {
-//     hidden: { opacity: 0, y: 20 },
-//     visible: { opacity: 1, y: 0 }
-//   };
-
 //   return (
 //     <div className={`relative min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'} overflow-hidden`}>
 //       <Navbar />
 
 //       {/* 3D Background Canvas */}
-//       <canvas
-//         ref={canvasRef}
-//         className="fixed inset-0 w-full h-full z-0"
-//       />
+//       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-0" />
 
 //       {/* Dark/Light Mode Toggle */}
 //       <motion.button
@@ -247,28 +227,19 @@
 //         {isDarkMode ? '🌞' : '🌙'}
 //       </motion.button>
 
-//       {/* Hero Section */}
+//       {/* Main Content */}
 //       <main className="relative z-10 pt-28 pb-16">
 //         <div className="container mx-auto px-4">
+//           {/* Hero Section */}
 //           <div className="text-center mb-20">
-//             <motion.div
-//               className="inline-block mb-3"
-//               initial={{ opacity: 0, scale: 0 }}
-//               animate={{ opacity: 1, scale: 1 }}
-//               transition={{ duration: 0.6, type: "spring" }}
-//             >
-//               <div className="text-5xl">{isDarkMode ? '' : ''}</div>
-//             </motion.div>
-
 //             <motion.h1
 //               className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight"
 //               initial={{ opacity: 0, y: 20 }}
 //               animate={{ opacity: 1, y: 0 }}
 //               transition={{ duration: 0.8 }}
 //             >
-//               <span className={`${isDarkMode ? 'text-white' : 'text-amber-500'}`}>LICENSE PORTAL</span>
+//               LICENSE PORTAL
 //             </motion.h1>
-
 //             <motion.p
 //               className="text-xl md:text-2xl max-w-3xl mx-auto"
 //               initial={{ opacity: 0, y: 20 }}
@@ -277,73 +248,46 @@
 //             >
 //               Streamlined management of mining permits and licenses for optimal operational efficiency.
 //             </motion.p>
-
-//             <motion.div
-//               className="mt-8"
-//               initial={{ opacity: 0, y: 20 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               transition={{ duration: 0.8, delay: 0.4 }}
-//             >
-//               <button className="bg-amber-500 hover:bg-amber-600 text-white py-3 px-8 rounded-full text-lg font-medium transition-all shadow-lg transform hover:-translate-y-1">
-//                 Get Started Now
-//               </button>
-//             </motion.div>
 //           </div>
-
-//           {/* Progress Timeline */}
-//           <motion.div
-//             className="max-w-4xl mx-auto mb-24"
-//             initial={{ opacity: 0 }}
-//             whileInView={{ opacity: 1 }}
-//             transition={{ duration: 0.8 }}
-//             viewport={{ once: true }}
-//           >
-//             <div className="flex justify-between relative">
-//               <div className="absolute top-4 left-0 right-0 h-1 bg-gray-600 opacity-30"></div>
-//               {['Apply', 'Review', 'Approve', 'Issue'].map((step, index) => (
-//                 <div key={index} className="relative z-10 flex flex-col items-center">
-//                   <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold">
-//                     {index + 1}
-//                   </div>
-//                   <p className="mt-2 font-medium">{step}</p>
-//                 </div>
-//               ))}
-//             </div>
-//           </motion.div>
 
 //           {/* License Cards Section */}
 //           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
 //             {licenses.map((license, index) => (
 //               <Link href={license.path} key={license.id} legacyBehavior>
-//                 <a>
+//                 <a className="block">
 //                   <motion.div
-//                     className={`rounded-xl overflow-hidden h-full ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'} border border-opacity-10 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} shadow-xl transition-all`}
+//                     className={`rounded-xl overflow-hidden h-full ${isDarkMode ? 'bg-gray-800/80 hover:bg-gray-700/90' : 'bg-white/90 hover:bg-gray-50/95'} border border-opacity-10 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} shadow-xl transition-all backdrop-blur-sm`}
 //                     initial={{ opacity: 0, y: 20 }}
 //                     whileInView={{ opacity: 1, y: 0 }}
 //                     transition={{ duration: 0.5, delay: index * 0.1 }}
 //                     viewport={{ once: true }}
-//                     whileHover={{
-//                       y: -5,
-//                       boxShadow: isDarkMode ? "0 20px 30px rgba(0, 0, 0, 0.3)" : "0 20px 30px rgba(0, 0, 0, 0.1)"
-//                     }}
 //                   >
-//                     <div className={`${license.color} h-2 w-full`}></div>
+//                     <div className={`${license.color} h-2 w-full`} />
 //                     <div className="p-8">
 //                       <h3 className="text-2xl font-bold mb-3">{license.name}</h3>
 //                       <p className={`mb-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{license.description}</p>
-
 //                       <ul className={`mb-8 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
 //                         {license.features.map((feature, i) => (
-//                           <li key={i} className="flex items-start mb-2">
+//                           <motion.li 
+//                             key={i} 
+//                             className="flex items-start mb-2"
+//                             initial={{ opacity: 0, x: -10 }}
+//                             whileInView={{ opacity: 1, x: 0 }}
+//                             transition={{ delay: 0.1 * i, duration: 0.3 }}
+//                             viewport={{ once: true }}
+//                           >
 //                             <span className="text-green-500 mr-2">✓</span>
 //                             <span>{feature}</span>
-//                           </li>
+//                           </motion.li>
 //                         ))}
 //                       </ul>
-
-//                       <button className={`${license.color} text-white py-3 px-8 rounded-md text-lg font-medium transition-all hover:scale-105`}>
+//                       <motion.button 
+//                         className={`${license.color} text-white py-3 px-8 rounded-md text-lg font-medium transition-all relative overflow-hidden`}
+//                         whileHover={{ scale: 1.05 }}
+//                         whileTap={{ scale: 0.98 }}
+//                       >
 //                         Learn More
-//                       </button>
+//                       </motion.button>
 //                     </div>
 //                   </motion.div>
 //                 </a>
@@ -351,54 +295,47 @@
 //             ))}
 //           </div>
 
-//           {/* FAQ Section */}
+          
+//         </div>
+//       </main>
+
+//       {/* Case Study Modal */}
+//       {selectedStory && (
+//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
 //           <motion.div
-//             className="max-w-4xl mx-auto"
-//             initial={{ opacity: 0 }}
-//             whileInView={{ opacity: 1 }}
-//             transition={{ duration: 0.8 }}
-//             viewport={{ once: true }}
+//             className={`rounded-xl overflow-hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'} max-w-2xl w-full`}
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
 //           >
-//             <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-//             <div className="space-y-4">
-//               {faqs.map((faq, index) => (
-//                 <motion.div
-//                   key={index}
-//                   className={`rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} shadow-lg`}
-//                   initial={{ opacity: 0, y: 20 }}
-//                   whileInView={{ opacity: 1, y: 0 }}
-//                   transition={{ duration: 0.5, delay: index * 0.1 }}
-//                   viewport={{ once: true }}
-//                 >
-//                   <button
-//                     onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-//                     className="w-full text-left p-6 focus:outline-none"
-//                   >
-//                     <div className="flex justify-between items-center">
-//                       <h3 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{faq.question}</h3>
-//                       <ArrowIcon rotated={expandedFaq === index} />
-//                     </div>
-//                   </button>
-//                   {expandedFaq === index && (
-//                     <motion.div
-//                       initial={{ opacity: 0, height: 0 }}
-//                       animate={{ opacity: 1, height: 'auto' }}
-//                       exit={{ opacity: 0, height: 0 }}
-//                       className={`px-6 pb-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
-//                     >
-//                       {faq.answer}
-//                     </motion.div>
-//                   )}
-//                 </motion.div>
-//               ))}
+//             <div className="p-6">
+//               <h3 className="text-2xl font-bold mb-4">{selectedStory.title}</h3>
+//               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{selectedStory.fullCaseStudy}</p>
+//               <button
+//                 className="mt-6 text-amber-500 font-medium hover:text-amber-600"
+//                 onClick={() => setSelectedStory(null)}
+//               >
+//                 Close
+//               </button>
 //             </div>
 //           </motion.div>
 //         </div>
-//       </main>
+//       )}
+
+//       {/* Footer Section */}
+//       <footer className="mt-20 py-8 border-t border-opacity-10 text-center">
+//         <motion.p
+//           className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
+//           initial={{ opacity: 0, y: 20 }}
+//           whileInView={{ opacity: 1, y: 0 }}
+//           transition={{ duration: 0.8 }}
+//           viewport={{ once: true }}
+//         >
+//           &copy; {new Date().getFullYear()} License Portal. All rights reserved.
+//         </motion.p>
+//       </footer>
 //     </div>
 //   );
 // }
-
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -439,6 +376,24 @@ export default function LicensePortal() {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    
+    // Listen for theme changes from other components
+    const handleThemeChange = (event) => {
+      setIsDarkMode(event.detail.isDarkMode);
+      
+      // Apply to html element
+      if (event.detail.isDarkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    };
+    
+    window.addEventListener('themeChange', handleThemeChange);
+    
+    return () => {
+      window.removeEventListener('themeChange', handleThemeChange);
+    };
   }, []);
 
   // Toggle dark/light mode
@@ -588,13 +543,18 @@ export default function LicensePortal() {
     };
     animate();
 
+    // Function to update particle color based on theme
     const updateParticleColor = () => {
       particlesMaterial.color.set(isDarkMode ? 0xD2B48C : 0xFFD700);
     };
 
-    const themeChangeListener = () => {
-      updateParticleColor();
+    // Listen for theme changes
+    const themeChangeListener = (event) => {
+      if (event.detail && event.detail.hasOwnProperty('isDarkMode')) {
+        updateParticleColor();
+      }
     };
+    
     window.addEventListener('themeChange', themeChangeListener);
 
     return () => {
@@ -695,55 +655,61 @@ export default function LicensePortal() {
           </div>
 
           {/* Success Stories Section */}
-          <motion.div
-            className="max-w-6xl mx-auto"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl font-bold text-center mb-12">Success Stories</h2>
+          <div className="mt-24 mb-20">
+            <div className="text-center mb-16">
+              <motion.h2
+                className="text-4xl md:text-5xl font-bold mb-6"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                SUCCESS STORIES
+              </motion.h2>
+              <motion.p
+                className={`text-lg md:text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                See how our licensing framework has helped businesses achieve their goals while maintaining regulatory compliance.
+              </motion.p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {successStories.map((story, index) => (
                 <motion.div
                   key={index}
-                  className={`rounded-xl overflow-hidden ${isDarkMode ? 'bg-gray-800/80' : 'bg-white/90'} border border-opacity-10 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} shadow-xl backdrop-blur-sm`}
+                  className={`p-8 rounded-xl ${isDarkMode ? 'bg-gray-800/80' : 'bg-white/90'} border border-opacity-10 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} shadow-lg backdrop-blur-sm`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <div className="relative h-48 bg-gradient-to-r from-amber-600 to-amber-400 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 z-10" />
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-5xl text-white z-20">
-                      ⛏️
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4 backdrop-blur-sm bg-black/40 z-20">
-                      <h3 className="text-white text-xl font-bold">{story.title}</h3>
-                      <div className="flex items-center text-sm text-amber-300">
-                        <span>{story.region}</span>
-                        <span className="mx-2">•</span>
-                        <span>{story.license}</span>
-                      </div>
-                    </div>
+                  <h3 className="text-2xl font-bold mb-2">{story.title}</h3>
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'}`}>
+                      {story.region}
+                    </span>
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-amber-800 text-amber-100' : 'bg-amber-100 text-amber-800'}`}>
+                      {story.license}
+                    </span>
                   </div>
-                  <div className="p-6">
-                    <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{story.description}</p>
-                    <motion.button
-                      className="mt-4 text-amber-500 font-medium hover:text-amber-600 flex items-center"
-                      whileHover={{ x: 5 }}
-                      onClick={() => setSelectedStory(story)}
-                    >
-                      Read full case study
-                      <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </motion.button>
-                  </div>
+                  <p className={`mb-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {story.description}
+                  </p>
+                  <button
+                    onClick={() => setSelectedStory(story)}
+                    className="text-amber-500 font-medium hover:text-amber-600 transition-colors"
+                  >
+                    Read full case study →
+                  </button>
                 </motion.div>
               ))}
             </div>
-          </motion.div>
+          </div>
+          
         </div>
       </main>
 
@@ -770,7 +736,7 @@ export default function LicensePortal() {
       )}
 
       {/* Footer Section */}
-      <footer className="mt-20 py-8 border-t border-opacity-10 text-center">
+      <footer className={`mt-20 py-8 border-t border-opacity-10 ${isDarkMode ? 'border-gray-800' : 'border-gray-200'} text-center`}>
         <motion.p
           className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
           initial={{ opacity: 0, y: 20 }}
