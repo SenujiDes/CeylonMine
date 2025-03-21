@@ -90,7 +90,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {[
               ['Applications', '/applications'],
               ['Royalty', '/royalty'],
-              ['Status', '/status'],
               ['Complaints', '/complaints'],
               ['Users', '/users'],
               ['Map', '/mapLocations']
@@ -108,7 +107,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             ))}
             <button
               onClick={handleLogout}
-              className="text-red-500 hover:text-red-600 transition-colors"
+              className="text-red-500 hover:text-red-700 transition-colors"
             >
               Logout
             </button>
