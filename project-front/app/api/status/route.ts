@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     // First verify the application exists
     const { data: exists, error: checkError } = await supabase
-      .from('applications')
+      .from('application')
       .select('*')
       .eq('id', applicationId)
       .single();
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
     // Update the application status
     const { data: updateData, error: updateError } = await supabase
-      .from('applications')
+      .from('application')
       .update({ 
         status: newStatus.toLowerCase() 
       })
