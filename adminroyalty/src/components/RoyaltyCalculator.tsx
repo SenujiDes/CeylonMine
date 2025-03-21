@@ -64,27 +64,29 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     nh4no3: number;
     powder_factor: number;
   }): RoyaltyData => {
-    // Constants for calculation - you may adjust these based on your requirements
-    const ROYALTY_RATE_PER_CUBIC_METER = 25; // LKR per cubic meter
-    const SSCL_RATE = "7.5%";
-    const VAT_RATE = "15%";
-    const SSCL_MULTIPLIER = 1.075; // 7.5% increase
-    const VAT_MULTIPLIER = 1.15; // 15% increase
+    // Constants for calculation based on the provided formula
+    const ROYALTY_RATE_PER_CUBIC_METER = 240; // LKR per cubic meter
+    const SSCL_RATE = "2.56%";
+    const VAT_RATE = "18%";
+    const SSCL_MULTIPLIER = 1.0256; // 2.56% increase
+    const VAT_MULTIPLIER = 1.18; // 18% increase
 
-    // Calculate total explosive quantity
-    const totalExplosiveQuantity = inputs.water_gel + inputs.nh4no3;
+    // Step 1: Calculate Total Explosive Quantity with the correct formula
+    const totalExplosiveQuantity = (inputs.water_gel * 1.2) + inputs.nh4no3;
     
-    // Calculate blasted rock volume using powder factor
-    // Powder factor is kg of explosives per cubic meter
-    const blastedRockVolume = totalExplosiveQuantity / inputs.powder_factor;
+    // Step 2: Calculate basic blasted rock volume using powder factor
+    const basicVolume = totalExplosiveQuantity / inputs.powder_factor;
     
-    // Calculate base royalty
+    // Step 2 (continued): Calculate expanded blasted rock volume
+    const blastedRockVolume = (totalExplosiveQuantity * 1.6) / (inputs.powder_factor * 2.83);
+    
+    // Step 3: Calculate base royalty
     const baseRoyalty = blastedRockVolume * ROYALTY_RATE_PER_CUBIC_METER;
     
-    // Apply SSCL rate
+    // Step 4: Apply SSCL rate
     const royaltyWithSscl = baseRoyalty * SSCL_MULTIPLIER;
     
-    // Apply VAT
+    // Step 4 (continued): Apply VAT
     const totalAmountWithVat = royaltyWithSscl * VAT_MULTIPLIER;
 
     // Generate warning message for abnormal powder factor
@@ -102,7 +104,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
       },
       calculations: {
         total_explosive_quantity: totalExplosiveQuantity,
-        basic_volume: blastedRockVolume, // Same as blasted_rock_volume in this implementation
+        basic_volume: basicVolume,
         blasted_rock_volume: blastedRockVolume,
         base_royalty: baseRoyalty,
         royalty_with_sscl: royaltyWithSscl,
