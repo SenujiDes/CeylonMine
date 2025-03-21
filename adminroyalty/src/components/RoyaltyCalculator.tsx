@@ -267,10 +267,12 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     const updatedCalculations = [...savedCalculations, newCalculation];
     localStorage.setItem('royaltyCalculations', JSON.stringify(updatedCalculations));
     
-    // Update the mining stats
+    // Update the mining stats - make sure payment_due_date is preserved
+    const currentDate = new Date().toISOString();
     onCalculated({
       ...royaltyData,
-      calculation_date: new Date().toISOString()
+      calculation_date: currentDate,
+      payment_due_date: royaltyData.payment_due_date // Ensure payment due date is passed
     });
     
     toast.success('Calculation saved successfully!');
