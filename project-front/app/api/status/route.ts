@@ -1,6 +1,36 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '../../utility/supabase';
 
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
+  console.log('Fetching application with ID:', id);
+
+  const { data: application, error } = await supabase
+    .from('application')
+    .select('id, status, comments(*)')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Supabase error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  console.log('Application data:', application);
+
+
+  const response = {
+    ...application
+  };
+
+  console.log('Final response:', response);
+  return NextResponse.json(response);
+}
+
+
 export async function POST(request: Request) {
   try {
     const { applicationId, newStatus, comments } = await request.json();
@@ -64,7 +94,7 @@ export async function POST(request: Request) {
 
     // Verify the update
     const { data: verifyData, error: verifyError } = await supabase
-      .from('applications')
+      .from('application')
       .select('*')
       .eq('id', applicationId)
       .single();
