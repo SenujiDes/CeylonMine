@@ -92,7 +92,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ['Royalty', '/royalty'],
               ['Complaints', '/complaints'],
               ['Users', '/users'],
-              ['Map', '/mapLocations']
+              ['Map', '/mapLocations'],
+              ['Responses', '/contact']
             ].map(([title, url]) => (
               <Link
                 key={url}
