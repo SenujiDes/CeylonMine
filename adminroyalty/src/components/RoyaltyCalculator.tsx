@@ -51,13 +51,13 @@ interface CalculationConstants {
   royaltyRatePerCubicMeter: number;
   ssclPercentage: number;
   vatPercentage: number;
-  paymentDueDays: number;
 }
 
 export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorProps) {
   const [waterGel, setWaterGel] = useState('');
   const [nh4no3, setNh4no3] = useState('');
   const [powderFactor, setPowderFactor] = useState('');
+  const [paymentDueDays, setPaymentDueDays] = useState('14');
   const [loading, setLoading] = useState(false);
   const [royaltyData, setRoyaltyData] = useState<RoyaltyData | null>(null);
   const [savedCalculations, setSavedCalculations] = useState<SavedCalculation[]>([]);
@@ -71,7 +71,6 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     royaltyRatePerCubicMeter: 240,
     ssclPercentage: 2.56,
     vatPercentage: 18,
-    paymentDueDays: 14,
   };
   
   // State for editable constants
@@ -88,6 +87,12 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     const savedConstants = localStorage.getItem('royaltyConstants');
     if (savedConstants) {
       setConstants(JSON.parse(savedConstants));
+    }
+    
+    // Load saved payment days if available
+    const savedPaymentDays = localStorage.getItem('paymentDueDays');
+    if (savedPaymentDays) {
+      setPaymentDueDays(savedPaymentDays);
     }
   }, []);
   
@@ -119,7 +124,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
   // Calculate the payment due date
   const calculateDueDate = (calculationDate: string): string => {
     const date = new Date(calculationDate);
-    date.setDate(date.getDate() + constants.paymentDueDays);
+    date.setDate(date.getDate() + parseInt(paymentDueDays, 10));
     return date.toISOString();
   };
 
@@ -275,6 +280,12 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     toast.success('Calculator reset');
   };
 
+  // Handle saving of payment due days
+  const handleSavePaymentDays = () => {
+    localStorage.setItem('paymentDueDays', paymentDueDays);
+    toast.success('Payment due days saved successfully!');
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -368,19 +379,6 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
                 className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Payment Due (Days)
-              </label>
-              <input
-                type="number"
-                step="1"
-                value={constants.paymentDueDays}
-                onChange={(e) => handleConstantChange('paymentDueDays', e.target.value)}
-                className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              />
-            </div>
           </div>
           
           <div className="mt-6 flex space-x-4">
@@ -401,7 +399,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
       )}
 
       <form onSubmit={handleCalculateRoyalty} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div>
             <label htmlFor="waterGel" className="block text-sm font-medium mb-2">
               Water Gel (kg)
@@ -445,6 +443,30 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
               className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               required
             />
+          </div>
+          
+          <div>
+            <label htmlFor="paymentDueDays" className="block text-sm font-medium mb-2">
+              Payment Due (Days)
+            </label>
+            <div className="flex">
+              <input
+                id="paymentDueDays"
+                type="number"
+                step="1"
+                value={paymentDueDays}
+                onChange={(e) => setPaymentDueDays(e.target.value)}
+                className="w-full px-4 py-2 rounded-l-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+              <button
+                type="button"
+                onClick={handleSavePaymentDays}
+                className="px-3 py-2 bg-green-600 hover:bg-green-700 rounded-r-md text-sm font-medium transition-colors"
+                title="Save payment days setting"
+              >
+                ✓
+              </button>
+            </div>
           </div>
         </div>
 
@@ -537,7 +559,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
                   <span>{new Date(royaltyData.payment_due_date).toLocaleDateString()}</span>
                 </p>
                 <p className="text-xs text-gray-400">
-                  Payment is due within {constants.paymentDueDays} days of calculation
+                  Payment is due within {paymentDueDays} days of calculation
                 </p>
               </div>
             </div>
