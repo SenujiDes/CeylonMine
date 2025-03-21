@@ -1,13 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-
-interface CalculatorInputs {
-  waterGel: number;
-  nh4no3: number;
-  powderFactor: number;
-}
 
 interface CalculationResult {
   teq: number;
@@ -20,69 +13,113 @@ interface CalculationResult {
 
 export default function RoyaltyCalculator() {
   const [result, setResult] = useState<CalculationResult | null>(null);
-  const { register, handleSubmit, formState: { errors } } = useForm<CalculatorInputs>();
+  const [formData, setFormData] = useState({
+    waterGel: '',
+    nh4no3: '',
+    powderFactor: ''
+  });
 
-  const onSubmit = async (data: CalculatorInputs) => {
-    try {
-      const response = await fetch('/api/calculateRoyalty', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      
-      const calculationResult = await response.json();
-      setResult(calculationResult);
-    } catch (error) {
-      console.error('Calculation failed:', error);
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const waterGel = parseFloat(formData.waterGel);
+    const nh4no3 = parseFloat(formData.nh4no3);
+    const powderFactor = parseFloat(formData.powderFactor);
+
+    // Constants
+    const waterGelMultiplier = 1.2;
+    const expansionFactor = 1.6;
+    const powderFactorMultiplier = 2.83;
+    const royaltyRate = 240;
+    const ssclRate = 0.0256;
+    const vatRate = 0.18;
+
+    // Calculations
+    const teq = (waterGel * waterGelMultiplier) + nh4no3;
+    const basicVolume = teq / powderFactor;
+    const expandedVolume = (teq * expansionFactor) / (powderFactor * powderFactorMultiplier);
+    const royalty = expandedVolume * royaltyRate;
+    const royaltyWithSSCL = royalty * (1 + ssclRate);
+    const totalAmount = royaltyWithSSCL * (1 + vatRate);
+
+    setResult({
+      teq,
+      basicVolume,
+      expandedVolume,
+      royalty,
+      royaltyWithSSCL,
+      totalAmount
+    });
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">Water Gel (kg)</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Water Gel (kg)
+          </label>
           <input
             type="number"
+            name="waterGel"
+            value={formData.waterGel}
+            onChange={handleChange}
+            required
+            min="0"
             step="0.01"
-            {...register('waterGel', { required: true, min: 0 })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
-          {errors.waterGel && <span className="text-red-500">This field is required</span>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium">NH₄NO₃ (kg)</label>
+          <label className="block text-sm font-medium text-gray-700">
+            NH₄NO₃ (kg)
+          </label>
           <input
             type="number"
+            name="nh4no3"
+            value={formData.nh4no3}
+            onChange={handleChange}
+            required
+            min="0"
             step="0.01"
-            {...register('nh4no3', { required: true, min: 0 })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
-          {errors.nh4no3 && <span className="text-red-500">This field is required</span>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Powder Factor (kg/m³)</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Powder Factor (kg/m³)
+          </label>
           <input
             type="number"
+            name="powderFactor"
+            value={formData.powderFactor}
+            onChange={handleChange}
+            required
+            min="0.01"
             step="0.01"
-            {...register('powderFactor', { required: true, min: 0.01 })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
-          {errors.powderFactor && <span className="text-red-500">Must be greater than 0</span>}
         </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
         >
           Calculate Royalty
         </button>
       </form>
 
       {result && (
-        <div className="mt-8 p-4 border rounded-lg">
+        <div className="mt-8 p-4 border rounded-lg bg-gray-50">
           <h2 className="text-xl font-bold mb-4">Calculation Results</h2>
           <div className="space-y-2">
             <p>Total Explosive Quantity (TEQ): {result.teq.toFixed(2)} kg</p>
