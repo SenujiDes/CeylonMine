@@ -1,119 +1,36 @@
-# Royalty Calculation Web App - Frontend
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Overview
+## Getting Started
 
-The **Rock Royalty Calculation Web App** is a specialized tool designed for the **Geological Survey and Mines Bureau (GSMB)** of Sri Lanka. It helps automate the calculation of royalties for metal quarry operations using various input parameters. This repository contains the frontend of the application, built with **Next.js** for a fast, modern, and responsive user experience.
+First, run the development server:
 
-## Tech Stack
-
-- **Next.js** - React-based framework for SSR and SSG
-- **TypeScript** - Strongly typed JavaScript for better maintainability
-- **Tailwind CSS** - Utility-first CSS framework for styling
-- **Axios** - For making API requests to the Flask backend
-- **React Hook Form** - For handling form inputs and validation
-- **Recharts** (Optional) - For data visualization
-
-## Features
-
-✅ **User Input Form** - Users can enter data such as Water Gel, NH₄NO₃, and Powder Factor.
-✅ **Real-Time Calculations** - API calls to Flask backend for immediate royalty calculations.
-✅ **Dynamic UI** - Updates values as users modify inputs.
-✅ **Download Reports** - Option to generate PDF/Excel reports.
-✅ **History Tracking** - Stores previous calculations for future reference.
-
-## Installation & Setup
-
-### Prerequisites
-
-Ensure you have the following installed:
-
-- Node.js (v16 or later)
-- npm, yarn, or pnpm
-
-### Clone the Repository
-
-```sh
-git clone https://github.com/your-repo/rock-royalty-frontend.git
-cd rock-royalty-frontend
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-### Install Dependencies
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-Using npm:
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```sh
-npm install
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Using yarn:
+## Learn More
 
-```sh
-yarn install
-```
+To learn more about Next.js, take a look at the following resources:
 
-Using pnpm:
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-```sh
-pnpm install
-```
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-### Run the Development Server
+## Deploy on Vercel
 
-```sh
-npm run dev  # or yarn dev, pnpm dev
-```
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the application in action.
-
-## Folder Structure
-
-```
-rock-royalty-frontend/
-├── public/          # Static assets
-├── src/
-│   ├── components/  # Reusable UI components
-│   ├── pages/       # Next.js pages
-│   ├── styles/      # Tailwind CSS global styles
-│   ├── utils/       # Utility functions
-│   ├── hooks/       # Custom React hooks
-│   ├── services/    # API request functions
-│   ├── config/      # Environment variables and constants
-│   ├── types/       # TypeScript interfaces
-├── .env.local       # Environment variables
-├── package.json     # Project dependencies and scripts
-├── tsconfig.json    # TypeScript configuration
-└── README.md        # Project documentation
-```
-
-## Environment Variables
-
-Create a `.env.local` file to store API keys and backend URLs:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-```
-
-## Deployment
-
-The recommended way to deploy a Next.js application is through **Vercel**.
-
-### Deploy on Vercel
-
-1. Install Vercel CLI: `npm install -g vercel`
-2. Run `vercel` in the project directory and follow the prompts.
-
-## Contributing
-
-We welcome contributions! To contribute:
-
-1. Fork the repository
-2. Create a new branch: `git checkout -b feature-name`
-3. Commit changes: `git commit -m 'Add new feature'`
-4. Push to the branch: `git push origin feature-name`
-5. Submit a Pull Request
-
----
-
-### 📌 Developed for **GSMB Sri Lanka** to streamline royalty calculations efficiently. 🚀
-
-
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
