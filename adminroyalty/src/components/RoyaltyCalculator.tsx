@@ -57,7 +57,10 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
   const [waterGel, setWaterGel] = useState('');
   const [nh4no3, setNh4no3] = useState('');
   const [powderFactor, setPowderFactor] = useState('');
-  const [paymentDueDays, setPaymentDueDays] = useState('14');
+  
+  // Replace payment due days with a specific date
+  const [paymentDueDate, setPaymentDueDate] = useState('');
+  
   const [loading, setLoading] = useState(false);
   const [royaltyData, setRoyaltyData] = useState<RoyaltyData | null>(null);
   const [savedCalculations, setSavedCalculations] = useState<SavedCalculation[]>([]);
@@ -89,10 +92,16 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
       setConstants(JSON.parse(savedConstants));
     }
     
-    // Load saved payment days if available
-    const savedPaymentDays = localStorage.getItem('paymentDueDays');
-    if (savedPaymentDays) {
-      setPaymentDueDays(savedPaymentDays);
+    // Set default payment due date to 14 days from now
+    const defaultDueDate = new Date();
+    defaultDueDate.setDate(defaultDueDate.getDate() + 14);
+    
+    // Load saved payment due date if available, otherwise use default
+    const savedDueDate = localStorage.getItem('paymentDueDate');
+    if (savedDueDate) {
+      setPaymentDueDate(savedDueDate);
+    } else {
+      setPaymentDueDate(defaultDueDate.toISOString().split('T')[0]);
     }
   }, []);
   
@@ -121,11 +130,9 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     toast.success('Constants reset to default values');
   };
 
-  // Calculate the payment due date
-  const calculateDueDate = (calculationDate: string): string => {
-    const date = new Date(calculationDate);
-    date.setDate(date.getDate() + parseInt(paymentDueDays, 10));
-    return date.toISOString();
+  // Now we'll use the actual selected date rather than calculating days
+  const getPaymentDueDate = (): string => {
+    return new Date(paymentDueDate).toISOString();
   };
 
   // Implement local royalty calculation function
@@ -163,7 +170,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     const totalAmountWithVat = royaltyWithSscl * VAT_MULTIPLIER;
 
     const calculationDate = new Date().toISOString();
-    const dueDate = calculateDueDate(calculationDate);
+    const dueDate = getPaymentDueDate();
 
     return {
       calculation_date: calculationDate,
@@ -280,10 +287,10 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     toast.success('Calculator reset');
   };
 
-  // Handle saving of payment due days
-  const handleSavePaymentDays = () => {
-    localStorage.setItem('paymentDueDays', paymentDueDays);
-    toast.success('Payment due days saved successfully!');
+  // Handle saving of payment due date
+  const handleSavePaymentDate = () => {
+    localStorage.setItem('paymentDueDate', paymentDueDate);
+    toast.success('Payment due date saved successfully!');
   };
 
   return (
@@ -446,23 +453,23 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
           </div>
           
           <div>
-            <label htmlFor="paymentDueDays" className="block text-sm font-medium mb-2">
-              Payment Due (Days)
+            <label htmlFor="paymentDueDate" className="block text-sm font-medium mb-2">
+              Payment Due Date
             </label>
             <div className="flex">
               <input
-                id="paymentDueDays"
-                type="number"
-                step="1"
-                value={paymentDueDays}
-                onChange={(e) => setPaymentDueDays(e.target.value)}
+                id="paymentDueDate"
+                type="date"
+                value={paymentDueDate}
+                onChange={(e) => setPaymentDueDate(e.target.value)}
                 className="w-full px-4 py-2 rounded-l-md bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                min={new Date().toISOString().split('T')[0]} // Can't select dates in the past
               />
               <button
                 type="button"
-                onClick={handleSavePaymentDays}
+                onClick={handleSavePaymentDate}
                 className="px-3 py-2 bg-green-600 hover:bg-green-700 rounded-r-md text-sm font-medium transition-colors"
-                title="Save payment days setting"
+                title="Save payment due date"
               >
                 ✓
               </button>
@@ -557,9 +564,6 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
                 <p className="flex justify-between text-amber-400">
                   <span>Payment Due Date:</span>
                   <span>{new Date(royaltyData.payment_due_date).toLocaleDateString()}</span>
-                </p>
-                <p className="text-xs text-gray-400">
-                  Payment is due within {paymentDueDays} days of calculation
                 </p>
               </div>
             </div>
