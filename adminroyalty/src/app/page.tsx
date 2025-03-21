@@ -70,6 +70,9 @@ export default function Home() {
               <Link href="/contact" className="text-sm text-gray-400 hover:text-white">
                 Contact
               </Link>
+              <Link href="/admin/login" className="text-sm text-gray-400 hover:text-white">
+                Admin
+              </Link>
             </div>
           </div>
         </div>

@@ -24,6 +24,7 @@ interface RoyaltyData {
     sscl_rate: string;
     vat_rate: string;
   };
+  warning_message?: string;
 }
 
 interface RoyaltyCalculatorProps {
@@ -71,7 +72,18 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
       
       setRoyaltyData(data);
       onCalculated(data);
-      toast.success('Royalty calculated successfully!');
+      
+      if (data.warning_message) {
+        toast(data.warning_message, {
+          icon: '⚠️',
+          style: {
+            backgroundColor: '#FEF3C7',
+            color: '#92400E'
+          }
+        });
+      } else {
+        toast.success('Royalty calculated successfully!');
+      }
     } catch (error) {
       console.error('Error calculating royalty:', error);
       toast.error('Failed to calculate royalty. Please try again.');
@@ -101,7 +113,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     };
 
     // Check if this exact calculation already exists
-    const isDuplicate = savedCalculations.some(calc => 
+    const isDuplicate = savedCalculations.some((calc: SavedCalculation) => 
       calc.waterGel === newCalculation.waterGel &&
       calc.nh4no3 === newCalculation.nh4no3 &&
       calc.powderFactor === newCalculation.powderFactor &&

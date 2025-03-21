@@ -1,0 +1,31 @@
+# Tests
+test/
+tests/
+__tests__/
+coverage/
+*.test.js
+*.spec.js
+
+# Documentation
+docs/
+doc/
+*.md
+*.markdown
+LICENSE
+
+# Configs
+.github/
+.travis.yml
+.editorconfig
+.eslintrc
+.jshintrc
+.prettierrc
+tsconfig.json
+*.config.js
+
+# Examples
+example/
+examples/
+
+# Source files (when lib or dist exists)
+src/ 

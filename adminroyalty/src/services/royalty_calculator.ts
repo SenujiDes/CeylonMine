@@ -1,3 +1,5 @@
+import { getSettings } from './settings_service';
+
 interface RoyaltyCalculationRequest {
   water_gel: number;
   nh4no3: number;
@@ -24,34 +26,45 @@ interface RoyaltyCalculationResponse {
     sscl_rate: string;
     vat_rate: string;
   };
+  warning_message?: string;
 }
-
-// Fixed rates - updated according to new formula
-const ROYALTY_RATE_PER_CUBIC_METER = 240; // LKR
-const SSCL_RATE = 0.0256; // 2.56%
-const VAT_RATE = 0.18; // 18%
 
 export const calculateRoyalty = async (data: RoyaltyCalculationRequest): Promise<RoyaltyCalculationResponse> => {
   try {
+    // Get the current settings
+    const settings = getSettings();
+    
+    // Store warning message if applicable
+    let warningMessage: string | undefined;
+    
+    // Handle division by zero for powder factor
+    if (data.powder_factor === 0) {
+      warningMessage = `Powder Factor cannot be zero. Using default value of ${settings.defaultPowderFactor} instead.`;
+      data.powder_factor = settings.defaultPowderFactor;
+    }
+    
     // Step 1: Calculate Total Explosive Quantity (TEQ)
-    const total_explosive_quantity = (data.water_gel * 1.2) + data.nh4no3;
+    const total_explosive_quantity = (data.water_gel * settings.waterGelMultiplier) + data.nh4no3;
     
     // Step 2: Calculate volumes
     const basic_volume = total_explosive_quantity / data.powder_factor;
     
     // Expanded Blasted Rock Volume calculation
-    const blasted_rock_volume = (total_explosive_quantity * 1.6) / (data.powder_factor * 2.83);
+    const blasted_rock_volume = (total_explosive_quantity * settings.expansionFactor) / 
+                               (data.powder_factor * settings.powderFactorMultiplier);
     const rounded_blasted_volume = Math.round(blasted_rock_volume * 100) / 100; // Rounded to 2 decimal places
     
     // Step 3: Calculate Royalty Fee
-    const base_royalty = rounded_blasted_volume * ROYALTY_RATE_PER_CUBIC_METER;
+    const base_royalty = rounded_blasted_volume * settings.royaltyRatePerM3;
     
     // Step 4: Apply Additional Charges
-    // SSCL (2.56%)
-    const royalty_with_sscl = base_royalty * (1 + SSCL_RATE);
+    // SSCL
+    const sscl_rate = settings.ssclPercentage / 100;
+    const royalty_with_sscl = base_royalty * (1 + sscl_rate);
     
-    // VAT (18%)
-    const total_amount_with_vat = royalty_with_sscl * (1 + VAT_RATE);
+    // VAT
+    const vat_rate = settings.vatPercentage / 100;
+    const total_amount_with_vat = royalty_with_sscl * (1 + vat_rate);
 
     // Create the calculation date
     const calculation_date = new Date().toISOString();
@@ -73,10 +86,11 @@ export const calculateRoyalty = async (data: RoyaltyCalculationRequest): Promise
         total_amount_with_vat
       },
       rates_applied: {
-        royalty_rate_per_cubic_meter: ROYALTY_RATE_PER_CUBIC_METER,
-        sscl_rate: `${SSCL_RATE * 100}%`,
-        vat_rate: `${VAT_RATE * 100}%`
-      }
+        royalty_rate_per_cubic_meter: settings.royaltyRatePerM3,
+        sscl_rate: `${settings.ssclPercentage}%`,
+        vat_rate: `${settings.vatPercentage}%`
+      },
+      ...(warningMessage && { warning_message: warningMessage })
     };
   } catch (error) {
     console.error('Calculation failed:', error);
