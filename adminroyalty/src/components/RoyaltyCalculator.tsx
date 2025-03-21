@@ -2,7 +2,6 @@
 
 import { useState, FormEvent, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { calculateRoyalty } from '@/services/royalty_calculator';
 
 interface RoyaltyData {
   calculation_date: string;
@@ -59,15 +58,85 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     }
   }, []);
 
+  // Implement local royalty calculation function
+  const calculateRoyaltyLocal = (inputs: {
+    water_gel: number;
+    nh4no3: number;
+    powder_factor: number;
+  }): RoyaltyData => {
+    // Constants for calculation - you may adjust these based on your requirements
+    const ROYALTY_RATE_PER_CUBIC_METER = 25; // LKR per cubic meter
+    const SSCL_RATE = "7.5%";
+    const VAT_RATE = "15%";
+    const SSCL_MULTIPLIER = 1.075; // 7.5% increase
+    const VAT_MULTIPLIER = 1.15; // 15% increase
+
+    // Calculate total explosive quantity
+    const totalExplosiveQuantity = inputs.water_gel + inputs.nh4no3;
+    
+    // Calculate blasted rock volume using powder factor
+    // Powder factor is kg of explosives per cubic meter
+    const blastedRockVolume = totalExplosiveQuantity / inputs.powder_factor;
+    
+    // Calculate base royalty
+    const baseRoyalty = blastedRockVolume * ROYALTY_RATE_PER_CUBIC_METER;
+    
+    // Apply SSCL rate
+    const royaltyWithSscl = baseRoyalty * SSCL_MULTIPLIER;
+    
+    // Apply VAT
+    const totalAmountWithVat = royaltyWithSscl * VAT_MULTIPLIER;
+
+    // Generate warning message for abnormal powder factor
+    let warningMessage;
+    if (inputs.powder_factor < 0.2 || inputs.powder_factor > 0.8) {
+      warningMessage = "The powder factor is outside the normal range (0.2 - 0.8). Please verify your inputs.";
+    }
+
+    return {
+      calculation_date: new Date().toISOString(),
+      inputs: {
+        water_gel_kg: inputs.water_gel,
+        nh4no3_kg: inputs.nh4no3,
+        powder_factor: inputs.powder_factor
+      },
+      calculations: {
+        total_explosive_quantity: totalExplosiveQuantity,
+        basic_volume: blastedRockVolume, // Same as blasted_rock_volume in this implementation
+        blasted_rock_volume: blastedRockVolume,
+        base_royalty: baseRoyalty,
+        royalty_with_sscl: royaltyWithSscl,
+        total_amount_with_vat: totalAmountWithVat
+      },
+      rates_applied: {
+        royalty_rate_per_cubic_meter: ROYALTY_RATE_PER_CUBIC_METER,
+        sscl_rate: SSCL_RATE,
+        vat_rate: VAT_RATE
+      },
+      warning_message: warningMessage
+    };
+  };
+
   const handleCalculateRoyalty = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const data = await calculateRoyalty({
-        water_gel: parseFloat(waterGel),
-        nh4no3: parseFloat(nh4no3),
-        powder_factor: parseFloat(powderFactor)
+      // Replace API call with local calculation
+      const waterGelValue = parseFloat(waterGel);
+      const nh4no3Value = parseFloat(nh4no3);
+      const powderFactorValue = parseFloat(powderFactor);
+      
+      // Validate inputs
+      if (isNaN(waterGelValue) || isNaN(nh4no3Value) || isNaN(powderFactorValue)) {
+        throw new Error("Please enter valid numbers for all fields");
+      }
+      
+      // Calculate royalty locally
+      const data = calculateRoyaltyLocal({
+        water_gel: waterGelValue,
+        nh4no3: nh4no3Value,
+        powder_factor: powderFactorValue
       });
       
       setRoyaltyData(data);
@@ -86,7 +155,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
       }
     } catch (error) {
       console.error('Error calculating royalty:', error);
-      toast.error('Failed to calculate royalty. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Failed to calculate royalty. Please try again.');
     } finally {
       setLoading(false);
     }
