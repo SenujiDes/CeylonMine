@@ -1,4 +1,4 @@
-import RoyaltyCalculator from '@/components/RoyaltyCalculator';
+import RoyaltyCalculator from './components/RoyaltyCalculator';
 
 export default function Home() {
   return (
