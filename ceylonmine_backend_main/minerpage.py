@@ -5,11 +5,6 @@ from config import Config
 # Create a Blueprint for miner-related routes
 miner_bp = Blueprint('miner', __name__, url_prefix='/miner')
 
-# Initialize Supabase client
-# def init_supabase(app):
-#     supabase: Client = create_client(app.config['SUPABASE_URL'], app.config['SUPABASE_KEY'])
-#     return supabase
-
 # Endpoint to fetch royalty amount and due date
 @miner_bp.route('/royalty', methods=['GET'])
 def get_royalty():
