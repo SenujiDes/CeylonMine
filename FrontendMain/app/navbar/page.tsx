@@ -562,11 +562,11 @@ export default function Navbar() {
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setProfileDropdownOpen(false)
+    const handleClickOutside = (event: MouseEvent): void => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+          setProfileDropdownOpen(false)
+        }
       }
-    }
     
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)

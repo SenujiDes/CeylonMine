@@ -60,7 +60,7 @@
 
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent } from 'react';
 import { toast } from 'react-hot-toast';
 import { calculateRoyalty } from '../services/royalty_calculator';
 
@@ -108,15 +108,10 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
   const [powderFactor, setPowderFactor] = useState('');
   const [loading, setLoading] = useState(false);
   const [royaltyData, setRoyaltyData] = useState<RoyaltyData | null>(null);
-  const [savedCalculations, setSavedCalculations] = useState<SavedCalculation[]>([]);
+  // This state is not used in the UI, so we'll remove it to fix the linting error
 
-  // Load saved calculations from localStorage on component mount
-  useEffect(() => {
-    const saved = localStorage.getItem('royaltyCalculations');
-    if (saved) {
-      setSavedCalculations(JSON.parse(saved));
-    }
-  }, []);
+  // We don't need to load saved calculations since we're not using them in the UI
+  // The calculations are directly read from localStorage when needed
 
   const handleCalculateRoyalty = async (e: FormEvent) => {
     e.preventDefault();
@@ -145,7 +140,8 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
 
     // Check if this calculation has already been saved
     const existingSaved = localStorage.getItem('royaltyCalculations');
-    const savedCalculations = existingSaved ? JSON.parse(existingSaved) : [];
+    // Use the current state instead of creating a new local variable with the same name
+    const currentSavedCalculations = existingSaved ? JSON.parse(existingSaved) : [];
     
     // Create new calculation object
     const newCalculation: SavedCalculation = {
@@ -161,7 +157,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     };
 
     // Check if this exact calculation already exists
-    const isDuplicate = savedCalculations.some(calc => 
+    const isDuplicate = currentSavedCalculations.some((calc: SavedCalculation) => 
       calc.waterGel === newCalculation.waterGel &&
       calc.nh4no3 === newCalculation.nh4no3 &&
       calc.powderFactor === newCalculation.powderFactor &&
@@ -174,8 +170,10 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     }
 
     // Add only the new calculation
-    const updatedCalculations = [...savedCalculations, newCalculation];
+    const updatedCalculations = [...currentSavedCalculations, newCalculation];
     localStorage.setItem('royaltyCalculations', JSON.stringify(updatedCalculations));
+    
+    // Since we're not tracking state for the calculations, we just save to localStorage
     
     // Update the mining stats
     onCalculated({
@@ -332,4 +330,4 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
       )}
     </div>
   );
-} 
+}

@@ -975,7 +975,8 @@ export default function TypeALicense() {
       }
     } catch (error) {
       console.error('Fetch error:', error);
-      alert(`Error submitting license application: ${error.message || 'Network or server error'}`);
+      const errorMessage = error instanceof Error ? error.message : 'Network or server error';
+      alert(`Error submitting license application: ${errorMessage}`);
     }
   };
 
@@ -990,7 +991,7 @@ export default function TypeALicense() {
       } else {
         // Handle nested file fields
         setFormData(prev => {
-          const sectionData = prev[section] as Record<string, any>;
+          const sectionData = prev[section] as Record<string, unknown>;
           return {
             ...prev,
             [section]: {

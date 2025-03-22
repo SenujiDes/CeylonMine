@@ -652,7 +652,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import Navbar from "../navbar/page";
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll } from 'framer-motion';
 import * as THREE from 'three';
 
 export default function Contact() {
@@ -790,7 +790,7 @@ export default function Contact() {
     };
   }, [isDarkMode]);
 
-  const { scrollYProgress } = useScroll({
+  useScroll({
     target: scrollRef,
     offset: ["start start", "end end"],
   });
@@ -906,7 +906,8 @@ export default function Contact() {
       } else {
         setSuccessMessage('Failed to send message. Please try again.');
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('Error submitting form:', error);
       setSuccessMessage('An error occurred. Please try again.');
     }
   };

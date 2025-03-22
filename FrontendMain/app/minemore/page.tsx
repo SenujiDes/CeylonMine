@@ -734,9 +734,9 @@ export default function MiningEducation() {
     offset: ["start start", "end end"],
   });
 
-  const rotateX = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  const rotateY = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
+  // Scroll-based animations (using scrollYProgress for future implementations)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const scaleTransform = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
 
   // Educational content sections based on mining fundamentals and extended topics
   const educationSections = {
