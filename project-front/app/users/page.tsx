@@ -13,6 +13,7 @@ interface User {
   role: string;
   license_status: string;
   created_at: string;
+  active_date: string;
 }
 
 export default function UsersPage() {
@@ -46,10 +47,13 @@ export default function UsersPage() {
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
-      // If changing to miner role, include license_status in the update
+      // Get current date in ISO format
+      const currentDate = new Date().toISOString();
+      
+      // If changing to miner role, include license_status and active_date in the update
       const updateData = newRole === 'miner' 
-        ? { role: newRole, license_status: 'active' }
-        : { role: newRole, license_status: 'not_started' }; // Always include license_status
+        ? { role: newRole, license_status: 'active', active_date: currentDate }
+        : { role: newRole, license_status: 'not_started' }; // Reset license status for non-miners
 
       console.log('Sending update data:', updateData); // Debug log
 
@@ -81,7 +85,9 @@ export default function UsersPage() {
       // Show success message
       Swal.fire({
         title: 'Success!',
-        text: 'User role updated successfully',
+        text: newRole === 'miner' 
+          ? 'User role updated to miner with active license' 
+          : 'User role updated successfully',
         icon: 'success',
         timer: 2000,
         showConfirmButton: false
@@ -98,12 +104,23 @@ export default function UsersPage() {
 
   const handleActiveChange = async (userId: string, newActive: string) => {
     try {
+      // Only set active_date when changing from expired to active
+      const user = users.find(u => u.id === userId);
+      const updateData: {license_status: string; active_date?: string} = {
+        license_status: newActive
+      };
+      
+      // If changing from expired to active, update the active date
+      if (user?.license_status === 'expired' && newActive === 'active') {
+        updateData.active_date = new Date().toISOString();
+      }
+
       const response = await fetch(`/api/users/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ license_status: newActive }),
+        body: JSON.stringify(updateData),
       });
 
       const data = await response.json();
@@ -114,13 +131,15 @@ export default function UsersPage() {
 
       // Update local state
       setUsers(users.map(user => 
-        user.id === userId ? { ...user, license_status: newActive } : user
+        user.id === userId ? { ...user, ...data } : user
       ));
 
       // Show success message
       Swal.fire({
         title: 'Success!',
-        text: 'license status updated successfully',
+        text: newActive === 'active' && user?.license_status === 'expired'
+          ? 'License activated with updated activation date' 
+          : 'License status updated successfully',
         icon: 'success',
         timer: 2000,
         showConfirmButton: false
