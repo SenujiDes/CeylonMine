@@ -4,17 +4,43 @@ from datetime import datetime, timedelta
 from secrets import token_urlsafe
 import bcrypt
 import os
+from dotenv import load_dotenv
 import logging
+
+# Load environment variables
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(
-    level=logging.DEBUG,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format='%(asctime)s - %(levelname)s - %(message)s',  # Log format
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('app.log'),  # Log to a file
-        logging.StreamHandler()  # Log to the console
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
     ]
 )
+
+# Initialize Supabase client
+supabase_url = os.getenv('SUPABASE_URL')
+supabase_key = os.getenv('SUPABASE_KEY')
+
+# Add debug logging
+logging.debug(f"SUPABASE_URL: {supabase_url}")
+logging.debug(f"SUPABASE_KEY length: {len(supabase_key or '')}")
+
+if not supabase_url or not supabase_key:
+    raise ValueError("Missing required environment variables SUPABASE_URL or SUPABASE_KEY")
+
+# Make sure the URL starts with https:// and ends with .supabase.co
+if not supabase_url.startswith('https://') or not supabase_url.endswith('.supabase.co'):
+    raise ValueError("Invalid Supabase URL format. It should start with 'https://' and end with '.supabase.co'")
+
+print(f"Using Supabase URL: '{supabase_url}'")
+
+# Add this before create_client
+print(f"URL characters: {[ord(c) for c in supabase_url]}")
+
+supabase = create_client(supabase_url, supabase_key)
 
 # Create a Blueprint for authentication
 auth_bp = Blueprint('auth', __name__, url_prefix='/api')
