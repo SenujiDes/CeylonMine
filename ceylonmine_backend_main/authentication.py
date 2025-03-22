@@ -27,14 +27,13 @@ def verify_password(password, hashed_password):
     # Verify the password
     return bcrypt.checkpw(password_bytes, hashed_bytes)
 
-#/api/home
-@app.route("/api/home", methods=['GET'])
+@auth_bp.route("/home", methods=['GET'])
 def return_home():
     return jsonify({
         'message': "Hello World!"
     })
 
-@app.route("/api/signup", methods=['POST'])
+@auth_bp.route("/signup", methods=['POST'])
 def signup():
     try:
         data = request.get_json()
@@ -87,7 +86,7 @@ def signup():
         print(f"Server error: {str(e)}")
         return jsonify({'error': 'Server error. Please try again later.'}), 500
 
-@app.route("/api/login", methods=['POST'])
+@auth_bp.route("/login", methods=['POST'])
 def login():
     try:
         data = request.get_json()
@@ -127,7 +126,7 @@ def login():
         print(f"Server error: {str(e)}")
         return jsonify({'error': 'Server error. Please try again later.'}), 500
 
-@app.route("/api/request-reset", methods=['POST'])
+@auth_bp.route("/request-reset", methods=['POST'])
 def request_reset():
     try:
         data = request.get_json()
@@ -168,7 +167,7 @@ def request_reset():
         print(f"Server error: {str(e)}")
         return jsonify({'error': 'Server error'}), 500
 
-@app.route("/api/reset-password", methods=['POST'])
+@auth_bp.route("/reset-password", methods=['POST'])
 def reset_password():
     try:
         data = request.get_json()
@@ -203,7 +202,7 @@ def reset_password():
         print(f"Server error: {str(e)}")
         return jsonify({'error': 'Server error'}), 500
 
-@app.route("/api/test-db", methods=['GET'])
+@auth_bp.route("/test-db", methods=['GET'])
 def test_db():
     try:
         # Try to fetch a single row from users table
@@ -218,7 +217,7 @@ def test_db():
             "status": "error"
         }), 500
 
-@app.route("/api/test-insert", methods=['GET'])
+@auth_bp.route("/test-insert", methods=['GET'])
 def test_insert():
     try:
         # Try a simple insert
