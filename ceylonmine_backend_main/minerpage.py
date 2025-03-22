@@ -8,33 +8,35 @@ miner_bp = Blueprint('miner', __name__, url_prefix='/miner')
 
 # Function to calculate expiration date based on period_of_validation
 def calculate_expiration_date(start_date, period_of_validation):
-    years = int(period_of_validation.split()[0]) 
-    expiration_date = start_date + timedelta(days=365 * years) 
+    years = int(period_of_validation.split()[0])  # Extract the number of years
+    expiration_date = start_date + timedelta(days=365 * years)  # Add years to the start date
     return expiration_date
 
-# Endpoint to fetch royalty amount and due date
-@miner_bp.route('/royalty', methods=['GET'])
-def get_royalty():
+# Endpoint to fetch license status and expiry date
+@miner_bp.route('/license', methods=['GET'])
+def get_license():
     try:
-        # Fetch data from the 'royalty' table
-        response = supabase.table('royalty').select("*").execute()
-        royalty_data = response.data[0]  # Assuming there's only one relevant entry
-        return jsonify({
-            "royalty_amount_due": royalty_data['total_amount'],
-            # still didn't make the column
-            "due_by": royalty_data['due_date']
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        # Get the userId of the currently logged-in user (assuming it's passed in the request headers)
+        user_id = request.headers.get('User-ID')
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
 
-# Fetch the active_date from the 'users' table for the logged-in user
-        user_response = supabase.table('users').select("active_date, period_of_validation").eq('userId', user_id).execute()
+        # Fetch the exploration_license_no and period_of_validation from the 'application' table using the userId
+        application_response = supabase.table('application').select("exploration_license_no, period_of_validation").eq('userId', user_id).execute()
+        if not application_response.data:
+            return jsonify({"error": "No application found for the user"}), 404
+
+        application_data = application_response.data[0]
+        exploration_license_no = application_data['exploration_license_no']
+        period_of_validation = application_data.get('period_of_validation', '1 yr')  # Default to 1 year if not provided
+
+        # Fetch the active_date from the 'users' table for the logged-in user
+        user_response = supabase.table('users').select("active_date").eq('userId', user_id).execute()
         if not user_response.data:
             return jsonify({"error": "User not found"}), 404
 
         user_data = user_response.data[0]
         active_date_str = user_data.get('active_date')
-        period_of_validation = user_data.get('period_of_validation', '1 yr')  # Default to 1 year if not provided
 
         # Calculate the expiry date
         if active_date_str:
@@ -53,15 +55,14 @@ def get_royalty():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 # Endpoint to fetch recent announcements
 @miner_bp.route('/announcements', methods=['GET'])
 def get_announcements():
     try:
         # Fetch data from the 'comments' table, ordered by creation date in descending order
         response = supabase.table('comments').select("*").order('created_at', desc=True).execute()
-        activities = response.data
-        return jsonify(activities)
+        announcements = response.data
+        return jsonify(announcements)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
