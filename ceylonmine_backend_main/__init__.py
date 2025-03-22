@@ -8,6 +8,7 @@ import royalty
 import license
 import map
 import contact
+import minerpage
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -27,6 +28,7 @@ def create_app(config_class=Config):
     license_bp = Blueprint('license', __name__, url_prefix='/license')
     map_bp = Blueprint('map',__name__, url_prefix='/map')
     contact_bp = Blueprint('contact', __name__,url_prefix='/contact')
+    minerpage_bp = Blueprint('minerpage', __name__, url_prefix='/miner')
 
     # Register the routes with the blueprints
     complain.init_routes(complaints_bp)
@@ -34,6 +36,7 @@ def create_app(config_class=Config):
     license.init_routes(license_bp)
     map.init_routes(map_bp)
     contact.init_routes(contact_bp)
+    minerpage.init_routes(minerpage_bp)
 
     # Register blueprints with the app
     app.register_blueprint(complaints_bp)
