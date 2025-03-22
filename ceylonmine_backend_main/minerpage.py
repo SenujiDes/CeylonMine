@@ -4,7 +4,7 @@ from config import Config
 from datetime import datetime, timedelta
 
 # Create a Blueprint for miner-related routes
-miner_bp = Blueprint('miner', __name__, url_prefix='/miner')
+minerpage_bp = Blueprint('minerpage', __name__, url_prefix='/miner')
 
 # Function to calculate expiration date based on period_of_validation
 def calculate_expiration_date(start_date, period_of_validation):
@@ -13,7 +13,7 @@ def calculate_expiration_date(start_date, period_of_validation):
     return expiration_date
 
 # Endpoint to fetch license status, license number, and expiry date
-@miner_bp.route('/license', methods=['GET'])
+@minerpage_bp.route('/license', methods=['GET'])
 def get_license():
     try:
         # Get the userId of the currently logged-in user (passed in the request headers)
@@ -57,7 +57,7 @@ def get_license():
         return jsonify({"error": str(e)}), 500
 
 # Endpoint to fetch royalty amount due
-@miner_bp.route('/royalty', methods=['GET'])
+@minerpage_bp.route('/royalty', methods=['GET'])
 def get_royalty():
     try:
         # Get the userId of the currently logged-in user
@@ -80,7 +80,7 @@ def get_royalty():
         return jsonify({"error": str(e)}), 500
 
 # Endpoint to fetch recent announcements
-@miner_bp.route('/announcements', methods=['GET'])
+@minerpage_bp.route('/announcements', methods=['GET'])
 def get_announcements():
     try:
         # Fetch data from the 'comments' table, ordered by creation date in descending order
