@@ -3,6 +3,8 @@ from supabase import create_client, Client
 from config import Config
 from flask import Blueprint
 
+unlicensedminer_bp = Blueprint('unlicensedminer', __name__, url_prefix='/unlicensedminer')
+
 @minerpage_bp.route('/status', methods=['GET'])
 def get_user_status():
     # Assuming you have a way to identify the logged-in user, e.g., through a session or token
@@ -38,21 +40,5 @@ def get_announcements():
 def init_routes(bp):
     bp.route('/status', methods=['GET'])(get_user_status)
     bp.route('/announcements', methods=['GET'])(get_announcements)
-
-# In your create_app function, ensure the minerpage blueprint is registered
-def create_app(config_class=Config):
-    app = Flask(__name__)
-    app.config.from_object(config_class)
-
-    CORS(app, resources={r"/*": {"origins": "*"}})
-
-    load_dotenv()
-    supabase: Client = create_client(app.config['SUPABASE_URL'], app.config['SUPABASE_KEY'])
-    app.supabase = supabase
-
-    # Register the minerpage blueprint
-    minerpage_bp = Blueprint('minerpage', __name__, url_prefix='/miner')
-    init_routes(minerpage_bp)
-    app.register_blueprint(minerpage_bp)
 
     return app
