@@ -1,63 +1,174 @@
-import Layout from '../components/Layout';
+'use client';
+
+import { useState, useEffect } from 'react';
+import Image from "next/image";
+import Link from "next/link";
+import Layout from "../components/Layout";
+import RoyaltyCalculator from "../components/RoyaltyCalculator";
+import UserGreeting from "../components/UserGreeting";
+import ErrorBoundary from '../components/ErrorBoundary';
+import { toast } from 'react-hot-toast';
+import { Miner } from '../types/settings';
 
 export default function RoyaltyPage() {
+  const [miners, setMiners] = useState([]);
+  const [selectedMiner, setSelectedMiner] = useState<Miner | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [miningStats, setMiningStats] = useState({
+    explosiveQuantity: 0,
+    blastedVolume: 0,
+    totalRoyalty: 0,
+    dueDate: '',
+    lastCalculated: ''
+  });
+
+  // Fetch miners from the API
+  useEffect(() => {
+    const fetchMiners = async () => {
+      try {
+        const response = await fetch('/api/calculate-royalty');
+        if (!response.ok) throw new Error('Failed to fetch miners');
+        const data = await response.json();
+        setMiners(data);
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error('Failed to fetch miners');
+      }
+    };
+
+    fetchMiners();
+  }, []);
+
+  // Filter miners based on search term
+  const filteredMiners = miners.filter((miner: Miner) =>
+    (miner.first_name + ' ' + miner.last_name).toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleMinerSelect = (miner: Miner) => {
+    setSelectedMiner(miner);
+    setSearchTerm(miner.first_name + ' ' + miner.last_name);
+  };
+
+  const handleCalculated = (data: any) => {
+    if (!selectedMiner) {
+      toast.error('Please select a miner first');
+      return;
+    }
+    
+    // Just update UI with calculation results
+    setMiningStats({
+      explosiveQuantity: data.calculations.total_explosive_quantity,
+      blastedVolume: data.calculations.blasted_rock_volume,
+      totalRoyalty: data.calculations.total_amount_with_vat,
+      dueDate: data.payment_due_date || new Date(Date.now() + 14*24*60*60*1000).toISOString(),
+      lastCalculated: data.calculation_date
+    });
+    
+    // Return the prepared data for RoyaltyCalculator to use
+    return {
+      ...data,
+      selectedMiner
+    };
+  };
+
+  const handleSaveCalculation = async (data: any) => {
+    if (!selectedMiner) {
+      toast.error('Please select a miner first');
+      return false;
+    }
+
+    try {
+      // Prepare the royalty data
+      const royaltyData = {
+        miner_id: selectedMiner.id,
+        water_gel: data.inputs.water_gel_kg,
+        nh4no3: data.inputs.nh4no3_kg,
+        powder_factor: data.inputs.powder_factor,
+        total_explosive_quantity: data.calculations.total_explosive_quantity,
+        blasted_rock_volume: data.calculations.blasted_rock_volume,
+        base_royalty: data.calculations.base_royalty,
+        royalty_with_sscl: data.calculations.royalty_with_sscl,
+        total_amount: data.calculations.total_amount_with_vat,
+        calculation_date: data.calculation_date,
+        payment_due_date: data.payment_due_date || new Date(Date.now() + 14*24*60*60*1000).toISOString()
+      };
+
+      // Save to database
+      const response = await fetch('/api/calculate-royalty', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(royaltyData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save royalty calculation');
+      }
+
+      toast.success('Royalty calculation saved successfully');
+      return true;
+    } catch (error) {
+      console.error('Error saving royalty:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to save royalty calculation');
+      return false;
+    }
+  };
+
   return (
     <Layout>
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-[var(--foreground)] mb-4">Royalty Calculator</h1>
-          <p className="text-lg text-[var(--foreground)] opacity-80 max-w-2xl mx-auto">
-            Calculate mining royalty fees based on production data and current rates.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-[var(--background)] rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold mb-6">Input Data</h2>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Production Volume (tons)</label>
-                <input
-                  type="number"
-                  className="w-full p-2 rounded-lg border border-[var(--foreground)] bg-transparent"
-                  placeholder="Enter production volume"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Mining Type</label>
-                <select className="w-full p-2 rounded-lg border border-[var(--foreground)] bg-transparent">
-                  <option>Industrial Minerals</option>
-                  <option>Construction Materials</option>
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-[var(--foreground)] text-[var(--background)] py-2 rounded-lg hover:opacity-90 transition-opacity"
-              >
-                Calculate Royalty
-              </button>
-            </form>
-          </div>
-
-          <div className="bg-[var(--background)] rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold mb-6">Results</h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-lg">Base Rate:</span>
-                <span className="text-lg font-semibold">5%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg">Royalty Amount:</span>
-                <span className="text-lg font-semibold">LKR 0.00</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg">Total Amount:</span>
-                <span className="text-lg font-semibold">LKR 0.00</span>
-              </div>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-6 text-white">
+        <div className="bg-gray-800 rounded-lg shadow-xl p-6 md:p-8">
+          <UserGreeting />
+          
+          {/* Miner Search Section */}
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">Select Miner</h2>
+            <div className="relative">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search miner by name..."
+                className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+              
+              {/* Dropdown for search results */}
+              {searchTerm && filteredMiners.length > 0 && (
+                <div className="absolute z-10 w-full mt-1 bg-gray-700 rounded-md shadow-lg max-h-60 overflow-auto">
+                  {filteredMiners.map((miner: Miner) => (
+                    <div
+                      key={miner.id}
+                      onClick={() => handleMinerSelect(miner)}
+                      className="px-4 py-2 hover:bg-gray-600 cursor-pointer text-white"
+                    >
+                      {miner.first_name + ' ' + miner.last_name}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Selected Miner Info */}
+          {selectedMiner && (
+            <div className="mb-8 p-4 bg-gray-700 rounded-md text-white">
+              <h3 className="font-medium">Selected Miner:</h3>
+              <p>{selectedMiner.first_name + ' ' + selectedMiner.last_name}</p>
+              <p className="text-xs text-gray-300">ID: {selectedMiner.id}</p>
+            </div>
+          )}
+
+          <h2 className="text-2xl font-bold mb-8">Mining Royalty Calculator</h2>
+          <ErrorBoundary>
+            <RoyaltyCalculator 
+              onCalculated={handleCalculated}
+              onSaveCalculation={handleSaveCalculation}
+            />
+          </ErrorBoundary>
         </div>
-      </div>
+      </main>
     </Layout>
   );
 }
