@@ -23,7 +23,7 @@ def get_user_status():
 
 @minerpage_bp.route('/announcements', methods=['GET'])
 def get_announcements():
-    user_id = request.args.get('user_id')  # Again, get this from a session or token
+    user_id = request.args.get('user_id')  # from a session or token
 
     if not user_id:
         return jsonify({"error": "User ID is required"}), 400
