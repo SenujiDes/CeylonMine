@@ -1,63 +1,3 @@
-// import React, { useState } from 'react';
-
-// interface RoyaltyCalculatorProps {
-//   onCalculated: (data: any) => void;
-// }
-
-// const RoyaltyCalculator: React.FC<RoyaltyCalculatorProps> = ({ onCalculated }) => {
-//   const [explosiveQuantity, setExplosiveQuantity] = useState<number>(0);
-//   const [rockVolume, setRockVolume] = useState<number>(0);
-
-//   const handleCalculate = () => {
-//     // Mock calculation for demonstration
-//     const calculations = {
-//       total_explosive_quantity: explosiveQuantity,
-//       blasted_rock_volume: rockVolume,
-//       total_amount_with_vat: explosiveQuantity * rockVolume * 0.1, // Example calculation
-//     };
-
-//     onCalculated({
-//       calculations,
-//       calculation_date: new Date().toISOString()
-//     });
-//   };
-
-//   return (
-//     <div className="space-y-4">
-//       <div>
-//         <label className="block text-sm font-medium mb-2">
-//           Explosive Quantity (kg)
-//         </label>
-//         <input
-//           type="number"
-//           value={explosiveQuantity}
-//           onChange={(e) => setExplosiveQuantity(Number(e.target.value))}
-//           className="w-full px-3 py-2 bg-gray-800 rounded-md text-white"
-//         />
-//       </div>
-//       <div>
-//         <label className="block text-sm font-medium mb-2">
-//           Rock Volume (m³)
-//         </label>
-//         <input
-//           type="number"
-//           value={rockVolume}
-//           onChange={(e) => setRockVolume(Number(e.target.value))}
-//           className="w-full px-3 py-2 bg-gray-800 rounded-md text-white"
-//         />
-//       </div>
-//       <button
-//         onClick={handleCalculate}
-//         className="w-full bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-md"
-//       >
-//         Calculate Royalty
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default RoyaltyCalculator; 
-
 'use client';
 
 import { useState, FormEvent, useEffect } from 'react';
@@ -123,18 +63,60 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     setLoading(true);
 
     try {
-      const data = await calculateRoyalty({
-        water_gel: parseFloat(waterGel),
-        nh4no3: parseFloat(nh4no3),
-        powder_factor: parseFloat(powderFactor)
-      });
+      // Validate inputs
+      if (!waterGel || !nh4no3 || !powderFactor) {
+        toast.error('All fields are required');
+        setLoading(false);
+        return;
+      }
+
+      const waterGelValue = parseFloat(waterGel);
+      const nh4no3Value = parseFloat(nh4no3);
+      const powderFactorValue = parseFloat(powderFactor);
+
+      if (isNaN(waterGelValue) || isNaN(nh4no3Value) || isNaN(powderFactorValue)) {
+        toast.error('All inputs must be valid numbers');
+        setLoading(false);
+        return;
+      }
+
+      if (waterGelValue < 0 || nh4no3Value < 0 || powderFactorValue <= 0) {
+        toast.error('Values must be greater than zero');
+        setLoading(false);
+        return;
+      }
+
+      // Show a loading toast that will be dismissed when calculation completes
+      const loadingToast = toast.loading('Calculating royalty...');
       
-      setRoyaltyData(data);
-      onCalculated(data);
-      toast.success('Royalty calculated successfully!');
+      try {
+        const data = await calculateRoyalty({
+          water_gel: waterGelValue,
+          nh4no3: nh4no3Value,
+          powder_factor: powderFactorValue
+        });
+        
+        toast.dismiss(loadingToast);
+        setRoyaltyData(data);
+        onCalculated(data);
+        toast.success('Royalty calculated successfully!');
+      } catch (apiError) {
+        toast.dismiss(loadingToast);
+        const errorMessage = apiError instanceof Error ? apiError.message : 'Failed to calculate royalty. Please try again.';
+        
+        // Display a more helpful message for connection issues
+        if (errorMessage.includes('Connection failed') || errorMessage.includes('Failed to fetch')) {
+          toast.error('Cannot connect to the backend server. Please ensure the backend is running.');
+          console.error('Backend connection error:', apiError);
+        } else {
+          toast.error(errorMessage);
+          console.error('API error:', apiError);
+        }
+      }
     } catch (error) {
-      console.error('Error calculating royalty:', error);
-      toast.error('Failed to calculate royalty. Please try again.');
+      console.error('Error in royalty calculation function:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to calculate royalty. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -161,7 +143,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     };
 
     // Check if this exact calculation already exists
-    const isDuplicate = savedCalculations.some(calc => 
+    const isDuplicate = savedCalculations.some((calc: SavedCalculation) => 
       calc.waterGel === newCalculation.waterGel &&
       calc.nh4no3 === newCalculation.nh4no3 &&
       calc.powderFactor === newCalculation.powderFactor &&
