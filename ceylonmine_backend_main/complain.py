@@ -29,4 +29,3 @@ def init_routes(bp):
             return jsonify({"error": str(e)}), 500
 
 
-
