@@ -6,7 +6,7 @@ import bcrypt
 import os
 
 
-auth_bp = Blueprint('auth', __name__, url_prefix='/api')
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # Store reset tokens with expiry (in memory - will be cleared when server restarts)
 reset_tokens = {}
@@ -242,6 +242,3 @@ def test_insert():
         return jsonify({
             'error': f'Test insert failed: {str(e)}'
         }), 500
-
-if __name__ == "__main__":
-    app.run(debug=True, port=8080)
