@@ -30,7 +30,7 @@ def create_app(config_class=Config):
     map_bp = Blueprint('map',__name__, url_prefix='/map')
     contact_bp = Blueprint('contact', __name__,url_prefix='/contact')
     minerpage_bp = Blueprint('minerpage', __name__, url_prefix='/miner')
-    unlicensedminer_bp = Blueprint('unlicensedminer',__name__,url_prefix='unlicensedminer')
+    unlicensedminer_bp = Blueprint('unlicensedminer', __name__, url_prefix='/unlicensedminer')
 
     # Register the routes with the blueprints
     complain.init_routes(complaints_bp)
@@ -39,7 +39,7 @@ def create_app(config_class=Config):
     map.init_routes(map_bp)
     contact.init_routes(contact_bp)
     minerpage.init_routes(minerpage_bp)
-    unlicensedminer.init_routes(unlicensedminer)
+    unlicensedminer.init_routes(unlicensedminer_bp)
 
     # Register blueprints with the app
     app.register_blueprint(complaints_bp)
@@ -47,7 +47,7 @@ def create_app(config_class=Config):
     app.register_blueprint(license_bp)
     app.register_blueprint(map_bp)
     app.register_blueprint(contact_bp)
-    app.register_blueprint(miner_bp)
+    app.register_blueprint(minerpage_bp)
     app.register_blueprint(unlicensedminer_bp)
 
     return app
