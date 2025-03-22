@@ -1,3 +1,63 @@
+// import React, { useState } from 'react';
+
+// interface RoyaltyCalculatorProps {
+//   onCalculated: (data: any) => void;
+// }
+
+// const RoyaltyCalculator: React.FC<RoyaltyCalculatorProps> = ({ onCalculated }) => {
+//   const [explosiveQuantity, setExplosiveQuantity] = useState<number>(0);
+//   const [rockVolume, setRockVolume] = useState<number>(0);
+
+//   const handleCalculate = () => {
+//     // Mock calculation for demonstration
+//     const calculations = {
+//       total_explosive_quantity: explosiveQuantity,
+//       blasted_rock_volume: rockVolume,
+//       total_amount_with_vat: explosiveQuantity * rockVolume * 0.1, // Example calculation
+//     };
+
+//     onCalculated({
+//       calculations,
+//       calculation_date: new Date().toISOString()
+//     });
+//   };
+
+//   return (
+//     <div className="space-y-4">
+//       <div>
+//         <label className="block text-sm font-medium mb-2">
+//           Explosive Quantity (kg)
+//         </label>
+//         <input
+//           type="number"
+//           value={explosiveQuantity}
+//           onChange={(e) => setExplosiveQuantity(Number(e.target.value))}
+//           className="w-full px-3 py-2 bg-gray-800 rounded-md text-white"
+//         />
+//       </div>
+//       <div>
+//         <label className="block text-sm font-medium mb-2">
+//           Rock Volume (m³)
+//         </label>
+//         <input
+//           type="number"
+//           value={rockVolume}
+//           onChange={(e) => setRockVolume(Number(e.target.value))}
+//           className="w-full px-3 py-2 bg-gray-800 rounded-md text-white"
+//         />
+//       </div>
+//       <button
+//         onClick={handleCalculate}
+//         className="w-full bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-md"
+//       >
+//         Calculate Royalty
+//       </button>
+//     </div>
+//   );
+// };
+
+// export default RoyaltyCalculator; 
+
 'use client';
 
 import { useState, FormEvent, useEffect } from 'react';
@@ -101,7 +161,7 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
     };
 
     // Check if this exact calculation already exists
-    const isDuplicate = savedCalculations.some((calc: SavedCalculation) => 
+    const isDuplicate = savedCalculations.some(calc => 
       calc.waterGel === newCalculation.waterGel &&
       calc.nh4no3 === newCalculation.nh4no3 &&
       calc.powderFactor === newCalculation.powderFactor &&
@@ -219,18 +279,25 @@ export default function RoyaltyCalculator({ onCalculated }: RoyaltyCalculatorPro
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-gray-700 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-400 mb-2">Explosive Quantities</h3>
-                <p className="flex justify-between">
-                  <span>Total Explosive Quantity:</span>
-                  <span>{royaltyData.calculations.total_explosive_quantity.toFixed(2)} kg</span>
-                </p>
+                <div className="space-y-2">
+                  <p className="flex justify-between">
+                    <span>Total Explosive Quantity:</span>
+                    <span>{royaltyData.calculations.total_explosive_quantity.toFixed(2)} kg</span>
+                  </p>
+                  <div className="border-t border-gray-600 my-2" />
+                  <p className="flex justify-between text-sm">
+                    <span>Water Gel:</span>
+                    <span>{royaltyData.inputs.water_gel_kg.toFixed(2)} kg</span>
+                  </p>
+                  <p className="flex justify-between text-sm">
+                    <span>NH4NO3:</span>
+                    <span>{royaltyData.inputs.nh4no3_kg.toFixed(2)} kg</span>
+                  </p>
+                </div>
               </div>
               
               <div className="p-4 bg-gray-700 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-400 mb-2">Rock Volumes</h3>
-                <p className="flex justify-between">
-                  <span>Basic Volume:</span>
-                  <span>{royaltyData.calculations.basic_volume.toFixed(2)} m³</span>
-                </p>
+                <h3 className="text-sm font-medium text-gray-400 mb-2">Rock Volume</h3>
                 <p className="flex justify-between">
                   <span>Blasted Rock Volume:</span>
                   <span>{royaltyData.calculations.blasted_rock_volume.toFixed(2)} m³</span>
