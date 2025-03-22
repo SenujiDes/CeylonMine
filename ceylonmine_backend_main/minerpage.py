@@ -6,6 +6,12 @@ from datetime import datetime, timedelta
 # Create a Blueprint for miner-related routes
 miner_bp = Blueprint('miner', __name__, url_prefix='/miner')
 
+# Function to calculate expiration date based on period_of_validation
+def calculate_expiration_date(start_date, period_of_validation):
+    years = int(period_of_validation.split()[0])  # Extract the number of years
+    expiration_date = start_date + timedelta(days=365 * years)  # Add years to the start date
+    return expiration_date
+
 # Endpoint to fetch royalty amount and due date
 @miner_bp.route('/royalty', methods=['GET'])
 def get_royalty():
