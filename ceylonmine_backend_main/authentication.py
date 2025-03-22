@@ -4,9 +4,20 @@ from datetime import datetime, timedelta
 from secrets import token_urlsafe
 import bcrypt
 import os
+import logging
 
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(levelname)s - %(message)s',  # Log format
+    handlers=[
+        logging.FileHandler('app.log'),  # Log to a file
+        logging.StreamHandler()  # Log to the console
+    ]
+)
 
-auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+# Create a Blueprint for authentication
+auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 
 # Store reset tokens with expiry (in memory - will be cleared when server restarts)
 reset_tokens = {}
@@ -29,6 +40,7 @@ def verify_password(password, hashed_password):
 
 @auth_bp.route("/home", methods=['GET'])
 def return_home():
+    logging.info("Home route accessed")  # Log an info message
     return jsonify({
         'message': "Hello World!"
     })
@@ -37,25 +49,30 @@ def return_home():
 def signup():
     try:
         data = request.get_json()
+        logging.debug(f"Signup request data: {data}")  # Log the request data
         
         # Basic validation
         required_fields = ['firstName', 'lastName', 'username', 'email', 'password']
         if not all(key in data for key in required_fields):
+            logging.warning("Missing required fields in signup request")  # Log a warning
             return jsonify({'error': 'Missing required fields'}), 400
         
         try:
             # Check if email already exists
             existing_email = supabase.table('users').select('*').eq('email', data['email']).execute()
             if len(existing_email.data) > 0:
+                logging.warning(f"Email already registered: {data['email']}")  # Log a warning
                 return jsonify({'error': 'This email is already registered. Please use a different email or try logging in.'}), 400
             
             # Check if username already exists
             existing_username = supabase.table('users').select('*').eq('username', data['username']).execute()
             if len(existing_username.data) > 0:
+                logging.warning(f"Username already taken: {data['username']}")  # Log a warning
                 return jsonify({'error': 'This username is already taken. Please choose a different username.'}), 400
             
             # Hash the password before storing
             hashed_password = hash_password(data['password'])
+            logging.debug("Password hashed successfully")  # Log a debug message
             
             # Insert new user with hashed password and default role
             new_user = supabase.table('users').insert({
@@ -66,6 +83,7 @@ def signup():
                 'password': hashed_password,
                 'role': 'public'  
             }).execute()
+            logging.info(f"New user registered: {data['email']}")  # Log an info message
             
             return jsonify({
                 'message': 'User registered successfully',
@@ -79,19 +97,21 @@ def signup():
             }), 201
             
         except Exception as db_error:
-            print(f"Database error: {str(db_error)}")
-            return jsonify({'error': 'An error occurred during registration. Please try again.'}), 500
+            logging.error(f"Database error during signup: {str(db_error)}", exc_info=True)  # Log the error with traceback
+            return jsonify({'error': 'An error occurred during registration. Please try again.', 'details': str(db_error)}), 500
             
     except Exception as e:
-        print(f"Server error: {str(e)}")
-        return jsonify({'error': 'Server error. Please try again later.'}), 500
+        logging.critical(f"Server error during signup: {str(e)}", exc_info=True)  # Log the critical error with traceback
+        return jsonify({'error': 'Server error. Please try again later.', 'details': str(e)}), 500
 
 @auth_bp.route("/login", methods=['POST'])
 def login():
     try:
         data = request.get_json()
+        logging.debug(f"Login request data: {data}")  # Log the request data
         
         if not all(key in data for key in ['email', 'password']):
+            logging.warning("Missing email or password in login request")  # Log a warning
             return jsonify({'error': 'Missing email or password'}), 400
         
         try:
@@ -99,12 +119,14 @@ def login():
             result = supabase.table('users').select('*').eq('email', data['email']).execute()
             
             if len(result.data) == 0:
+                logging.warning(f"Invalid email: {data['email']}")  # Log a warning
                 return jsonify({'error': 'Invalid email or password'}), 401
             
             user = result.data[0]
             
             # Verify password
             if verify_password(data['password'], user['password']):
+                logging.info(f"User logged in: {data['email']}")  # Log an info message
                 return jsonify({
                     'message': 'Login successful',
                     'user': {
@@ -116,23 +138,26 @@ def login():
                     }
                 })
             else:
+                logging.warning(f"Invalid password for email: {data['email']}")  # Log a warning
                 return jsonify({'error': 'Invalid email or password'}), 401
                 
         except Exception as db_error:
-            print(f"Database error: {str(db_error)}")
-            return jsonify({'error': 'Login failed. Please try again.'}), 500
+            logging.error(f"Database error during login: {str(db_error)}", exc_info=True)  # Log the error with traceback
+            return jsonify({'error': 'Login failed. Please try again.', 'details': str(db_error)}), 500
             
     except Exception as e:
-        print(f"Server error: {str(e)}")
-        return jsonify({'error': 'Server error. Please try again later.'}), 500
+        logging.critical(f"Server error during login: {str(e)}", exc_info=True)  # Log the critical error with traceback
+        return jsonify({'error': 'Server error. Please try again later.', 'details': str(e)}), 500
 
 @auth_bp.route("/request-reset", methods=['POST'])
 def request_reset():
     try:
         data = request.get_json()
         email = data.get('email')
+        logging.debug(f"Password reset request for email: {email}")  # Log the request data
         
         if not email:
+            logging.warning("Email is required for password reset")  # Log a warning
             return jsonify({'error': 'Email is required'}), 400
         
         try:
@@ -140,12 +165,12 @@ def request_reset():
             result = supabase.table('users').select('*').eq('email', email).execute()
             
             if len(result.data) == 0:
-                # Don't reveal if email exists or not
+                logging.warning(f"Email not found: {email}")  # Log a warning
                 return jsonify({'message': 'If the email exists, a reset token will be sent'}), 200
             
             # Generate reset token
             reset_token = token_urlsafe(32)
-            print(f"Generated token: {reset_token} for email: {email}")  # Debug print
+            logging.debug(f"Generated reset token: {reset_token} for email: {email}")  # Log a debug message
             
             # Store token with expiry (1 hour)
             reset_tokens[reset_token] = {
@@ -160,12 +185,12 @@ def request_reset():
             }), 200
             
         except Exception as db_error:
-            print(f"Database error: {str(db_error)}")
-            return jsonify({'error': 'Failed to process reset request'}), 500
+            logging.error(f"Database error during password reset request: {str(db_error)}", exc_info=True)  # Log the error with traceback
+            return jsonify({'error': 'Failed to process reset request', 'details': str(db_error)}), 500
             
     except Exception as e:
-        print(f"Server error: {str(e)}")
-        return jsonify({'error': 'Server error'}), 500
+        logging.critical(f"Server error during password reset request: {str(e)}", exc_info=True)  # Log the critical error with traceback
+        return jsonify({'error': 'Server error', 'details': str(e)}), 500
 
 @auth_bp.route("/reset-password", methods=['POST'])
 def reset_password():
@@ -173,8 +198,10 @@ def reset_password():
         data = request.get_json()
         email = data.get('email')
         new_password = data.get('newPassword')
+        logging.debug(f"Password reset request for email: {email}")  # Log the request data
         
         if not email or not new_password:
+            logging.warning("Email and new password are required for password reset")  # Log a warning
             return jsonify({'error': 'Email and new password are required'}), 400
         
         try:
@@ -182,36 +209,41 @@ def reset_password():
             result = supabase.table('users').select('*').eq('email', email).execute()
             
             if len(result.data) == 0:
+                logging.warning(f"Email not found: {email}")  # Log a warning
                 return jsonify({'error': 'Email not found'}), 404
             
             # Hash the new password
             hashed_password = hash_password(new_password)
+            logging.debug("New password hashed successfully")  # Log a debug message
             
             # Update password in database
             result = supabase.table('users').update({
                 'password': hashed_password
             }).eq('email', email).execute()
+            logging.info(f"Password updated for email: {email}")  # Log an info message
             
             return jsonify({'message': 'Password updated successfully'}), 200
             
         except Exception as db_error:
-            print(f"Database error: {str(db_error)}")
-            return jsonify({'error': 'Failed to update password'}), 500
+            logging.error(f"Database error during password reset: {str(db_error)}", exc_info=True)  # Log the error with traceback
+            return jsonify({'error': 'Failed to update password', 'details': str(db_error)}), 500
             
     except Exception as e:
-        print(f"Server error: {str(e)}")
-        return jsonify({'error': 'Server error'}), 500
+        logging.critical(f"Server error during password reset: {str(e)}", exc_info=True)  # Log the critical error with traceback
+        return jsonify({'error': 'Server error', 'details': str(e)}), 500
 
 @auth_bp.route("/test-db", methods=['GET'])
 def test_db():
     try:
         # Try to fetch a single row from users table
         response = supabase.table('users').select("*").limit(1).execute()
+        logging.info("Database connection test successful")  # Log an info message
         return jsonify({
             "message": "Database connection successful",
             "status": "connected"
         })
     except Exception as e:
+        logging.error(f"Database connection test failed: {str(e)}", exc_info=True)  # Log the error with traceback
         return jsonify({
             "message": f"Database connection failed: {str(e)}",
             "status": "error"
@@ -229,16 +261,25 @@ def test_insert():
             'password': 'password123'
         }
         
-        print("Testing insert with data:", test_data)
+        logging.debug(f"Testing insert with data: {test_data}")  # Log the request data
         result = supabase.table('users').insert(test_data).execute()
-        print("Insert result:", result)
+        logging.info("Test insert successful")  # Log an info message
         
         return jsonify({
             'message': 'Test insert successful',
             'result': result.data
         })
     except Exception as e:
-        print(f"Test insert error: {type(e).__name__}", str(e))
+        logging.error(f"Test insert failed: {str(e)}", exc_info=True)  # Log the error with traceback
         return jsonify({
             'error': f'Test insert failed: {str(e)}'
         }), 500
+
+def init_routes(bp):
+    bp.route("/home", methods=['GET'])(return_home)
+    bp.route("/signup", methods=['POST'])(signup)
+    bp.route("/login", methods=['POST'])(login)
+    bp.route("/request-reset", methods=['POST'])(request_reset)
+    bp.route("/reset-password", methods=['POST'])(reset_password)
+    bp.route("/test-db", methods=['GET'])(test_db)
+    bp.route("/test-insert", methods=['GET'])(test_insert)
