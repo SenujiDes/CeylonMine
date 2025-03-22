@@ -224,20 +224,32 @@
 //     </div>
 //   );
 // }
-
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import Navbar from "../navbar/page";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useScroll } from "framer-motion";
 import * as THREE from "three";
-import Image from "next/image";
-import Link from "next/link";
 
-// Import the Map and MapDetails components
-import Map from "./map";
-import MapDetails from "./mapDetails";
+// Import the Map component - use type assertion to fix type issues
+import MapComponent from "./map";
+const Map = MapComponent as React.ComponentType<{ isDarkMode: boolean }>;
+
+// Add MapDetails component
+interface MapDetailsProps {
+  isDarkMode: boolean;
+}
+
+const MapDetails: React.FC<MapDetailsProps> = ({ isDarkMode }) => {
+  return (
+    <div className={`container mx-auto px-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+      <h2 className="text-2xl font-bold mb-4">Mining Details</h2>
+      <p className="mb-4">Information about mining activities in Sri Lanka.</p>
+      {/* Add more details as needed */}
+    </div>
+  );
+};
 
 export default function MapPage() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -347,14 +359,16 @@ export default function MapPage() {
     };
   }, [isDarkMode]);
 
-  // Scroll animations
-  const { scrollYProgress } = useScroll({
+  // Initialize scroll ref for future use
+  useScroll({
     target: scrollRef,
     offset: ["start start", "end end"],
   });
-  const rotateX = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  const rotateY = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
+
+  // Tab switching function
+  const handleTabChange = (tab: "map" | "details") => {
+    setActiveTab(tab);
+  };
 
   return (
     <div
@@ -374,30 +388,32 @@ export default function MapPage() {
 
       <Navbar />
 
-      {/* Tab Buttons */}
-      <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 flex space-x-4">
-        <button
-          onClick={() => setActiveTab("map")}
-          className={`px-6 py-2 rounded-full font-medium transition-all ${
-            activeTab === "map"
-              ? "bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg"
-              : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50"
-          }`}
-        >
-          Map
-        </button>
-        <button
-          onClick={() => setActiveTab("details")}
-          className={`px-6 py-2 rounded-full font-medium transition-all ${
-            activeTab === "details"
-              ? "bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg"
-              : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50"
-          }`}
-        >
-          Map Details
-        </button>
+      {/* Tab Navigation */}
+      <div className="relative z-10 container mx-auto px-4 pt-24">
+        <div className="flex space-x-4 mb-6">
+          <button
+            className={`px-4 py-2 rounded ${
+              activeTab === "map"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 text-gray-800"
+            }`}
+            onClick={() => handleTabChange("map")}
+          >
+            Map View
+          </button>
+          <button
+            className={`px-4 py-2 rounded ${
+              activeTab === "details"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 text-gray-800"
+            }`}
+            onClick={() => handleTabChange("details")}
+          >
+            Details
+          </button>
+        </div>
       </div>
-
+      
       {/* Content Container */}
       <div className="relative z-10 pt-32 pb-16">
         {/* Render Map or MapDetails based on activeTab */}

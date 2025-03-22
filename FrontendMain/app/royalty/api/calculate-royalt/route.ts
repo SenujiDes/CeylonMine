@@ -5,7 +5,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     
     // Call your Flask backend here
-    const response = await fetch('http://your-flask-backend/api/calculate-royalty', {
+    const response = await fetch('http://127.0.0.1:5000/royalty/calculate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

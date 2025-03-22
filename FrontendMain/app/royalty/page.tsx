@@ -82,22 +82,73 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
-import Image from "next/image";
+// import Image from "next/image"; // Commented out unused import
 import Link from "next/link";
 import RoyaltyCalculator from "../components/RoyaltyCalculator";
 import UserGreeting from "../components/UserGreeting";
 import MiningStats from "../components/MiningStats";
 import ErrorBoundary from '../components/ErrorBoundary';
 import Navbar from "../navbar/page";
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll } from 'framer-motion'; // Removed unused useTransform
 import * as THREE from 'three';
+
+// Define translation types
+type TranslationLanguage = 'en' | 'si';
+
+interface TranslationStrings {
+  miningStatistics: string;
+  royaltyCalculator: string;
+  copyright: string;
+  terms: string;
+  privacy: string;
+  contact: string;
+  homeTitle: string;
+  homeDescription: string;
+}
+
+interface Translations {
+  en: TranslationStrings;
+  si: TranslationStrings;
+}
+
+// Define event types
+interface ThemeChangeEvent extends Event {
+  detail: {
+    isDarkMode: boolean;
+  };
+}
+
+interface LanguageChangeEvent extends Event {
+  detail: {
+    language: TranslationLanguage;
+  };
+}
+
+// Define mining stats type
+interface MiningStatsType {
+  explosiveQuantity: number;
+  blastedVolume: number;
+  totalRoyalty: number;
+  dueDate: string;
+  lastCalculated: string;
+}
+
+// Define calculation data type
+interface CalculationData {
+  calculations: {
+    total_explosive_quantity: number;
+    blasted_rock_volume: number;
+    total_amount_with_vat: number;
+  };
+  calculation_date: string;
+}
 
 export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [language, setLanguage] = useState('en');
-  const canvasRef = useRef(null);
-  const scrollRef = useRef(null);
-  const [miningStats, setMiningStats] = useState({
+  const [language, setLanguage] = useState<TranslationLanguage>('en');
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [miningStats, setMiningStats] = useState<MiningStatsType>({
     explosiveQuantity: 0,
     blastedVolume: 0,
     totalRoyalty: 0,
@@ -106,12 +157,14 @@ export default function Home() {
   });
 
   useEffect(() => {
-    const handleThemeChange = (event) => {
-      setIsDarkMode(event.detail.isDarkMode);
+    const handleThemeChange = (event: Event) => {
+      const typedEvent = event as ThemeChangeEvent;
+      setIsDarkMode(typedEvent.detail.isDarkMode);
     };
 
-    const handleLanguageChange = (event) => {
-      setLanguage(event.detail.language);
+    const handleLanguageChange = (event: Event) => {
+      const typedEvent = event as LanguageChangeEvent;
+      setLanguage(typedEvent.detail.language);
     };
 
     window.addEventListener('themeChange', handleThemeChange);
@@ -186,7 +239,7 @@ export default function Home() {
     let mouseX = 0;
     let mouseY = 0;
 
-    function onDocumentMouseMove(event) {
+    function onDocumentMouseMove(event: MouseEvent) {
       mouseX = (event.clientX - window.innerWidth / 2) / 100;
       mouseY = (event.clientY - window.innerHeight / 2) / 100;
     }
@@ -226,12 +279,13 @@ export default function Home() {
     };
   }, [isDarkMode]);
 
-  const { scrollYProgress } = useScroll({
+  // Using useScroll hook but ignoring the returned scrollYProgress as it's not needed
+  useScroll({
     target: scrollRef,
     offset: ["start start", "end end"],
   });
 
-  const handleRoyaltyCalculated = (data) => {
+  const handleRoyaltyCalculated = (data: CalculationData) => {
     setMiningStats({
       explosiveQuantity: data.calculations.total_explosive_quantity,
       blastedVolume: data.calculations.blasted_rock_volume,
@@ -241,14 +295,14 @@ export default function Home() {
     });
   };
 
-  const handleDueDateChange = (date) => {
+  const handleDueDateChange = (date: Date) => {
     setMiningStats(prev => ({
       ...prev,
       dueDate: date.toISOString()
     }));
   };
 
-  const translations = {
+  const translations: Translations = {
     en: {
       miningStatistics: "Mining Statistics",
       royaltyCalculator: "Mining Royalty Calculator",

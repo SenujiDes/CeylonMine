@@ -5,16 +5,59 @@
 // import Navbar from "../navbar/page";
 // import { motion, useScroll, useTransform } from 'framer-motion';
 // import * as THREE from 'three';
+// import Link from 'next/link';
 
 // export default function AboutUs() {
 //   const [isDarkMode, setIsDarkMode] = useState(true);
 //   const canvasRef = useRef(null);
 //   const scrollRef = useRef(null);
 
-//   // Toggle dark/light mode
+//   // Load theme from localStorage on initial render
+//   useEffect(() => {
+//     const savedTheme = localStorage.getItem('theme');
+//     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+//     if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+//       setIsDarkMode(true);
+//       document.documentElement.classList.add('dark');
+//     } else {
+//       setIsDarkMode(false);
+//       document.documentElement.classList.remove('dark');
+//     }
+
+//     // Add event listener for theme changes from navbar
+//     const handleThemeChange = (event) => {
+//       setIsDarkMode(event.detail.isDarkMode);
+//     };
+
+//     window.addEventListener('themeChange', handleThemeChange);
+
+//     // Cleanup event listener on component unmount
+//     return () => {
+//       window.removeEventListener('themeChange', handleThemeChange);
+//     };
+//   }, []);
+
+//   // Toggle dark/light mode - improved with immediate DOM update
 //   const toggleTheme = () => {
-//     setIsDarkMode(!isDarkMode);
-//     document.documentElement.classList.toggle('dark'); // Apply dark mode globally
+//     const newDarkMode = !isDarkMode;
+//     setIsDarkMode(newDarkMode);
+    
+//     // Update localStorage
+//     localStorage.setItem('theme', newDarkMode ? 'dark' : 'light');
+    
+//     // Update document class
+//     if (newDarkMode) {
+//       document.documentElement.classList.add('dark');
+//     } else {
+//       document.documentElement.classList.remove('dark');
+//     }
+    
+//     // Dispatch custom event for theme change (for other components)
+//     const event = new CustomEvent('themeChange', { 
+//       detail: { isDarkMode: newDarkMode } 
+//     });
+//     window.dispatchEvent(event);
 //   };
 
 //   // Scroll-based animations
@@ -33,9 +76,7 @@
 //       name: "Senuji De Silva",
 //       position: "Co-Founder & Lead Developer",
 //       image: "/images/senuji.png",
-      
 //       bio: "With a passion for innovation and sustainability, Senuji co-founded Ceylon Mine to modernize mining operations through technology. She leads the development of intelligent systems that optimize efficiency, transparency, and compliance in the industry.",
-      
 //       socialLinks: {
 //         linkedin: "#",
 //         twitter: "#",
@@ -56,7 +97,7 @@
 //     {
 //       id: 3,
 //       name: "Nisil Liyanage",
-//       position: "Software Architect & Backend Specialist ",
+//       position: "Software Architect & Backend Specialist",
 //       image: "/images/nisil2.jpg",
 //       bio: "Nisil specializes in developing scalable and secure infrastructures for enterprise applications. At Ceylon Mine, he focuses on building a reliable, data-driven platform that enhances efficiency in mining operations.",
 //       socialLinks: {
@@ -69,7 +110,7 @@
 //       name: "Thisal Induwara",
 //       position: "Frontend Engineer & UI/UX Developer",
 //       image: "/images/thisal2.png",
-//       bio: "With expertise in regulatory frameworks and environmental sustainability, Thisal ensures Ceylon Mine aligns with industry best practices. He integrates compliance tracking and environmental safeguards into the platform’s core functionality.",
+//       bio: "With expertise in regulatory frameworks and environmental sustainability, Thisal ensures Ceylon Mine aligns with industry best practices. He integrates compliance tracking and environmental safeguards into the platform's core functionality.",
 //       socialLinks: {
 //         linkedin: "#",
 //         instagram: "#"
@@ -78,7 +119,7 @@
 //     {
 //       id: 5,
 //       name: "Janindu Amaraweera",
-//       position: "AI & Data Systems Engineerr",
+//       position: "AI & Data Systems Engineer",
 //       image: "/images/janidu.jpg",
 //       bio: "Janindu is committed to making Ceylon Mine an intuitive and engaging platform. He designs user-friendly interfaces that simplify complex mining processes, ensuring accessibility for all stakeholders.",
 //       socialLinks: {
@@ -90,7 +131,7 @@
 //     {
 //       id: 6,
 //       name: "Minidu Thiranjaya",
-//       position: "Frontend Engineer & UI/UX Developert",
+//       position: "Frontend Engineer & UI/UX Developer",
 //       image: "/images/minidupng.png",
 //       bio: "Minidu harnesses the power of AI and big data to drive intelligent decision-making at Ceylon Mine. His expertise enhances automation, real-time insights, and predictive analytics for a smarter mining ecosystem.",
 //       socialLinks: {
@@ -101,41 +142,40 @@
 //   ];
 
 //   // Company milestones
-// const milestones = [
-//   {
-//     year: "2024",
-//     title: "Conceptualization & Problem Identification",
-//     description: "CeylonMine was conceived to tackle critical challenges in Sri Lanka’s mining sector, focusing on outdated processes, illegal mining, and environmental degradation."
-//   },
-//   {
-//     year: "2024",
-//     title: "In-depth Research & Literature Review",
-//     description: "The team conducted extensive research on global mining practices and digital solutions, laying the foundation for a centralized platform to modernize mining operations."
-//   },
-//   {
-//     year: "2024",
-//     title: "Design & Planning Phase",
-//     description: "Adopting a hybrid methodology, the team defined the system architecture, key functionalities, and resource requirements to streamline licensing and automate royalty calculations."
-//   },
-//   {
-//     year: "2024",
-//     title: "Prototype Development",
-//     description: "The initial prototype of CeylonMine was built, integrating digital licensing, centralized data management, and GIS mapping for real-time monitoring."
-//   },
-//   {
-//     year: "2025",
-//     title: "Pilot Testing & Iterative Improvements",
-//     description: "Rigorous testing and stakeholder feedback helped refine the platform’s functionalities, ensuring enhanced transparency, compliance, and efficiency."
-//   },
-//   {
-//     year: "2025",
-//     title: "Full Implementation & Future Vision",
-//     description: "CeylonMine was successfully implemented, marking a digital revolution in mining regulation with plans for further enhancements and sustainability initiatives."
-//   }
-// ];
+//   const milestones = [
+//     {
+//       year: "2024",
+//       title: "Conceptualization & Problem Identification",
+//       description: "CeylonMine was conceived to tackle critical challenges in Sri Lanka's mining sector, focusing on outdated processes, illegal mining, and environmental degradation."
+//     },
+//     {
+//       year: "2024",
+//       title: "In-depth Research & Literature Review",
+//       description: "The team conducted extensive research on global mining practices and digital solutions, laying the foundation for a centralized platform to modernize mining operations."
+//     },
+//     {
+//       year: "2024",
+//       title: "Design & Planning Phase",
+//       description: "Adopting a hybrid methodology, the team defined the system architecture, key functionalities, and resource requirements to streamline licensing and automate royalty calculations."
+//     },
+//     {
+//       year: "2024",
+//       title: "Prototype Development",
+//       description: "The initial prototype of CeylonMine was built, integrating digital licensing, centralized data management, and GIS mapping for real-time monitoring."
+//     },
+//     {
+//       year: "2025",
+//       title: "Pilot Testing & Iterative Improvements",
+//       description: "Rigorous testing and stakeholder feedback helped refine the platform's functionalities, ensuring enhanced transparency, compliance, and efficiency."
+//     },
+//     {
+//       year: "2025",
+//       title: "Full Implementation & Future Vision",
+//       description: "CeylonMine was successfully implemented, marking a digital revolution in mining regulation with plans for further enhancements and sustainability initiatives."
+//     }
+//   ];
 
-
-//   // Initialize 3D sand effect (same as in the home page)
+//   // Initialize and update 3D sand effect based on theme
 //   useEffect(() => {
 //     if (!canvasRef.current) return;
 
@@ -162,10 +202,10 @@
     
 //     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     
-//     // Create sand material
+//     // Create sand material with color based on theme
 //     const particlesMaterial = new THREE.PointsMaterial({
 //       size: 0.005,
-//       color: 0xD2B48C, // Sand color
+//       color: isDarkMode ? 0xD2B48C : 0xFFD700, // Sand color changes based on theme
 //       transparent: true,
 //       blending: THREE.AdditiveBlending,
 //     });
@@ -197,6 +237,20 @@
     
 //     window.addEventListener('resize', onWindowResize);
     
+//     // Update particle color when theme changes
+//     const updateParticleColor = () => {
+//       if (particlesMaterial) {
+//         particlesMaterial.color.set(isDarkMode ? 0xD2B48C : 0xFFD700);
+//       }
+//     };
+
+//     // Listen for theme changes
+//     const themeChangeListener = () => {
+//       updateParticleColor();
+//     };
+    
+//     window.addEventListener('themeChange', themeChangeListener);
+    
 //     // Animation loop
 //     const animate = () => {
 //       requestAnimationFrame(animate);
@@ -213,12 +267,21 @@
     
 //     animate();
     
+//     // Make sure to update particle color when theme changes
+//     updateParticleColor();
+    
 //     // Cleanup
 //     return () => {
 //       document.removeEventListener('mousemove', onDocumentMouseMove);
 //       window.removeEventListener('resize', onWindowResize);
+//       window.removeEventListener('themeChange', themeChangeListener);
+      
+//       // Clean up Three.js resources
+//       particlesGeometry.dispose();
+//       particlesMaterial.dispose();
+//       renderer.dispose();
 //     };
-//   }, []);
+//   }, [isDarkMode]); // Add isDarkMode as a dependency to re-create scene when theme changes
 
 //   const SocialIcon = ({ platform }) => {
 //     switch (platform) {
@@ -246,7 +309,7 @@
 //   };
 
 //   return (
-//     <div className={`relative min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'} overflow-hidden`} ref={scrollRef}>
+//     <div className={`relative min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'} overflow-hidden transition-colors duration-300`} ref={scrollRef}>
 //       <Navbar />
 
 //       {/* 3D Sand Background */}
@@ -279,14 +342,14 @@
 //             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">OUR STORY</h1>
 //             <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
 //             <p className={`text-lg md:text-xl max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-//             Ceylon Mine was founded to revolutionize sustainable mining in Sri Lanka, balancing efficient mineral extraction with environmental responsibility for a greener future.
+//               Ceylon Mine was founded to revolutionize sustainable mining in Sri Lanka, balancing efficient mineral extraction with environmental responsibility for a greener future.
 //             </p>
 //           </motion.div>
 //         </div>
 //       </section>
 
 //       {/* Our Mission Section */}
-//       <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-gray-100'}`}>
+//       <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-gray-100'} transition-colors duration-300`}>
 //         <div className="container mx-auto px-4">
 //           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 //             <motion.div
@@ -298,10 +361,10 @@
 //               <h2 className="text-3xl md:text-4xl font-bold mb-6">OUR MISSION</h2>
 //               <div className="w-16 h-1 bg-orange-500 mb-8"></div>
 //               <p className={`text-lg mb-6 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-//               At Ceylon Mine, we are committed to transforming the mining industry through sustainable and responsible practices. Our goal is to extract valuable resources while preserving the environment, ensuring a balance between progress and conservation.
+//                 At Ceylon Mine, we are committed to transforming the mining industry through sustainable and responsible practices. Our goal is to extract valuable resources while preserving the environment, ensuring a balance between progress and conservation.
 //               </p>
 //               <p className={`text-lg mb-6 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-//               We are dedicated to innovation, ethical practices, and ensuring that Sri Lanka’s mineral wealth benefits both the industry and future generations.
+//                 We are dedicated to innovation, ethical practices, and ensuring that Sri Lanka's mineral wealth benefits both the industry and future generations.
 //               </p>
 //               <div className="flex space-x-4 mt-8">
 //                 <motion.button 
@@ -332,83 +395,82 @@
 //                 alt="ceylon" 
 //                 className="w-full h-full object-cover"
 //               />
-//               <div className={`absolute inset-0 ${isDarkMode ? 'bg-orange-500' : 'bg-orange-400'} opacity-20`}></div>
+//               <div className={`absolute inset-0 ${isDarkMode ? 'bg-orange-500' : 'bg-orange-400'} opacity-20 transition-colors duration-300`}></div>
 //             </motion.div>
 //           </div>
 //         </div>
 //       </section>
 
 //       {/* Values Section */}
-//       <section className="relative z-10 py-16">
-//   <div className="container mx-auto px-4">
-//     <motion.div 
-//       className="text-center mb-16"
-//       initial={{ opacity: 0, y: 20 }}
-//       whileInView={{ opacity: 1, y: 0 }}
-//       transition={{ duration: 0.8 }}
-//       viewport={{ once: true }}
-//     >
-//       <h2 className="text-3xl md:text-5xl font-bold mb-6">OUR VALUES</h2>
-//       <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-//       <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-//         The core principles that drive CeylonMine’s digital revolution in the mining industry.
-//       </p>
-//     </motion.div>
+//       <section className="relative z-10 py-16 transition-colors duration-300">
+//         <div className="container mx-auto px-4">
+//           <motion.div 
+//             className="text-center mb-16"
+//             initial={{ opacity: 0, y: 20 }}
+//             whileInView={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.8 }}
+//             viewport={{ once: true }}
+//           >
+//             <h2 className="text-3xl md:text-5xl font-bold mb-6">OUR VALUES</h2>
+//             <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
+//             <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+//               The core principles that drive CeylonMine's digital revolution in the mining industry.
+//             </p>
+//           </motion.div>
 
-//     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-//       {[
-//         {
-//           icon: "🔍",
-//           title: "TRANSPARENCY & ACCOUNTABILITY",
-//           description: "Our platform ensures clear, data-driven processes for mining licensing and royalty calculations, building trust among all stakeholders."
-//         },
-//         {
-//           icon: "⚙️",
-//           title: "EFFICIENCY & AUTOMATION",
-//           description: "By digitizing manual processes, we streamline operations, reduce errors, and save valuable time for regulators and miners alike."
-//         },
-//         {
-//           icon: "🌿",
-//           title: "SUSTAINABILITY",
-//           description: "Committed to eco-friendly practices, we promote sustainable mining that preserves natural resources and protects the environment."
-//         },
-//         {
-//           icon: "💡",
-//           title: "INNOVATION",
-//           description: "Leveraging cutting-edge technologies like GIS, AI, and real-time analytics, we continuously transform mining operations for a modern era."
-//         },
-//         {
-//           icon: "🤝",
-//           title: "COLLABORATION",
-//           description: "We work closely with industry stakeholders, regulators, and local communities to drive continuous improvement and foster shared success."
-//         },
-//         {
-//           icon: "📈",
-//           title: "DATA-DRIVEN DECISION MAKING",
-//           description: "Centralized data and advanced analytics empower us to make informed decisions that enhance regulatory oversight and operational performance."
-//         }
-//       ].map((value, index) => (
-//         <motion.div 
-//           key={index}
-//           className={`rounded-lg p-8 text-center ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white'} shadow-lg`}
-//           initial={{ opacity: 0, y: 30 }}
-//           whileInView={{ opacity: 1, y: 0 }}
-//           transition={{ duration: 0.5, delay: index * 0.1 }}
-//           viewport={{ once: true }}
-//           whileHover={{ y: -10, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)" }}
-//         >
-//           <div className="text-4xl mb-4">{value.icon}</div>
-//           <h3 className="text-xl font-bold mb-4">{value.title}</h3>
-//           <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{value.description}</p>
-//         </motion.div>
-//       ))}
-//     </div>
-//   </div>
-// </section>
-
+//           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+//             {[
+//               {
+//                 icon: "🔍",
+//                 title: "TRANSPARENCY & ACCOUNTABILITY",
+//                 description: "Our platform ensures clear, data-driven processes for mining licensing and royalty calculations, building trust among all stakeholders."
+//               },
+//               {
+//                 icon: "⚙️",
+//                 title: "EFFICIENCY & AUTOMATION",
+//                 description: "By digitizing manual processes, we streamline operations, reduce errors, and save valuable time for regulators and miners alike."
+//               },
+//               {
+//                 icon: "🌿",
+//                 title: "SUSTAINABILITY",
+//                 description: "Committed to eco-friendly practices, we promote sustainable mining that preserves natural resources and protects the environment."
+//               },
+//               {
+//                 icon: "💡",
+//                 title: "INNOVATION",
+//                 description: "Leveraging cutting-edge technologies like GIS, AI, and real-time analytics, we continuously transform mining operations for a modern era."
+//               },
+//               {
+//                 icon: "🤝",
+//                 title: "COLLABORATION",
+//                 description: "We work closely with industry stakeholders, regulators, and local communities to drive continuous improvement and foster shared success."
+//               },
+//               {
+//                 icon: "📈",
+//                 title: "DATA-DRIVEN DECISION MAKING",
+//                 description: "Centralized data and advanced analytics empower us to make informed decisions that enhance regulatory oversight and operational performance."
+//               }
+//             ].map((value, index) => (
+//               <motion.div 
+//                 key={index}
+//                 className={`rounded-lg p-8 text-center ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white'} shadow-lg transition-colors duration-300`}
+//                 initial={{ opacity: 0, y: 30 }}
+//                 whileInView={{ opacity: 1, y: 0 }}
+//                 transition={{ duration: 0.5, delay: index * 0.1 }}
+//                 viewport={{ once: true }}
+//                 whileHover={{ y: -10, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)" }}
+//               >
+//                 <div className="text-4xl mb-4">{value.icon}</div>
+//                 <h3 className="text-xl font-bold mb-4">{value.title}</h3>
+//                 <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{value.description}</p>
+//               </motion.div>
+//             ))}
+//           </div>
+//         </div>
+//       </section>
 
 //       {/* Team Section */}
-//       <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-gray-100'}`}>
+//       <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-gray-100'} transition-colors duration-300`}>
 //         <div className="container mx-auto px-4">
 //           <motion.div 
 //             className="text-center mb-16"
@@ -420,7 +482,7 @@
 //             <h2 className="text-3xl md:text-5xl font-bold mb-6">MEET OUR TEAM</h2>
 //             <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
 //             <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-//               The passionate individuals behind Mars Campers who are dedicated to bringing your adventures to life.
+//               The passionate individuals behind Ceylon Mine who are dedicated to bringing innovation to the mining industry.
 //             </p>
 //           </motion.div>
 
@@ -428,7 +490,7 @@
 //             {teamMembers.map((member, index) => (
 //               <motion.div 
 //                 key={member.id}
-//                 className={`rounded-lg overflow-hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}
+//                 className={`rounded-lg overflow-hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg transition-colors duration-300`}
 //                 initial={{ opacity: 0, y: 30 }}
 //                 whileInView={{ opacity: 1, y: 0 }}
 //                 transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -469,9 +531,9 @@
 //       </section>
 
 //       {/* Timeline/Milestones Section */}
-//       <section className="relative z-10 py-16">
+//       <section className="relative z-10 py-16 transition-colors duration-300">
 //         <div className="container mx-auto px-4">
-//           <motion.div 
+//         <motion.div 
 //             className="text-center mb-16"
 //             initial={{ opacity: 0, y: 20 }}
 //             whileInView={{ opacity: 1, y: 0 }}
@@ -481,94 +543,92 @@
 //             <h2 className="text-3xl md:text-5xl font-bold mb-6">OUR JOURNEY</h2>
 //             <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
 //             <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-//               From our humble beginnings to becoming a leader in the Australian camper trailer industry.
+//               Tracing our evolution from concept to a transformative platform for the mining industry.
 //             </p>
 //           </motion.div>
 
 //           <div className="relative">
-//             {/* Timeline Line */}
-//             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-orange-500 opacity-30"></div>
-            
-//             {/* Timeline Events */}
-//             <div className="relative z-10">
-//               {milestones.map((milestone, index) => (
-//                 <motion.div 
-//                   key={index}
-//                   className={`flex flex-col md:flex-row items-center mb-16 last:mb-0 ${
-//                     index % 2 === 0 ? 'md:flex-row-reverse' : ''
-//                   }`}
-//                   initial={{ opacity: 0, y: 30 }}
-//                   whileInView={{ opacity: 1, y: 0 }}
-//                   transition={{ duration: 0.5, delay: index * 0.1 }}
-//                   viewport={{ once: true }}
-//                 >
-//                   <div className="md:w-1/2 flex justify-center md:justify-end md:pr-12 mb-6 md:mb-0">
-//                     <div className={`p-8 rounded-lg ${isDarkMode ? 'bg-gray-900 bg-opacity-70' : 'bg-white'} shadow-lg max-w-md`}>
-//                       <h3 className="text-orange-500 text-2xl font-bold mb-2">{milestone.year}</h3>
-//                       <h4 className="text-xl font-bold mb-4">{milestone.title}</h4>
-//                       <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{milestone.description}</p>
-//                     </div>
+//             {/* Timeline line */}
+//             <div className={`absolute left-1/2 transform -translate-x-1/2 h-full w-1 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
+
+//             {/* Milestone items */}
+//             {milestones.map((milestone, index) => (
+//               <motion.div 
+//                 key={index}
+//                 className="relative mb-16 last:mb-0"
+//                 initial={{ opacity: 0, y: 30 }}
+//                 whileInView={{ opacity: 1, y: 0 }}
+//                 transition={{ duration: 0.5, delay: index * 0.1 }}
+//                 viewport={{ once: true }}
+//               >
+//                 <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center`}>
+//                   {/* Year indicator */}
+//                   <div className="md:w-1/2 mb-4 md:mb-0 flex justify-center">
+//                     <motion.div 
+//                       className={`relative z-10 py-2 px-6 rounded-full ${isDarkMode ? 'bg-orange-500' : 'bg-orange-400'} text-white font-bold text-xl shadow-lg`}
+//                       whileHover={{ scale: 1.1 }}
+//                     >
+//                       {milestone.year}
+//                     </motion.div>
 //                   </div>
                   
-//                   <div className="md:w-1/2 flex justify-center md:justify-start md:pl-12 relative">
-//                     <div className={`w-12 h-12 rounded-full ${isDarkMode ? 'bg-gray-900' : 'bg-white'} border-4 border-orange-500 flex items-center justify-center z-10`}>
-//                       <span className="text-orange-500 font-bold">{milestone.year.slice(-2)}</span>
-//                     </div>
+//                   {/* Center dot */}
+//                   <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full bg-orange-500 z-10 flex items-center justify-center">
+//                     <div className="w-3 h-3 rounded-full bg-white"></div>
 //                   </div>
-//                 </motion.div>
-//               ))}
-//             </div>
+                  
+//                   {/* Content */}
+//                   <div className="md:w-1/2">
+//                     <motion.div 
+//                       className={`p-6 rounded-lg shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
+//                       whileHover={{ y: -5, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)" }}
+//                     >
+//                       <h3 className="text-xl font-bold mb-3">{milestone.title}</h3>
+//                       <p className={`${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>{milestone.description}</p>
+//                     </motion.div>
+//                   </div>
+//                 </div>
+//               </motion.div>
+//             ))}
 //           </div>
 //         </div>
 //       </section>
 
-//       {/* Awards & Recognition Section */}
-      
-
-//       {/* Call to Action Section */}
-//       <section className="relative z-10 py-16">
+//       {/* Contact CTA Section */}
+//       <section className={`relative z-10 py-16 ${isDarkMode ? 'bg-gray-900 bg-opacity-80' : 'bg-orange-50'} transition-colors duration-300`}>
 //         <div className="container mx-auto px-4">
 //           <motion.div 
-//             className="text-center"
-//             initial={{ opacity: 0, y: 20 }}
-//             whileInView={{ opacity: 1, y: 0 }}
+//             className="text-center max-w-3xl mx-auto"
+//             initial={{ opacity: 0, scale: 0.9 }}
+//             whileInView={{ opacity: 1, scale: 1 }}
 //             transition={{ duration: 0.8 }}
 //             viewport={{ once: true }}
 //           >
-//             <h2 className="text-3xl md:text-5xl font-bold mb-6">READY TO REVOLUTIONIZE MINING?</h2>
-//             <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-//             <p className={`text-lg max-w-3xl mx-auto mb-12 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-//             Discover how CeylonMine’s cutting-edge digital platform streamlines licensing, automates royalty calculations, and promotes sustainable mining practices.
+//             <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Mining Operations?</h2>
+//             <p className={`text-lg mb-8 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
+//               Join us in revolutionizing the mining industry with sustainable practices and innovative technology.
 //             </p>
-//             <motion.button 
-//               className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-md font-medium transition-colors"
-//               whileHover={{ scale: 1.05 }}
-//               whileTap={{ scale: 0.95 }}
-//             >
-//              Discover CeylonMine
-//             </motion.button>
+          
+      
 //           </motion.div>
 //         </div>
 //       </section>
 
-//       {/* Footer */}
-//       <footer className={`relative z-10 py-8 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-800'}`}>
-//         <div className="container mx-auto px-4 text-center">
-//           <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`}>
-//             &copy; {new Date().getFullYear()} Ceylon Mine. All rights reserved.
-//           </p>
-//         </div>
-//       </footer>
+      
 //     </div>
 //   );
 // }
 
+
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import Navbar from "../navbar/page";
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll } from 'framer-motion';
 import * as THREE from 'three';
-import Link from 'next/link';
+import Image from 'next/image'; // Import Next.js Image component
+
+// Define the type for the CustomEvent detail
+type ThemeChangeEvent = CustomEvent<{ isDarkMode: boolean }>;
 
 export default function AboutUs() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -589,15 +649,15 @@ export default function AboutUs() {
     }
 
     // Add event listener for theme changes from navbar
-    const handleThemeChange = (event) => {
+    const handleThemeChange = (event: ThemeChangeEvent) => {
       setIsDarkMode(event.detail.isDarkMode);
     };
 
-    window.addEventListener('themeChange', handleThemeChange);
+    window.addEventListener('themeChange', handleThemeChange as EventListener);
 
     // Cleanup event listener on component unmount
     return () => {
-      window.removeEventListener('themeChange', handleThemeChange);
+      window.removeEventListener('themeChange', handleThemeChange as EventListener);
     };
   }, []);
 
@@ -628,9 +688,6 @@ export default function AboutUs() {
     target: scrollRef,
     offset: ["start start", "end end"],
   });
-
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
-  const scale = useTransform(scrollYProgress, [0, 0.2], [0.8, 1]);
 
   // Team members data
   const teamMembers = [
@@ -673,7 +730,7 @@ export default function AboutUs() {
       name: "Thisal Induwara",
       position: "Frontend Engineer & UI/UX Developer",
       image: "/images/thisal2.png",
-      bio: "With expertise in regulatory frameworks and environmental sustainability, Thisal ensures Ceylon Mine aligns with industry best practices. He integrates compliance tracking and environmental safeguards into the platform's core functionality.",
+      bio: "With expertise in regulatory frameworks and environmental sustainability, Thisal ensures Ceylon Mine aligns with industry best practices. He integrates compliance tracking and environmental safeguards into the platform&apos;s core functionality.",
       socialLinks: {
         linkedin: "#",
         instagram: "#"
@@ -709,7 +766,7 @@ export default function AboutUs() {
     {
       year: "2024",
       title: "Conceptualization & Problem Identification",
-      description: "CeylonMine was conceived to tackle critical challenges in Sri Lanka's mining sector, focusing on outdated processes, illegal mining, and environmental degradation."
+      description: "CeylonMine was conceived to tackle critical challenges in Sri Lanka&apos;s mining sector, focusing on outdated processes, illegal mining, and environmental degradation."
     },
     {
       year: "2024",
@@ -729,7 +786,7 @@ export default function AboutUs() {
     {
       year: "2025",
       title: "Pilot Testing & Iterative Improvements",
-      description: "Rigorous testing and stakeholder feedback helped refine the platform's functionalities, ensuring enhanced transparency, compliance, and efficiency."
+      description: "Rigorous testing and stakeholder feedback helped refine the platform&apos;s functionalities, ensuring enhanced transparency, compliance, and efficiency."
     },
     {
       year: "2025",
@@ -784,7 +841,7 @@ export default function AboutUs() {
     let mouseX = 0;
     let mouseY = 0;
     
-    function onDocumentMouseMove(event) {
+    function onDocumentMouseMove(event: MouseEvent) {
       mouseX = (event.clientX - window.innerWidth / 2) / 100;
       mouseY = (event.clientY - window.innerHeight / 2) / 100;
     }
@@ -812,7 +869,7 @@ export default function AboutUs() {
       updateParticleColor();
     };
     
-    window.addEventListener('themeChange', themeChangeListener);
+    window.addEventListener('themeChange', themeChangeListener as EventListener);
     
     // Animation loop
     const animate = () => {
@@ -837,7 +894,7 @@ export default function AboutUs() {
     return () => {
       document.removeEventListener('mousemove', onDocumentMouseMove);
       window.removeEventListener('resize', onWindowResize);
-      window.removeEventListener('themeChange', themeChangeListener);
+      window.removeEventListener('themeChange', themeChangeListener as EventListener);
       
       // Clean up Three.js resources
       particlesGeometry.dispose();
@@ -846,7 +903,7 @@ export default function AboutUs() {
     };
   }, [isDarkMode]); // Add isDarkMode as a dependency to re-create scene when theme changes
 
-  const SocialIcon = ({ platform }) => {
+  const SocialIcon = ({ platform }: { platform: string }) => {
     switch (platform) {
       case 'linkedin':
         return (
@@ -927,7 +984,7 @@ export default function AboutUs() {
                 At Ceylon Mine, we are committed to transforming the mining industry through sustainable and responsible practices. Our goal is to extract valuable resources while preserving the environment, ensuring a balance between progress and conservation.
               </p>
               <p className={`text-lg mb-6 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-                We are dedicated to innovation, ethical practices, and ensuring that Sri Lanka's mineral wealth benefits both the industry and future generations.
+                We are dedicated to innovation, ethical practices, and ensuring that Sri Lanka&apos;s mineral wealth benefits both the industry and future generations.
               </p>
               <div className="flex space-x-4 mt-8">
                 <motion.button 
@@ -953,10 +1010,12 @@ export default function AboutUs() {
               viewport={{ once: true }}
               className="relative aspect-square rounded-lg overflow-hidden"
             >
-              <img 
+              <Image 
                 src="/images/us.png" 
                 alt="ceylon" 
                 className="w-full h-full object-cover"
+                width={500}
+                height={500}
               />
               <div className={`absolute inset-0 ${isDarkMode ? 'bg-orange-500' : 'bg-orange-400'} opacity-20 transition-colors duration-300`}></div>
             </motion.div>
@@ -977,7 +1036,7 @@ export default function AboutUs() {
             <h2 className="text-3xl md:text-5xl font-bold mb-6">OUR VALUES</h2>
             <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
             <p className={`text-lg max-w-3xl mx-auto ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
-              The core principles that drive CeylonMine's digital revolution in the mining industry.
+              The core principles that drive CeylonMine&apos;s digital revolution in the mining industry.
             </p>
           </motion.div>
 
@@ -1061,10 +1120,12 @@ export default function AboutUs() {
                 whileHover={{ y: -10, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)" }}
               >
                 <div className="relative overflow-hidden aspect-square">
-                  <img 
+                  <Image 
                     src={member.image} 
                     alt={member.name} 
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                    width={500}
+                    height={500}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
                   <div className="absolute bottom-4 left-4 right-4">
@@ -1078,7 +1139,7 @@ export default function AboutUs() {
                     {Object.keys(member.socialLinks).map((platform) => (
                       <a 
                         key={platform} 
-                        href={member.socialLinks[platform]} 
+                        href={member.socialLinks[platform as keyof typeof member.socialLinks]} 
                         className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-orange-500'} transition-colors`}
                         aria-label={`${member.name}'s ${platform}`}
                       >
@@ -1171,13 +1232,9 @@ export default function AboutUs() {
             <p className={`text-lg mb-8 ${isDarkMode ? 'opacity-80' : 'opacity-90'}`}>
               Join us in revolutionizing the mining industry with sustainable practices and innovative technology.
             </p>
-          
-      
           </motion.div>
         </div>
       </section>
-
-      
     </div>
   );
 }
