@@ -146,7 +146,6 @@ export default function ComplaintsPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-[var(--foreground)]">
-                  <th className="text-left py-4 px-6">ID</th>
                   <th className="text-left py-4 px-6">Date</th>
                   <th className="text-left py-4 px-6">Email</th>
                   <th className="text-left py-4 px-6">Project</th>
@@ -158,7 +157,6 @@ export default function ComplaintsPage() {
               <tbody>
                 {complaints.map((complaint) => (
                   <tr key={complaint.id} className="border-b border-[var(--foreground)] opacity-70">
-                    <td className="py-4 px-6">#{complaint.id.slice(0, 8)}</td>
                     <td className="py-4 px-6">
                       {new Date(complaint.created_at).toLocaleDateString()}
                     </td>
