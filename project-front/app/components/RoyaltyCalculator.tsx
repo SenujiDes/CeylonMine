@@ -313,7 +313,7 @@ export default function RoyaltyCalculator({ onCalculated, onSaveCalculation }: R
         <h2 className="text-xl font-semibold">Royalty Calculator</h2>
         <button
           onClick={() => setShowConstantsEditor(!showConstantsEditor)}
-          className="px-6 py-3 bg-purple-400 hover:bg-purple-500 rounded-md text-base font-medium transition-colors flex items-center space-x-2"
+          className="px-6 py-3 bg-purple-300 hover:bg-purple-500 rounded-md text-base font-medium transition-colors flex items-center space-x-2 text-gray-800"
         >
           <span>{showConstantsEditor ? 'Hide Constants' : 'Edit Constant Royalty Values'}</span>
           {!showConstantsEditor && <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -497,7 +497,7 @@ export default function RoyaltyCalculator({ onCalculated, onSaveCalculation }: R
         <button
           type="submit"
           disabled={loading}
-          className="w-full md:w-auto px-6 py-3 bg-blue-400 hover:bg-blue-500 rounded-md font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full md:w-auto px-6 py-3 bg-blue-300 hover:bg-blue-500 rounded-md font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-800"
         >
           {loading ? 'Calculating...' : 'Calculate Royalty'}
         </button>
