@@ -1,29 +1,12 @@
-import os
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-from secrets import token_urlsafe
-from datetime import datetime, timedelta
-from dotenv import load_dotenv
+from flask import Blueprint, jsonify, request
 from supabase import create_client
+from datetime import datetime, timedelta
+from secrets import token_urlsafe
 import bcrypt
+import os
 
-load_dotenv()
 
-app = Flask(__name__)
-CORS(app)
-
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-
-if not SUPABASE_URL or not SUPABASE_KEY:
-    raise ValueError("Missing Supabase credentials. Check your .env file.")
-
-try:
-    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-    print("Successfully connected to Supabase!")
-except Exception as e:
-    print(f"Error connecting to Supabase: {str(e)}")
-    raise e
+auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 
 # Store reset tokens with expiry (in memory - will be cleared when server restarts)
 reset_tokens = {}
@@ -263,4 +246,3 @@ def test_insert():
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)
-    
