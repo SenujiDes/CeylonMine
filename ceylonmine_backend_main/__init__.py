@@ -32,7 +32,7 @@ def create_app(config_class=Config):
     contact_bp = Blueprint('contact', __name__,url_prefix='/contact')
     minerpage_bp = Blueprint('minerpage', __name__, url_prefix='/miner')
     unlicensedminer_bp = Blueprint('unlicensedminer', __name__, url_prefix='/unlicensedminer')
-    auth_bp = Blueprint('auth', __name__, url_prefix='/api')
+    auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
     # Register the routes with the blueprints
     complain.init_routes(complaints_bp)
