@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from supabase import create_client, Client
 from config import Config
 from datetime import datetime, timedelta
@@ -12,16 +12,25 @@ def calculate_expiration_date(start_date, period_of_validation):
     expiration_date = start_date + timedelta(days=365 * years)  # Add years to the start date
     return expiration_date
 
-# Endpoint to fetch license status and expiry date
+# Endpoint to fetch license status, license number, and expiry date
 @miner_bp.route('/license', methods=['GET'])
 def get_license():
     try:
-        # Get the userId of the currently logged-in user (assuming it's passed in the request headers)
+        # Get the userId of the currently logged-in user (passed in the request headers)
         user_id = request.headers.get('User-ID')
         if not user_id:
             return jsonify({"error": "User ID is required"}), 400
 
-        # Fetch the exploration_license_no and period_of_validation from the 'application' table using the userId
+        # Fetch license status from the 'users' table
+        user_response = supabase.table('users').select("license_status, active_date").eq('userId', user_id).execute()
+        if not user_response.data:
+            return jsonify({"error": "User not found"}), 404
+
+        user_data = user_response.data[0]
+        license_status = user_data['license_status']
+        active_date_str = user_data.get('active_date')
+
+        # Fetch exploration_license_no and period_of_validation from the 'application' table
         application_response = supabase.table('application').select("exploration_license_no, period_of_validation").eq('userId', user_id).execute()
         if not application_response.data:
             return jsonify({"error": "No application found for the user"}), 404
@@ -30,15 +39,7 @@ def get_license():
         exploration_license_no = application_data['exploration_license_no']
         period_of_validation = application_data.get('period_of_validation', '1 yr')  # Default to 1 year if not provided
 
-        # Fetch the active_date from the 'users' table for the logged-in user
-        user_response = supabase.table('users').select("active_date").eq('userId', user_id).execute()
-        if not user_response.data:
-            return jsonify({"error": "User not found"}), 404
-
-        user_data = user_response.data[0]
-        active_date_str = user_data.get('active_date')
-
-        # Calculate the expiry date
+        # Calculate expiry date
         if active_date_str:
             active_date = datetime.strptime(active_date_str, '%Y-%m-%d')
             expiry_date = calculate_expiration_date(active_date, period_of_validation)
@@ -46,11 +47,34 @@ def get_license():
             return jsonify({"error": "Active date is not available"}), 400
 
         return jsonify({
-            "license_status": "Active",  # Assuming the license is active if we have an active_date
+            "license_status": license_status,
             "license_number": exploration_license_no,
             "active_date": active_date_str,
             "period_of_validation": period_of_validation,
             "expires": expiry_date.strftime('%Y-%m-%d')  # Format expiry date
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Endpoint to fetch royalty amount due
+@miner_bp.route('/royalty', methods=['GET'])
+def get_royalty():
+    try:
+        # Get the userId of the currently logged-in user
+        user_id = request.headers.get('User-ID')
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
+
+        # Fetch total_royalty from the 'royalty' table
+        royalty_response = supabase.table('royalty').select("total_royalty").eq('userId', user_id).execute()
+        if not royalty_response.data:
+            return jsonify({"error": "No royalty data found for the user"}), 404
+
+        royalty_data = royalty_response.data[0]
+        royalty_amount_due = royalty_data['total_royalty']
+
+        return jsonify({
+            "royalty_amount_due": royalty_amount_due
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -69,7 +93,7 @@ def get_announcements():
 # Function to initialize routes
 def init_routes(bp):
     global supabase
-    supabase = init_supabase(bp.app)
-    bp.add_url_rule('/royalty', view_func=get_royalty)
+    supabase = create_client(Config.SUPABASE_URL, Config.SUPABASE_KEY)  # Initialize Supabase client
     bp.add_url_rule('/license', view_func=get_license)
+    bp.add_url_rule('/royalty', view_func=get_royalty)
     bp.add_url_rule('/announcements', view_func=get_announcements)
