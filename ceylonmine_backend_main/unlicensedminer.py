@@ -5,7 +5,7 @@ from flask import Blueprint
 
 unlicensedminer_bp = Blueprint('unlicensedminer', __name__, url_prefix='/unlicensedminer')
 
-@minerpage_bp.route('/status', methods=['GET'])
+@unlicensedminer_bp.route('/status', methods=['GET'])
 def get_user_status():
     # Assuming you have a way to identify the logged-in user, e.g., through a session or token
     user_id = request.args.get('user_id')  # You might get this from a session or token in a real scenario
@@ -21,7 +21,7 @@ def get_user_status():
     else:
         return jsonify({"error": "User not found"}), 404
 
-@minerpage_bp.route('/announcements', methods=['GET'])
+@unlicensedminer_bp.route('/announcements', methods=['GET'])
 def get_announcements():
     user_id = request.args.get('user_id')  # from a session or token
 
@@ -40,5 +40,3 @@ def get_announcements():
 def init_routes(bp):
     bp.route('/status', methods=['GET'])(get_user_status)
     bp.route('/announcements', methods=['GET'])(get_announcements)
-
-    return app
