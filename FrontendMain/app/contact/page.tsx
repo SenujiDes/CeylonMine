@@ -339,7 +339,7 @@ export default function Contact() {
                           ? 'bg-gray-800 border border-gray-700 focus:border-orange-500' 
                           : 'bg-gray-50 border border-gray-200 focus:border-orange-500'
                       }`}
-                      placeholder="John Doe"
+                      placeholder="your full name"
                       required
                     />
                   </div>
@@ -358,7 +358,7 @@ export default function Contact() {
                           ? 'bg-gray-800 border border-gray-700 focus:border-orange-500' 
                           : 'bg-gray-50 border border-gray-200 focus:border-orange-500'
                       }`}
-                      placeholder="john@example.com"
+                      placeholder="name@example.com"
                       required
                     />
                   </div>
