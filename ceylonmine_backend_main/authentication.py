@@ -258,48 +258,48 @@ def reset_password():
         logging.critical(f"Server error during password reset: {str(e)}", exc_info=True)  # Log the critical error with traceback
         return jsonify({'error': 'Server error', 'details': str(e)}), 500
 
-@auth_bp.route("/test-db", methods=['GET'])
-def test_db():
-    try:
-        # Try to fetch a single row from users table
-        response = supabase.table('users').select("*").limit(1).execute()
-        logging.info("Database connection test successful")  # Log an info message
-        return jsonify({
-            "message": "Database connection successful",
-            "status": "connected"
-        })
-    except Exception as e:
-        logging.error(f"Database connection test failed: {str(e)}", exc_info=True)  # Log the error with traceback
-        return jsonify({
-            "message": f"Database connection failed: {str(e)}",
-            "status": "error"
-        }), 500
+# @auth_bp.route("/test-db", methods=['GET'])
+# def test_db():
+#     try:
+#         # Try to fetch a single row from users table
+#         response = supabase.table('users').select("*").limit(1).execute()
+#         logging.info("Database connection test successful")  # Log an info message
+#         return jsonify({
+#             "message": "Database connection successful",
+#             "status": "connected"
+#         })
+#     except Exception as e:
+#         logging.error(f"Database connection test failed: {str(e)}", exc_info=True)  # Log the error with traceback
+#         return jsonify({
+#             "message": f"Database connection failed: {str(e)}",
+#             "status": "error"
+#         }), 500
 
-@auth_bp.route("/test-insert", methods=['GET'])
-def test_insert():
-    try:
-        # Try a simple insert
-        test_data = {
-            'first_name': 'Test',
-            'last_name': 'User',
-            'username': 'testuser',
-            'email': 'test@test.com',
-            'password': 'password123'
-        }
+# @auth_bp.route("/test-insert", methods=['GET'])
+# def test_insert():
+#     try:
+#         # Try a simple insert
+#         test_data = {
+#             'first_name': 'Test',
+#             'last_name': 'User',
+#             'username': 'testuser',
+#             'email': 'test@test.com',
+#             'password': 'password123'
+#         }
         
-        logging.debug(f"Testing insert with data: {test_data}")  # Log the request data
-        result = supabase.table('users').insert(test_data).execute()
-        logging.info("Test insert successful")  # Log an info message
+#         logging.debug(f"Testing insert with data: {test_data}")  # Log the request data
+#         result = supabase.table('users').insert(test_data).execute()
+#         logging.info("Test insert successful")  # Log an info message
         
-        return jsonify({
-            'message': 'Test insert successful',
-            'result': result.data
-        })
-    except Exception as e:
-        logging.error(f"Test insert failed: {str(e)}", exc_info=True)  # Log the error with traceback
-        return jsonify({
-            'error': f'Test insert failed: {str(e)}'
-        }), 500
+#         return jsonify({
+#             'message': 'Test insert successful',
+#             'result': result.data
+#         })
+#     except Exception as e:
+#         logging.error(f"Test insert failed: {str(e)}", exc_info=True)  # Log the error with traceback
+#         return jsonify({
+#             'error': f'Test insert failed: {str(e)}'
+#         }), 500
 
 def init_routes(bp):
     bp.route("/home", methods=['GET'])(return_home)
