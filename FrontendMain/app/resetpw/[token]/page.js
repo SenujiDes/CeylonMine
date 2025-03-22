@@ -40,6 +40,7 @@ function ResetPasswordPage() {
         setMessage(data.error || 'Password reset failed');
       }
     } catch (error) {
+      console.error(error);
       setMessage('Error connecting to server');
     }
   };

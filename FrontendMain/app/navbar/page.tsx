@@ -546,7 +546,7 @@ export default function Navbar() {
   const [language, setLanguage] = useState('en')     // Default language
   const [isLoggedIn, setIsLoggedIn] = useState(false) // Authentication state
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
-  const dropdownRef = useRef(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Scroll effect for background color
   useEffect(() => {

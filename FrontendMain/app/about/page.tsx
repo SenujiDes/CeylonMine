@@ -684,7 +684,7 @@ export default function AboutUs() {
   };
 
   // Scroll-based animations
-  const { scrollYProgress } = useScroll({
+  useScroll({
     target: scrollRef,
     offset: ["start start", "end end"],
   });

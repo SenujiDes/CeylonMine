@@ -185,7 +185,7 @@ export default function ComplaintForm() {
         confirmButtonText: "OK",
       });
       setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (error) {
+    } catch {
       Swal.fire({
         title: "Error!",
         text: "Something went wrong. Please try again.",

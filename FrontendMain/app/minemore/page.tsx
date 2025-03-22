@@ -679,12 +679,12 @@ import * as THREE from 'three';
 
 export default function MiningEducation() {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'techniques' | 'safety' | 'environmental' | 'technology'>('overview');
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const canvasRef = useRef(null);
-  const scrollRef = useRef(null);
-  const sceneRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
 
   // Get initial theme from localStorage on component mount
   useEffect(() => {
@@ -696,24 +696,24 @@ export default function MiningEducation() {
 
   // Listen for themeChange events from the Navbar component
   useEffect(() => {
-    const handleThemeChange = (event) => {
+    const handleThemeChange = (event: CustomEvent<{ isDarkMode: boolean }>) => {
       setIsDarkMode(event.detail.isDarkMode);
       updateThree(event.detail.isDarkMode);
     };
 
-    window.addEventListener('themeChange', handleThemeChange);
+    window.addEventListener('themeChange', handleThemeChange as EventListener);
     return () => {
-      window.removeEventListener('themeChange', handleThemeChange);
+      window.removeEventListener('themeChange', handleThemeChange as EventListener);
     };
   }, []);
 
   // Update THREE.js scene when theme changes
-  const updateThree = (isDark) => {
+  const updateThree = (isDark: boolean) => {
     if (sceneRef.current) {
       // Update THREE.js particle color based on theme
-      sceneRef.current.traverse((obj) => {
-        if (obj.type === 'Points' && obj.material) {
-          obj.material.color.set(isDark ? 0xD2B48C : 0x555555);
+      sceneRef.current.traverse((obj: THREE.Object3D) => {
+        if (obj instanceof THREE.Points && obj.material) {
+          (obj.material as THREE.PointsMaterial).color.set(isDark ? 0xD2B48C : 0x555555);
         }
       });
     }
@@ -915,7 +915,7 @@ export default function MiningEducation() {
 
     let mouseX = 0;
     let mouseY = 0;
-    function onDocumentMouseMove(event) {
+    function onDocumentMouseMove(event: MouseEvent) {
       mouseX = (event.clientX - window.innerWidth / 2) / 100;
       mouseY = (event.clientY - window.innerHeight / 2) / 100;
     }
@@ -943,7 +943,7 @@ export default function MiningEducation() {
       particlesMaterial.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [isDarkMode]); // Add isDarkMode to dependency array
 
   // Course slider navigation
   const nextSlide = () => {
@@ -1018,7 +1018,7 @@ export default function MiningEducation() {
             {Object.keys(educationSections).map((section) => (
               <motion.button
                 key={section}
-                onClick={() => { setActiveTab(section); setSearchQuery(""); }}
+                onClick={() => { setActiveTab(section as keyof typeof educationSections); setSearchQuery(""); }}
                 className={`px-4 py-2 rounded-lg transition-all duration-300 ${
                   activeTab === section
                     ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-black font-semibold'
@@ -1027,7 +1027,7 @@ export default function MiningEducation() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {educationSections[section].title}
+                {educationSections[section as keyof typeof educationSections].title}
               </motion.button>
             ))}
           </div>

@@ -9,11 +9,17 @@
 // import * as THREE from 'three';
 // import Link from 'next/link';
 
-// export default function ConstructorPage({ userName = 'User', royaltyAmount = '1,250.00', dueDate = 'March 15, 2025' }) {
+// export default function LicensedPage({ userName = 'User', royaltyAmount = '1,250.00', dueDate = 'March 15, 2025' }) {
 //   const [isDarkMode, setIsDarkMode] = useState(true);
 //   const [language, setLanguage] = useState('en');
 //   const canvasRef = useRef(null);
 //   const scrollRef = useRef(null);
+//   const [fileData, setFileData] = useState({
+//     file: null,
+//     description: ''
+//   });
+//   const [attachedFiles, setAttachedFiles] = useState([]);
+//   const [successMessage, setSuccessMessage] = useState('');
 
 //   useEffect(() => {
 //     const handleThemeChange = (event) => {
@@ -157,11 +163,14 @@
 //       licenseNumber: "License #",
 //       expires: "Expires",
 //       viewDetails: "View Details",
-//       quickActions: "Quick Actions",
-//       submitReport: "Submit Report",
-//       submitDescription: "Submit your monthly mining report",
-//       scheduleInspection: "Schedule Inspection",
-//       scheduleDescription: "Book your next site inspection",
+//       additionalDocuments: "Additional Documents",
+//       attachDescription: "Attach any additional documents or reports required for processing your license application.",
+//       fileDescription: "Document Description",
+//       attachFile: "Attach File",
+//       submit: "Submit",
+//       attachedDocuments: "Attached Documents",
+//       noAttachments: "No documents attached yet.",
+//       downloadFile: "Download",
 //       recentActivity: "Recent Activity",
 //       back: "Back to Dashboard",
 //       allRightsReserved: "All rights reserved."
@@ -177,11 +186,14 @@
 //       licenseNumber: "බලපත්‍ර අංකය",
 //       expires: "කල් ඉකුත් වන දිනය",
 //       viewDetails: "විස්තර බලන්න",
-//       quickActions: "ඉක්මන් ක්‍රියා",
-//       submitReport: "වාර්තාව ඉදිරිපත් කරන්න",
-//       submitDescription: "ඔබගේ මාසික පතල් වාර්තාව ඉදිරිපත් කරන්න",
-//       scheduleInspection: "පරීක්ෂාව සඳහා වේලාවක් වෙන් කරන්න",
-//       scheduleDescription: "ඔබගේ ඊළඟ අඩවි පරීක්ෂාව වෙන් කරන්න",
+//       additionalDocuments: "අතිරේක ලේඛන",
+//       attachDescription: "ඔබගේ බලපත්‍ර අයදුම්පත සැකසීම සඳහා අවශ්‍ය ඕනෑම අතිරේක ලේඛන හෝ වාර්තා අමුණන්න.",
+//       fileDescription: "ලේඛන විස්තරය",
+//       attachFile: "ලේඛනය අමුණන්න",
+//       submit: "ඉදිරිපත් කරන්න",
+//       attachedDocuments: "අමුණා ඇති ලේඛන",
+//       noAttachments: "තවමත් ලේඛන අමුණා නැත.",
+//       downloadFile: "බාගන්න",
 //       recentActivity: "මෑත ක්‍රියාකාරකම්",
 //       back: "ඩැෂ්බෝඩ් වෙත ආපසු යන්න",
 //       allRightsReserved: "සියලු හිමිකම් ඇවිරිණි."
@@ -197,6 +209,52 @@
 //     { date: 'Feb 15, 2025', action: language === 'en' ? 'License Renewal' : 'බලපත්‍ර අලුත් කිරීම', status: language === 'en' ? 'Approved' : 'අනුමත කරන ලදි', icon: '🔄' }
 //   ];
 
+//   const handleFileChange = (e) => {
+//     setFileData({
+//       ...fileData,
+//       file: e.target.files[0]
+//     });
+//   };
+
+//   const handleDescriptionChange = (e) => {
+//     setFileData({
+//       ...fileData,
+//       description: e.target.value
+//     });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!fileData.file || !fileData.description) {
+//       setSuccessMessage('Please provide both a file and description.');
+//       return;
+//     }
+
+//     try {
+//       // In a real implementation, this would upload to your server
+//       // Mock successful attachment for demo purposes
+//       const newFile = {
+//         id: attachedFiles.length + 1,
+//         name: fileData.file.name,
+//         description: fileData.description,
+//         size: fileData.file.size,
+//         date: new Date().toISOString().split('T')[0]
+//       };
+      
+//       setAttachedFiles([...attachedFiles, newFile]);
+//       setSuccessMessage('File successfully attached!');
+//       setFileData({
+//         file: null,
+//         description: ''
+//       });
+      
+//       // Reset file input by clearing the form
+//       document.getElementById('file-upload-form').reset();
+//     } catch (error) {
+//       setSuccessMessage('Failed to attach file. Please try again.');
+//     }
+//   };
+
 //   return (
 //     <div
 //       className={`relative min-h-screen ${
@@ -205,10 +263,10 @@
 //       ref={scrollRef}
 //     >
 //       <Head>
-//         <title>Constructor Dashboard | CeylonMine</title>
+//         <title>Licensed Dashboard | CeylonMine</title>
 //         <meta
 //           name="description"
-//           content="Constructor Dashboard for CeylonMine's digital platform for mining licensing and royalty calculation in Sri Lanka."
+//           content="Licensed Dashboard for CeylonMine's digital platform for mining licensing and royalty calculation in Sri Lanka."
 //         />
 //         <link rel="icon" href="/favicon.ico" />
 //       </Head>
@@ -355,7 +413,7 @@
 //             </motion.div>
 //           </div>
 
-//           {/* Quick Actions Section */}
+//           {/* Additional Documents Section */}
 //           <motion.div
 //             className={`rounded-xl p-8 ${
 //               isDarkMode 
@@ -374,90 +432,176 @@
 //             }`}></div>
 //             <h3 className={`text-2xl font-bold mb-6 ${
 //               isDarkMode ? 'text-amber-500' : 'text-orange-600'
-//             }`}>{t.quickActions}</h3>
+//             }`}>{t.additionalDocuments}</h3>
             
-//             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-//               <motion.button
-//                 className={`group relative overflow-hidden rounded-xl p-6 ${
-//                   isDarkMode 
-//                     ? 'bg-gray-800/90 hover:bg-gray-800' 
-//                     : 'bg-orange-100/80 hover:bg-orange-100'
-//                 } flex flex-col items-center justify-center transition-all duration-300 shadow-md hover:shadow-xl`}
-//                 whileHover={{ scale: 1.03, y: -5 }}
-//                 whileTap={{ scale: 0.98 }}
-//               >
-//                 <div className={`absolute inset-0 ${
-//                   isDarkMode ? 'bg-amber-500' : 'bg-orange-500'
-//                 } opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
-//                 <div className={`text-4xl mb-4 p-4 rounded-full ${
-//                   isDarkMode 
-//                     ? 'bg-gray-900/70 text-amber-400' 
-//                     : 'bg-white/70 text-orange-500'
-//                 } shadow-inner`}>
-//                   📝
-//                 </div>
-//                 <p className={`text-base font-medium ${
+//             <form id="file-upload-form" className="space-y-4" onSubmit={handleSubmit}>
+//               <div>
+//                 <label htmlFor="description" className={`block text-sm font-medium mb-2 ${
 //                   isDarkMode ? 'text-amber-300' : 'text-orange-700'
-//                 }`}>{t.submitReport}</p>
-//                 <p className={`text-sm mt-2 text-center ${
-//                   isDarkMode ? 'text-amber-300/70' : 'text-orange-700/80'
-//                 }`}>{t.submitDescription}</p>
-//               </motion.button>
+//                 }`}>
+//                   {t.fileDescription}
+//                 </label>
+//                 <input
+//                   type="text"
+//                   id="description"
+//                   value={fileData.description}
+//                   onChange={handleDescriptionChange}
+//                   className={`w-full px-4 py-3 rounded-md focus:outline-none ${
+//                     isDarkMode 
+//                       ? 'bg-gray-800 border border-gray-700 focus:border-amber-500 text-amber-300' 
+//                       : 'bg-gray-50 border border-gray-200 focus:border-orange-500 text-orange-700'
+//                   }`}
+//                   placeholder="Environmental Clearance Report"
+//                   required
+//                 />
+//               </div>
               
-//               <motion.button
-//                 className={`group relative overflow-hidden rounded-xl p-6 ${
-//                   isDarkMode 
-//                     ? 'bg-gray-800/90 hover:bg-gray-800' 
-//                     : 'bg-orange-100/80 hover:bg-orange-100'
-//                 } flex flex-col items-center justify-center transition-all duration-300 shadow-md hover:shadow-xl`}
-//                 whileHover={{ scale: 1.03, y: -5 }}
-//                 whileTap={{ scale: 0.98 }}
-//               >
-//                 <div className={`absolute inset-0 ${
-//                   isDarkMode ? 'bg-amber-500' : 'bg-orange-500'
-//                 } opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
-//                 <div className={`text-4xl mb-4 p-4 rounded-full ${
-//                   isDarkMode 
-//                     ? 'bg-gray-900/70 text-amber-400' 
-//                     : 'bg-white/70 text-orange-500'
-//                 } shadow-inner`}>
-//                   📅
-//                 </div>
-//                 <p className={`text-base font-medium ${
+//               <div className="space-y-2">
+//                 <label className={`block text-sm font-medium mb-2 ${
 //                   isDarkMode ? 'text-amber-300' : 'text-orange-700'
-//                 }`}>{t.scheduleInspection}</p>
-//                 <p className={`text-sm mt-2 text-center ${
-//                   isDarkMode ? 'text-amber-300/70' : 'text-orange-700/80'
-//                 }`}>{t.scheduleDescription}</p>
-//               </motion.button>
+//                 }`}>
+//                   {t.attachFile}
+//                 </label>
+//                 <div className={`
+//                   border-2 border-dashed rounded-lg p-4 text-center cursor-pointer
+//                   ${isDarkMode 
+//                     ? 'border-gray-700 hover:border-gray-600' 
+//                     : 'border-gray-300 hover:border-gray-400'
+//                   }
+//                 `}>
+//                   <input
+//                     type="file"
+//                     id="file"
+//                     onChange={handleFileChange}
+//                     className="hidden"
+//                     required
+//                   />
+//                   <label htmlFor="file" className="cursor-pointer">
+//                     <svg 
+//                       xmlns="http://www.w3.org/2000/svg" 
+//                       className="h-10 w-10 mx-auto mb-2 text-gray-400"
+//                       fill="none" 
+//                       viewBox="0 0 24 24" 
+//                       stroke="currentColor"
+//                     >
+//                       <path 
+//                         strokeLinecap="round" 
+//                         strokeLinejoin="round" 
+//                         strokeWidth={1} 
+//                         d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+//                       />
+//                     </svg>
+//                     <p className={`text-sm ${
+//                       isDarkMode ? 'text-amber-300' : 'text-orange-700'
+//                     }`}>
+//                       Click to select file or drag and drop
+//                     </p>
+//                     <p className={`text-xs opacity-70 mt-1 ${
+//                       isDarkMode ? 'text-amber-300/70' : 'text-orange-700/80'
+//                     }`}>
+//                       {fileData.file ? fileData.file.name : 'PDF, DOC, XLS, JPG up to 10MB'}
+//                     </p>
+//                   </label>
+//                 </div>
+//               </div>
               
-//               <motion.button
-//                 className={`group relative overflow-hidden rounded-xl p-6 ${
-//                   isDarkMode 
-//                     ? 'bg-gray-800/90 hover:bg-gray-800' 
-//                     : 'bg-orange-100/80 hover:bg-orange-100'
-//                 } flex flex-col items-center justify-center transition-all duration-300 shadow-md hover:shadow-xl`}
-//                 whileHover={{ scale: 1.03, y: -5 }}
-//                 whileTap={{ scale: 0.98 }}
-//               >
-//                 <div className={`absolute inset-0 ${
-//                   isDarkMode ? 'bg-amber-500' : 'bg-orange-500'
-//                 } opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
-//                 <div className={`text-4xl mb-4 p-4 rounded-full ${
-//                   isDarkMode 
-//                     ? 'bg-gray-900/70 text-amber-400' 
-//                     : 'bg-white/70 text-orange-500'
-//                 } shadow-inner`}>
-//                   📊
+//               <div>
+//                 <motion.button
+//                   type="submit"
+//                   className={`w-full ${
+//                     isDarkMode 
+//                       ? 'bg-amber-500 hover:bg-amber-600' 
+//                       : 'bg-orange-500 hover:bg-orange-600'
+//                   } text-white py-3 rounded-md text-lg font-medium transition-colors`}
+//                   whileHover={{ scale: 1.05 }}
+//                   whileTap={{ scale: 0.95 }}
+//                 >
+//                   {t.submit}
+//                 </motion.button>
+//               </div>
+              
+//               {successMessage && (
+//                 <div className={`mt-4 p-4 rounded-md ${
+//                   successMessage.includes('Failed') || successMessage.includes('Please provide')
+//                     ? isDarkMode 
+//                       ? 'bg-red-900 text-red-200' 
+//                       : 'bg-red-100 text-red-800'
+//                     : isDarkMode 
+//                       ? 'bg-green-900 text-green-200' 
+//                       : 'bg-green-100 text-green-800'
+//                 }`}>
+//                   {successMessage}
 //                 </div>
-//                 <p className={`text-base font-medium ${
-//                   isDarkMode ? 'text-amber-300' : 'text-orange-700'
-//                 }`}>View Analytics</p>
-//                 <p className={`text-sm mt-2 text-center ${
-//                   isDarkMode ? 'text-amber-300/70' : 'text-orange-700/80'
-//                 }`}>Check mining statistics</p>
-//               </motion.button>
-//             </div>
+//               )}
+//             </form>
+//           </motion.div>
+          
+//           {/* Attached Files List */}
+//           <motion.div
+//             className={`rounded-xl p-8 ${
+//               isDarkMode 
+//                 ? 'bg-gray-900/80 backdrop-blur-md border border-amber-500/30' 
+//                 : 'bg-white/90 backdrop-blur-md border border-orange-200 shadow-orange-200/30'
+//             } shadow-xl overflow-hidden relative mb-8`}
+//             initial={{ opacity: 0, y: 20 }}
+//             whileInView={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5 }}
+//             viewport={{ once: true }}
+//           >
+//             <div className={`absolute top-0 left-0 w-full h-1 ${
+//               isDarkMode 
+//                 ? 'bg-gradient-to-r from-amber-500 to-amber-300/50' 
+//                 : 'bg-gradient-to-r from-orange-500 to-orange-300/50'
+//             }`}></div>
+//             <h3 className={`text-2xl font-bold mb-6 ${
+//               isDarkMode ? 'text-amber-500' : 'text-orange-600'
+//             }`}>{t.attachedDocuments}</h3>
+            
+//             {attachedFiles.length > 0 ? (
+//               <div className="space-y-4">
+//                 {attachedFiles.map((file) => (
+//                   <div 
+//                     key={file.id} 
+//                     className={`p-4 rounded-lg ${
+//                       isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
+//                     }`}
+//                   >
+//                     <div className="flex items-start justify-between">
+//                       <div className="flex-1">
+//                         <h3 className={`font-semibold mb-1 ${
+//                           isDarkMode ? 'text-amber-300' : 'text-orange-700'
+//                         }`}>{file.description}</h3>
+//                         <p className={`text-sm opacity-70 ${
+//                           isDarkMode ? 'text-amber-300/70' : 'text-orange-700/80'
+//                         }`}>{file.name}</p>
+//                         <div className={`flex items-center mt-2 text-xs opacity-70 ${
+//                           isDarkMode ? 'text-amber-300/70' : 'text-orange-700/80'
+//                         }`}>
+//                           <span>{Math.round(file.size / 1024)} KB</span>
+//                           <span className="mx-2">•</span>
+//                           <span>{file.date}</span>
+//                         </div>
+//                       </div>
+//                       <motion.button
+//                         className={`px-3 py-1 rounded text-sm font-medium ${
+//                           isDarkMode 
+//                             ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+//                             : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+//                         }`}
+//                         whileHover={{ scale: 1.05 }}
+//                         whileTap={{ scale: 0.95 }}
+//                       >
+//                         {t.downloadFile}
+//                       </motion.button>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             ) : (
+//               <p className={`text-sm italic opacity-70 ${
+//                 isDarkMode ? 'text-amber-300/70' : 'text-orange-700/80'
+//               }`}>{t.noAttachments}</p>
+//             )}
 //           </motion.div>
           
 //           {/* Recent Activity Section */}
@@ -585,29 +729,42 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
 import Link from 'next/link';
 
+interface FileData {
+  file: File | null;
+  description: string;
+}
+
+interface AttachedFile {
+  id: number;
+  name: string;
+  description: string;
+  size: number;
+  date: string;
+}
+
 export default function LicensedPage({ userName = 'User', royaltyAmount = '1,250.00', dueDate = 'March 15, 2025' }) {
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [language, setLanguage] = useState('en');
-  const canvasRef = useRef(null);
-  const scrollRef = useRef(null);
-  const [fileData, setFileData] = useState({
+  const [language, setLanguage] = useState<'en' | 'si'>('en');
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [fileData, setFileData] = useState<FileData>({
     file: null,
     description: ''
   });
-  const [attachedFiles, setAttachedFiles] = useState([]);
+  const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    const handleThemeChange = (event) => {
+    const handleThemeChange = (event: CustomEvent) => {
       setIsDarkMode(event.detail.isDarkMode);
     };
 
-    const handleLanguageChange = (event) => {
+    const handleLanguageChange = (event: CustomEvent) => {
       setLanguage(event.detail.language);
     };
 
-    window.addEventListener('themeChange', handleThemeChange);
-    window.addEventListener('languageChange', handleLanguageChange);
+    window.addEventListener('themeChange', handleThemeChange as EventListener);
+    window.addEventListener('languageChange', handleLanguageChange as EventListener);
 
     // Set initial theme based on local storage or system preference
     const savedTheme = localStorage.getItem('theme');
@@ -627,8 +784,8 @@ export default function LicensedPage({ userName = 'User', royaltyAmount = '1,250
     }
 
     return () => {
-      window.removeEventListener('themeChange', handleThemeChange);
-      window.removeEventListener('languageChange', handleLanguageChange);
+      window.removeEventListener('themeChange', handleThemeChange as EventListener);
+      window.removeEventListener('languageChange', handleLanguageChange as EventListener);
     };
   }, []);
 
@@ -679,7 +836,7 @@ export default function LicensedPage({ userName = 'User', royaltyAmount = '1,250
     let mouseX = 0;
     let mouseY = 0;
 
-    function onDocumentMouseMove(event) {
+    function onDocumentMouseMove(event: MouseEvent) {
       mouseX = (event.clientX - window.innerWidth / 2) / 100;
       mouseY = (event.clientY - window.innerHeight / 2) / 100;
     }
@@ -707,12 +864,12 @@ export default function LicensedPage({ userName = 'User', royaltyAmount = '1,250
     const themeChangeListener = () => {
       updateParticleColor();
     };
-    window.addEventListener('themeChange', themeChangeListener);
+    window.addEventListener('themeChange', themeChangeListener as EventListener);
 
     return () => {
       document.removeEventListener('mousemove', onDocumentMouseMove);
       window.removeEventListener('resize', onWindowResize);
-      window.removeEventListener('themeChange', themeChangeListener);
+      window.removeEventListener('themeChange', themeChangeListener as EventListener);
       particlesGeometry.dispose();
       particlesMaterial.dispose();
       renderer.dispose();
@@ -725,7 +882,6 @@ export default function LicensedPage({ userName = 'User', royaltyAmount = '1,250
     offset: ["start start", "end end"],
   });
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.8]);
 
   const translations = {
     en: {
@@ -785,21 +941,23 @@ export default function LicensedPage({ userName = 'User', royaltyAmount = '1,250
     { date: 'Feb 15, 2025', action: language === 'en' ? 'License Renewal' : 'බලපත්‍ර අලුත් කිරීම', status: language === 'en' ? 'Approved' : 'අනුමත කරන ලදි', icon: '🔄' }
   ];
 
-  const handleFileChange = (e) => {
-    setFileData({
-      ...fileData,
-      file: e.target.files[0]
-    });
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFileData({
+        ...fileData,
+        file: e.target.files[0]
+      });
+    }
   };
 
-  const handleDescriptionChange = (e) => {
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFileData({
       ...fileData,
       description: e.target.value
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fileData.file || !fileData.description) {
       setSuccessMessage('Please provide both a file and description.');
@@ -809,7 +967,7 @@ export default function LicensedPage({ userName = 'User', royaltyAmount = '1,250
     try {
       // In a real implementation, this would upload to your server
       // Mock successful attachment for demo purposes
-      const newFile = {
+      const newFile: AttachedFile = {
         id: attachedFiles.length + 1,
         name: fileData.file.name,
         description: fileData.description,
@@ -825,8 +983,11 @@ export default function LicensedPage({ userName = 'User', royaltyAmount = '1,250
       });
       
       // Reset file input by clearing the form
-      document.getElementById('file-upload-form').reset();
-    } catch (error) {
+      const form = document.getElementById('file-upload-form') as HTMLFormElement;
+      if (form) {
+        form.reset();
+      }
+    } catch {
       setSuccessMessage('Failed to attach file. Please try again.');
     }
   };
