@@ -2,11 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-interface UserGreetingProps {
-  userName?: string; // Optional as it will come from auth system
-}
-
-export default function UserGreeting({ userName }: UserGreetingProps) {
+export default function UserGreeting() {
   const [greeting, setGreeting] = useState('');
   const [currentTime, setCurrentTime] = useState('');
   const [currentDate, setCurrentDate] = useState('');
@@ -63,7 +59,7 @@ export default function UserGreeting({ userName }: UserGreetingProps) {
   return (
     <div className="mb-6">
       <div className="text-3xl font-bold mb-2">
-        {greeting}, {userName ? userName : 'Guest'}
+        {greeting}
       </div>
       <div className="text-lg">
         {currentTime} • {currentDate}
