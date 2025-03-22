@@ -12,10 +12,13 @@
     "@heroicons/react": "^2.2.0",
     "@supabase/supabase-js": "^2.49.1",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/react-datepicker": "^6.2.0",
     "jsonwebtoken": "^9.0.2",
     "next": "15.2.0",
     "react": "^19.0.0",
+    "react-datepicker": "^8.2.1",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
     "sweetalert2": "^11.6.13"
   },
   "devDependencies": {
