@@ -3,11 +3,6 @@ from supabase import create_client, Client
 from config import Config
 from flask import Blueprint
 
-minerpage_bp = Blueprint('minerpage', __name__, url_prefix='/miner')
-
-# Initialize Supabase client
-supabase: Client = create_client(Config.SUPABASE_URL, Config.SUPABASE_KEY)
-
 @minerpage_bp.route('/status', methods=['GET'])
 def get_user_status():
     # Assuming you have a way to identify the logged-in user, e.g., through a session or token
