@@ -1,0 +1,89 @@
+name: CI/CD Pipeline for CeylonMine
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Set Up JWT Environment Variables
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
+      - name: Install Backend Dependencies
+        run: |
+          cd ./backend
+          pip install -r requirements.txt
+
+      - name: Run Backend Tests
+        run: |
+          cd ./backend
+          pytest
+
+      - name: Deploy Backend to Supabase
+        run: |
+          echo "Deploying backend with updated JWTs..."
+          supabase functions deploy --project ./backend
+
+  build-and-test-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Set Up Next.js Environment Variables
+        run: |
+          echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.local
+          echo "NEXT_PUBLIC_SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env.local
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd ./frontend
+          npm install
+
+      - name: Run Frontend Tests
+        run: |
+          cd ./frontend
+          npm run test
+
+      - name: Build and Deploy
+        run: |
+          cd ./frontend
+          npm run build
+
+      - name: Deploy to Vercel
+        run: |
+          vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+    needs: build-and-test-backend
+
+    steps:
+      - name: Deploy to Heroku
+        run: |
+          heroku container:login
+          heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }}
+          heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
